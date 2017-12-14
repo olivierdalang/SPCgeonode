@@ -1,0 +1,86 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres:9.6
+    volumes:
+      - database:/var/lib/postgresql/data 
+
+  # elasticsearch:
+  #   image: elasticsearch:5.6
+
+  rabbitmq:
+    image: rabbitmq:3.7
+  
+  nginx:
+    image: spcnode/nginx:latest # TODO : versionize
+    build: ./nginx/
+    ports:
+      - "80:80"
+    links:
+      - django
+      - geoserver
+    depends_on:
+      - django
+      - geoserver
+    volumes:
+      - static:/spcnode-static
+      - media:/spcnode-media
+
+  django:
+    image: spcnode/django:latest # TODO : versionize
+    build: ./django/
+    env_file:
+      - ./django/django.env
+    volumes:
+      - static:/spcnode-static
+      - media:/spcnode-media
+    links:
+      - postgres
+      # - elasticsearch
+    depends_on:
+      - postgres
+    entrypoint: ["/spcnode/docker-entrypoint.sh"]
+    command: ["uwsgi", "--chdir=/spcnode", "--module=spcnode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcnode.settings", "--socket=:8000", "--processes=5"]
+    
+  celery:
+    image: spcnode/django:latest # TODO : versionize
+    env_file:
+      - ./django/django.env
+    volumes:
+      - static:/spcnode-static
+      - media:/spcnode-media
+    links:
+      - postgres
+      - rabbitmq
+    depends_on:
+      - django
+    command: celery worker --app=geonode.celery_app:app -B -l INFO
+
+  geoserver:
+    image: geonode/geoserver:2.9.x-oauth2
+    env_file:
+      - ./geoserver/geoserver.env
+    volumes:
+      - datadir:/geoserver_data/data
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+
+  backuper:
+    image: spcnode/backuper:latest # TODO : versionize
+    build: ./backuper/
+    volumes:
+      - database:/tobackup/spcnode-database
+      - media:/tobackup/spcnode-media
+      - datadir:/tobackup/spcnode-datadir
+
+volumes:
+  static:
+  media:
+  database:
+  datadir:
