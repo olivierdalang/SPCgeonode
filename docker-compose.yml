@@ -18,9 +18,6 @@ services:
     build: ./nginx/
     ports:
       - "80:80"
-    links:
-      - django
-      - geoserver
     depends_on:
       - django
       - geoserver
@@ -36,9 +33,6 @@ services:
     volumes:
       - static:/spcnode-static
       - media:/spcnode-media
-    links:
-      - postgres
-      # - elasticsearch
     depends_on:
       - postgres
     entrypoint: ["/spcnode/docker-entrypoint.sh"]
@@ -51,9 +45,6 @@ services:
     volumes:
       - static:/spcnode-static
       - media:/spcnode-media
-    links:
-      - postgres
-      - rabbitmq
     depends_on:
       - django
     command: celery worker --app=geonode.celery_app:app -B -l INFO
@@ -64,8 +55,6 @@ services:
       - ./geoserver/geoserver.env
     volumes:
       - datadir:/geoserver_data/data
-    links:
-      - postgres
     depends_on:
       - postgres
     ports:
