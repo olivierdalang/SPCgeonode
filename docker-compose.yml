@@ -10,8 +10,8 @@ services:
   # elasticsearch:
   #   image: elasticsearch:5.6
 
-  rabbitmq:
-    image: rabbitmq:3.7
+  # rabbitmq:
+  #   image: rabbitmq:3.7
   
   nginx:
     image: spcnode/nginx:latest # TODO : versionize
@@ -38,16 +38,16 @@ services:
     entrypoint: ["/spcnode/docker-entrypoint.sh"]
     command: ["uwsgi", "--chdir=/spcnode", "--module=spcnode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcnode.settings", "--socket=:8000", "--processes=5"]
     
-  celery:
-    image: spcnode/django:latest # TODO : versionize
-    env_file:
-      - ./django/django.env
-    volumes:
-      - static:/spcnode-static
-      - media:/spcnode-media
-    depends_on:
-      - django
-    command: celery worker --app=geonode.celery_app:app -B -l INFO
+  # celery:
+  #   image: spcnode/django:latest # TODO : versionize
+  #   env_file:
+  #     - ./django/django.env
+  #   volumes:
+  #     - static:/spcnode-static
+  #     - media:/spcnode-media
+  #   depends_on:
+  #     - django
+  #   command: celery worker --app=geonode.celery_app:app -B -l INFO
 
   geoserver:
     image: geonode/geoserver:2.9.x-oauth2
@@ -60,13 +60,13 @@ services:
     ports:
       - "8080:8080"
 
-  backuper:
-    image: spcnode/backuper:latest # TODO : versionize
-    build: ./backuper/
-    volumes:
-      - database:/tobackup/spcnode-database
-      - media:/tobackup/spcnode-media
-      - datadir:/tobackup/spcnode-datadir
+  # backuper:
+  #   image: spcnode/backuper:latest # TODO : versionize
+  #   build: ./backuper/
+  #   volumes:
+  #     - database:/tobackup/spcnode-database
+  #     - media:/tobackup/spcnode-media
+  #     - datadir:/tobackup/spcnode-datadir
 
 volumes:
   static:
