@@ -12,6 +12,11 @@ For **developpement** (this will mount the source as a volume, set debug=True an
 docker-compose -f docker-compose.yml -f docker-compose-dev.yml up --build
 ```
 
+If you want to mount volumes on host (can make debugging easier), use:
+```
+docker-compose -f docker-compose.yml -f docker-compose-dev.yml -f docker-compose-mount-volumes.yml up --build
+```
+
 For **production** :
 
 ```

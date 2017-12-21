@@ -1,0 +1,29 @@
+# This file overrides the volumes to use dirs on the host instead of docker named volumes.
+# Not suited for production (as it encourages live editing)
+
+version: '3'
+
+services:
+  postgres:
+    volumes:
+      # - ./volumes/database:/var/lib/postgresql/data # doesn't work because of ownership
+  nginx:
+    volumes:
+      - ./volumes/static:/spcnode-static
+      - ./volumes/media:/spcnode-media
+  django:
+    volumes:
+      - ./volumes/static:/spcnode-static
+      - ./volumes/media:/spcnode-media
+  celery:
+    volumes:
+      - ./volumes/static:/spcnode-static
+      - ./volumes/media:/spcnode-media
+  geoserver:
+    volumes:
+      - ./volumes/datadir:/geoserver_data/data
+  backuper:
+    volumes:
+      # - ./volumes/database:/tobackup/spcnode-database # doesn't work because of ownership
+      - ./volumes/media:/tobackup/spcnode-media
+      - ./volumes/datadir:/tobackup/spcnode-datadir
