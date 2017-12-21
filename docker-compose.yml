@@ -54,7 +54,7 @@ services:
     env_file:
       - ./geoserver/geoserver.env
     volumes:
-      - datadir:/geoserver_data/data
+      - geodatadir:/spcnode-geodatadir/
     depends_on:
       - postgres
     ports:
@@ -66,10 +66,10 @@ services:
   #   volumes:
   #     - database:/tobackup/spcnode-database
   #     - media:/tobackup/spcnode-media
-  #     - datadir:/tobackup/spcnode-datadir
+  #     - geodatadir:/tobackup/spcnode-geodatadir
 
 volumes:
   static:
   media:
   database:
-  datadir:
+  geodatadir:
