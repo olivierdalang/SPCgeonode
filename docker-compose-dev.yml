@@ -1,12 +1,32 @@
 version: '3'
 
 services:
+  postgres:
+    # volumes:
+      # - ./volumes/database:/var/lib/postgresql/data # doesn't work because of ownership
+  nginx:
+    volumes:
+      - ./volumes/static:/spcnode-static
+      - ./volumes/media:/spcnode-media
   django:
     environment:
       - "DEBUG=True"
     volumes:
       - './django:/spcnode'
+      - ./volumes/static:/spcnode-static
+      - ./volumes/media:/spcnode-media
     command: ["uwsgi", "--chdir=/spcnode", "--module=spcnode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcnode.settings", "--socket=:8000", "--py-autoreload=2"]
+  # celery:
+  #   volumes:
+  #     - ./volumes/static:/spcnode-static
+  #     - ./volumes/media:/spcnode-media
   postgres:
     ports:
       - "5432:5432"
+    volumes:
+      - ./volumes/geodatadir:/spcnode-geodatadir/
+  # backuper:
+  #   volumes:
+  #     # - ./volumes/database:/tobackup/spcnode-database # doesn't work because of ownership
+  #     - ./volumes/media:/tobackup/spcnode-media
+  #     - ./volumes/geodatadir:/tobackup/spcnode-geodatadir

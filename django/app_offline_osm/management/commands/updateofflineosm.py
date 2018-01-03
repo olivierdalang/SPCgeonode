@@ -4,17 +4,21 @@ import os
 import base64
 import zipfile
 import ogr, osr
-from django.conf import settings
 import dj_database_url
 from django.db import connection
-
+from django.conf import settings
 from ...models import Log
-
-
+from django.core.management import call_command
+import requests
+from geoserver.catalog import Catalog
 
 class Command(BaseCommand):
+    """
+    This command creates or updates local offline OSM data.
+    """
 
     download_dir = '/spcnode-media/urlretrieve/' # TODO : use temp instead
+    datastore_name = 'offline_osm' # TODO : use setting instead
     schema_name = 'offline_osm' # TODO : use setting instead
 
     help = 'Updates the local offline OSM data. This will download around 1 GB so ensure to have good connection.'
@@ -25,34 +29,37 @@ class Command(BaseCommand):
         super(Command, self).__init__(*args, **kwargs)
 
     def add_arguments(self, parser):
-        parser.add_argument('source', default='overpass', choices=['overpass','pbf_and_shp'])
-        parser.add_argument('mode', default='overwrite', choices=['overwrite','keep'])
+        parser.add_argument('--source', default='overpass', choices=['overpass','pbf_and_shp'])
         
         # TODO : add parameters to load from local data
 
     def handle(self, *args, **options):
 
-        Log.objects.create( message="Started updateofflineosm in mode {} from source {}".format(options['mode'],options['source']), success=True )
-
-
-        if options['mode'] == 'keep':
-            connection.cursor().execute('SELECT exists(select schema_name FROM information_schema.schemata WHERE schema_name = %s)', [self.schema_name])
-            schema_exists = connection.cursor().fetchall()[0][0]
-            if schema_exists:
-                Log.objects.create( message="Schema already exists. Update skipped !"), success=True )
-                return           
-            
-
+        Log.objects.create( message="Started updateofflineosm from source {}".format(options['source']), success=True )
+        
+        print('[Step 1] Downloading data')
         if options['source'] == 'overpass':
             self.download_overpass()
-            self.import_overpass()
         else:
             self.download_shapefile()
             self.download_osmxml()
+
+        print('[Step 2] Importing data in postgis')
+        if options['source'] == 'overpass':
+            self.import_overpass()
+        else:
             self.import_shapefile()
             self.import_osmxml()
 
-        Log.objects.create( message="Finished updateofflineosm in mode {}".format(options['mode']), success=True )
+        print('[Step 3] Adding the layers to Geoserver')
+        self.add_to_geoserver()
+
+        print('[Step 4] Updating Geonode layers')
+        call_command('updatelayers', interactive=True)
+
+        print('[Done !]')
+
+        Log.objects.create( message="Finished updateofflineosm", success=True )
     
     def download_shapefile(self):
         self._download("http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip")
@@ -111,7 +118,6 @@ class Command(BaseCommand):
                 print('File already unzipped, we skip.')
         else:
             print("Not a zip file, we skip.")
-    
     def _import(self, filename, crop=False):
         print('Importing {} to postgresql... This can take some time (over 10 minutes for large layers)'.format(filename))
 
@@ -151,3 +157,67 @@ class Command(BaseCommand):
 
 
             ogr_postgres_layer = ogrds.CopyLayer(ogr_layer,full_table_name,['OGR_INTERLEAVED_READING=YES','OVERWRITE=YES'])
+
+    def add_to_geoserver(self):
+        
+        Log.objects.create( message="Started createbaselayers", success=True )
+
+        rest_endpoint = settings.GEOSERVER_LOCATION+'rest'
+        
+        # TODO : use from geoserver.catalog import Catalog instead of REST API (see https://groups.google.com/forum/#!msg/geonode-users/R-u57r8aECw/AuEpydZayfIJ)
+
+        print('creating datastore')
+        res = requests.post(
+            rest_endpoint + '/workspaces/geonode/datastores',
+            auth=('admin', 'geoserver'), # TODO : set this
+            data=self.datastore_xml.format(datastore_name=self.datastore_name),
+            headers={'Content-type':'text/xml'}
+        )
+        if res.status_code==500 and res.text == "Store 'offline_osm' already exists in workspace 'geonode'":
+            print('datastore already exists')
+        else:
+            res.raise_for_status()
+            print('datastore successfully created')
+
+
+        for layername in ['offline_osm_lines','offline_osm_multipolygons','offline_osm_multilinestrings','offline_osm_points']:
+            print('creating layer {}'.format(layername))
+            res = requests.post(
+                rest_endpoint + '/workspaces/geonode/datastores/offline_osm/featuretypes?recalculate=nativebbox,latlonbbox',
+            auth=('admin', 'geoserver'), # TODO : set this
+                data=self.featuretype_xml.format(layername=layername),
+                headers={'Content-type':'text/xml'}
+            )
+            if res.status_code==500 and res.text == "Resource named '{}' already exists in store: 'offline_osm'".format(layername):
+                print('layer already exists')
+            else:
+                res.raise_for_status()
+                print('layer successfully created')
+
+    datastore_xml = '''
+        <dataStore>
+            <name>{datastore_name}</name>
+            <connectionParameters>
+                <host>postgres</host>
+                <port>5432</port>
+                <database>postgres</database>
+                <schema>offline_osm</schema>
+                <user>postgres</user>
+                <passwd>postgres</passwd>
+                <dbtype>postgis</dbtype>
+            </connectionParameters>
+        </dataStore>'''
+
+    featuretype_xml = '''
+        <featureType>
+            <name>{layername}</name>
+            <nativeName>{layername}</nativeName>
+            <title>{layername}</title>
+            <keywords>
+                <string>features</string>
+                <string>{layername}</string>
+            </keywords>
+            <srs>EPSG:4326</srs>
+            <projectionPolicy>FORCE_DECLARED</projectionPolicy>
+            <enabled>true</enabled>
+        </featureType>'''

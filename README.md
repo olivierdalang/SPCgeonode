@@ -6,28 +6,19 @@ The setup should be usable for production.
 
 ## Usage
 
-For **developpement** (this will mount the source as a volume, set debug=True, set uwsgi to live reload when file changes, and expose postgres port 5432):
+For **developpement** (this will mount django source, static and media in the volumes folder, set debug=True, set uwsgi to live reload, expose postgres port 5432 and mount geoserver's data volume):
 
 ```
-docker-compose -f docker-compose.yml -f docker-compose-dev.yml up --build
-```
-
-If you want to mount volumes on host (can make debugging easier, but you need to delete previous containers), use:
-```
-docker-compose -f docker-compose.yml -f docker-compose-dev.yml -f docker-compose-mount-volumes.yml up --build
-```
-
-Only django & postgres
-
-```
-docker-compose -f docker-compose.yml -f docker-compose-dev.yml -f docker-compose-mount-volumes.yml up --build django postgres 
+docker-compose -f docker-compose.yml -f docker-compose-dev.yml up -d --build
 ```
 
 For **production** :
 
 ```
-docker-compose up # TODO : use swarm ?
+docker-compose up -d # TODO : test this... # TODO : use swarm ?
 ```
+
+To see logs, use `docker-compose logs` or that practical `docker-log.bat` script that opens a separate window for each service.
 
 ## How it works
 

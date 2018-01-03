@@ -8,8 +8,8 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 # Apps that should be prepended to INSTALLED APPS
 SPCNODE_APPS = (
-    'customization_sample',
-    'offline_osm',
+    'app_customization_sample',
+    'app_offline_osm',
     
     'overextends', # we use this to be able to override templates still extending the parent template
 )
@@ -29,26 +29,26 @@ for app in reversed(SPCNODE_APPS):
 ROOT_URLCONF = os.getenv('ROOT_URLCONF', 'spcnode.urls')
 
 # OFFLINE OSM
-MAP_BASELAYERS.append(
-    {
-        "source": {"ptype": "gxp_olsource"},
-        "type":"OpenLayers.Layer.WMS",
-        "name": "Offline OSM",
-        "group":"background",
-        "visibility": False,
-        "fixed": True,
-        "args":[
-            "Offline OSM",
-            GEOSERVER_PUBLIC_LOCATION+"wms",
-            {
-                "layers":["geonode:offline_osm_multipolygons"],
-                "format":"image/png",
-                "bgcolor":"0xb5d0d0",
-                "tiled": True
-            }
-            ]
-    }
-)
+# MAP_BASELAYERS.append(
+#     {
+#         "source": {"ptype": "gxp_olsource"},
+#         "type":"OpenLayers.Layer.WMS",
+#         "name": "Offline OSM",
+#         "group":"background",
+#         "visibility": False,
+#         "fixed": True,
+#         "args":[
+#             "Offline OSM",
+#             GEOSERVER_PUBLIC_LOCATION+"wms",
+#             {
+#                 "layers":["geonode:offline_osm_multipolygons"],
+#                 "format":"image/png",
+#                 "bgcolor":"0xb5d0d0",
+#                 "tiled": True
+#             }
+#             ]
+#     }
+# )
 # GOOGLE SATELLITE
 MAP_BASELAYERS.append(
     {

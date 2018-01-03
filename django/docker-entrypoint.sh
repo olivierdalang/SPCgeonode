@@ -22,15 +22,9 @@ python manage.py migrate --noinput
 printf '\n\n\nRunning collectstatic\n'
 python manage.py collectstatic --noinput
 
-
-# Initialize Geoserver
+# Initialize Geoserver (this waits for geonode and then creates the geonode workspace if it doesn't exist)
 printf '\n\n\nWaiting for geoserver rest endpoint\n'
-curl -u admin:geoserver -X GET -H "Content-type: text/xml" --retry 100000 --retry-connrefused --retry-delay 5 http://nginx/geoserver/rest/
-
-curl -u admin:geoserver -X POST -H "Content-type: text/xml" -d "<workspace><name>geonode</name></workspace>" http://nginx/geoserver/rest/workspaces
-# curl -v -u admin:geoserver -X PUT -H "Content-type: text/xml" -d "<workspace><name>geonode</name></workspace>" http://nginx/geoserver/rest/workspaces/default
-
-
+curl -u admin:geoserver -X POST -H "Content-type: text/xml" -d "<workspace><name>geonode</name></workspace>" http://nginx/geoserver/rest/workspaces --retry 100000 --retry-connrefused --retry-delay 5
 
 # Run the CMD 
 exec "$@"

@@ -29,7 +29,7 @@ services:
     image: spcnode/django:latest # TODO : versionize
     build: ./django/
     env_file:
-      - ./django/django.env
+      - ./django/docker-compose.env
     volumes:
       - static:/spcnode-static
       - media:/spcnode-media
@@ -41,7 +41,7 @@ services:
   # celery:
   #   image: spcnode/django:latest # TODO : versionize
   #   env_file:
-  #     - ./django/django.env
+  #     - ./django/docker-compose.env
   #   volumes:
   #     - static:/spcnode-static
   #     - media:/spcnode-media
@@ -53,7 +53,7 @@ services:
     image: spcnode/geoserver:latest # TODO : versionize
     build: ./geoserver/
     env_file:
-      - ./geoserver/geoserver.env
+      - ./geoserver/docker-compose.env
     volumes:
       - geodatadir:/spcnode-geodatadir/
     depends_on:
