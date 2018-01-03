@@ -52,3 +52,4 @@ Nginx proxies to uwsgi (django) and geoserver. It also directly serves django st
 - TODO : clean Dockerfiles to make lighter images
 - TODO : allow setup superuser password/login and set geoserver admin password
 - TODO : optimise dockerfiles
+- TODO : reorganize folders : django as main, other services in subfolders
