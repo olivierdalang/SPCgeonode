@@ -16,6 +16,9 @@ ADD ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 RUN rm /requirements.txt
 
+# TODO : move this to top
+RUN apt-get install -y curl
+
 # 5. Add the application
 RUN mkdir /spcnode
 WORKDIR /spcnode/

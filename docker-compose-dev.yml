@@ -6,4 +6,7 @@ services:
       - "DEBUG=True"
     volumes:
       - './django:/spcnode'
-    command: ["uwsgi", "--chdir=/spcnode", "--module=spcnode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcnode.settings", "--socket=:8000", "--processes=5", "--py-autoreload=2"]
+    command: ["uwsgi", "--chdir=/spcnode", "--module=spcnode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcnode.settings", "--socket=:8000", "--py-autoreload=2"]
+  postgres:
+    ports:
+      - "5432:5432"

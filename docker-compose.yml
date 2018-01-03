@@ -3,7 +3,7 @@ version: '3'
 services:
 
   postgres:
-    image: postgres:9.6
+    image: mdillon/postgis:9.6-alpine
     volumes:
       - database:/var/lib/postgresql/data 
 
@@ -58,8 +58,6 @@ services:
       - geodatadir:/spcnode-geodatadir/
     depends_on:
       - postgres
-    ports:
-      - "8080:8080"
 
   # backuper:
   #   image: spcnode/backuper:latest # TODO : versionize

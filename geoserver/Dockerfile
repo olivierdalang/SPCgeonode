@@ -6,11 +6,17 @@ RUN apk add ca-certificates
 RUN update-ca-certificates
 RUN apk add openssl
 
-# Download geoserver
 WORKDIR /
+
+# Download geoserver
 RUN wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.1/geoserver-2.12.1-bin.zip
 RUN unzip geoserver-2.12.1-bin.zip
 RUN rm geoserver-2.12.1-bin.zip
+
+# Download printing module
+RUN wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.1/extensions/geoserver-2.12.1-printing-plugin.zip
+RUN unzip geoserver-2.12.1-printing-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
+RUN rm geoserver-2.12.1-printing-plugin.zip
 
 # Setup workdir
 WORKDIR /geoserver-2.12.1/

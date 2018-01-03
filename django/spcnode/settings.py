@@ -28,6 +28,48 @@ for app in reversed(SPCNODE_APPS):
 
 ROOT_URLCONF = os.getenv('ROOT_URLCONF', 'spcnode.urls')
 
+# OFFLINE OSM
+MAP_BASELAYERS.append(
+    {
+        "source": {"ptype": "gxp_olsource"},
+        "type":"OpenLayers.Layer.WMS",
+        "name": "Offline OSM",
+        "group":"background",
+        "visibility": False,
+        "fixed": True,
+        "args":[
+            "Offline OSM",
+            GEOSERVER_PUBLIC_LOCATION+"wms",
+            {
+                "layers":["geonode:offline_osm_multipolygons"],
+                "format":"image/png",
+                "bgcolor":"0xb5d0d0",
+                "tiled": True
+            }
+            ]
+    }
+)
+# GOOGLE SATELLITE
+MAP_BASELAYERS.append(
+    {
+        "source": {
+            "ptype":"gxp_googlesource",
+            "apiKey": 'AIzaSyCU29B1mM_p5vBnys6v9EuEUIKKMknecHQ'
+            },
+        "group":"background",
+        "name":"SATELLITE",
+        "visibility": False,
+        "fixed": True,
+    }
+)
+
+# DEFAULT_MAP_BASELAYERS = [
+#     "OSM_Offline",
+#     "mapnik",
+#     "No background"
+# ]
+# DEFAULT_MAP_CENTER = (171.3526868,7.104533) # Majuro
+# DEFAULT_MAP_ZOOM = '11'
 
 
 # TEMPLATES["DIRS"] += ['../templates']
