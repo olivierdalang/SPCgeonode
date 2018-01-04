@@ -2,6 +2,8 @@ version: '3'
 
 services:
   postgres:
+    ports:
+      - "5432:5432"
     # volumes:
       # - ./volumes/database:/var/lib/postgresql/data # doesn't work because of ownership
   nginx:
@@ -19,10 +21,8 @@ services:
   # celery:
   #   volumes:
   #     - ./volumes/static:/spcnode-static
-  #     - ./volumes/media:/spcnode-media
-  postgres:
-    ports:
-      - "5432:5432"
+  #     - ./volumes/media:/spcnode-media      
+  geoserver:
     volumes:
       - ./volumes/geodatadir:/spcnode-geodatadir/
   # backuper:

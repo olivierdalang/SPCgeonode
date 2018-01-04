@@ -44,3 +44,15 @@ Nginx proxies to uwsgi (django) and geoserver. It also directly serves django st
 - TODO : allow setup superuser password/login and set geoserver admin password
 - TODO : optimise dockerfiles
 - TODO : reorganize folders : django as main, other services in subfolders
+- TODO : contribute back to geonode-project
+
+## Compared to Geonode project
+
+This is very similar to https://github.com/GeoNode/geonode-project but aims to be suitable for deployement.
+
+Key differences :
+
+- dockerfiles for nginx and geoserver are in same repo, since they need to be customized for a deployement
+- other services (postgres, elasticsearch, rabbit) images use a specific tag, so we know which one will be pulled, making 
+- settings imports from geonode.settings so most defaults don't need to be modified
+- geoserver starts with empty geodatadir. Geonode's entrypoint script ensures there is a geonode workspace initialized using REST API. (in geonode-project, initial data-dir is pulled from http://build.geonode.org/geoserver/latest/data-$GEOSERVER_VERSION.zip , see waybarrios/geoserver Docker image) 
