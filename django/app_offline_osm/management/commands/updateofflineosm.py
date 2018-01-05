@@ -15,6 +15,7 @@ from geoserver.catalog import Catalog
 from geonode.layers.models import Layer
 import app_offline_osm
 from datetime import datetime
+import traceback
 
 class Command(BaseCommand):
     """
@@ -35,39 +36,58 @@ class Command(BaseCommand):
 
         # This will keep track of timestamp of download
         self.import_timestamp = None
+        self.options = None
         
         super(Command, self).__init__(*args, **kwargs)
 
     def add_arguments(self, parser):
-        parser.add_argument('--source', default='overpass', choices=['overpass','pbf_and_shp'])
+        parser.add_argument('--source', default='overpass', choices=['overpass','pbf_and_shp'], help='Whether to get the data from an overpass query or from pbf/shp archives. Overpass should consume much less data as only required extent will be downloaded, but could fail for big extents..')
+        parser.add_argument('--no_overwrite', default="false", action='store_true', help='If this flag in enabled, downloads and importation steps will only be done if no data already exists. You can use this during app initialization to make sure data is present without forcing a redownload each time.')
+        parser.add_argument('--no_fail', default="false", action='store_true', help='If this flag in enabled, exceptions will be catched and exit code will always be 0')
         
         # TODO : add parameters to load from local data
 
     def handle(self, *args, **options):
 
-        Log.objects.create( message="Started updateofflineosm from source {}".format(options['source']), success=True )
+        self.options = options
         
-        # print('[Step 1] Downloading data')
-        # if options['source'] == 'overpass':
-        #     self.download_overpass()
-        # else:
-        #     self.download_shapefile()
-        #     self.download_osmxml()
+        if options['no_fail']:
+            try:
+                self._handle()
+            except Exception as e:
+                print('WARNING : updateofflineosm command failed with --no_fail because of following exception')
+                traceback.print_exc()
+                exit(0)
+        else:
+            self._handle()
 
-        self.import_timestamp = datetime.now()
+    def _handle(self):
 
-        # print('[Step 2] Importing data in postgis')
-        # if options['source'] == 'overpass':
-        #     self.import_overpass()
-        # else:
-        #     self.import_shapefile()
-        #     self.import_osmxml()
+        print('[UpdateOfflineOSM] Command called')
+
+        Log.objects.create( message="Started updateofflineosm from source {}".format(self.options['source']), success=True )
+        
+        print('[Step 1] Downloading data')
+        if self.options['source'] == 'overpass':
+            self.download_overpass()
+        else:
+            self.download_shapefile()
+            self.download_osmxml()
+
+        self.import_timestamp = datetime.now() # TODO : set this only if data was really downloaded, as it is used for metadata
+
+        print('[Step 2] Importing data in postgis')
+        if self.options['source'] == 'overpass':
+            self.import_overpass()
+        else:
+            self.import_shapefile()
+            self.import_osmxml()
 
         print('[Step 3] Adding the layers to Geoserver')
         self.add_to_geoserver()
 
-        print('[Step 4] Updating Geonode layers')
-        call_command('updatelayers', interactive=True)
+        # print('[Step 4] Updating Geonode layers')
+        # call_command('updatelayers', interactive=True)
 
         print('[Done !]')
 
@@ -110,8 +130,9 @@ class Command(BaseCommand):
             filename = url.split('/')[-1]
         filepath = os.path.join(self.download_dir,filename)
 
-        if not os.path.exists(filepath):
-            print('File does not exist, we download it...')
+        print('Downloading...')
+        if not os.path.exists(filepath) or not self.options['no_overwrite']:
+            print('File does not exist or no_overwrite unset, we download it...')
             urllib.urlretrieve(url, filepath, urlretrieve_output)
         else:
             # TODO : THIS IS ONLY FOR DEV, FILE SHOULD BE REDOWNLOADED BECAUSE IT IS AN UPDATE FUNCTION
@@ -119,8 +140,8 @@ class Command(BaseCommand):
 
         print('Unzipping...')
         if filename[-4:] == '.zip':
-            if not os.path.isdir(os.path.join(self.download_dir,filename[:-4])):
-                print('File is zipped, we unzip it...')
+            if not os.path.isdir(os.path.join(self.download_dir,filename[:-4])) or not self.options['no_overwrite']:
+                print('File is zipped or no_overwrite unset, we unzip it...')
                 # TODO : REMOVE ZIPS TO SAVE HARD DRIVE SPACE
                 zip_ref = zipfile.ZipFile(filepath, 'r')
                 zip_ref.extractall(self.download_dir)
@@ -145,12 +166,23 @@ class Command(BaseCommand):
         ogr_source = ogr.Open(os.path.join(self.download_dir,filename))
 
         for ogr_layer in ogr_source:
+            print('importing sublayer {}'.format(ogr_layer.GetName()))
 
             if len(ogr_source)==1:
+                full_table_name = table_name
                 full_table_name = self.schema_name+'.'+table_name
             else:
-                print('importing sublayer {}'.format(ogr_layer.GetName()))
-                full_table_name = self.schema_name+'.'+table_name+'_'+ogr_layer.GetName()
+                full_table_name = table_name+'_'+ogr_layer.GetName()
+
+            qulfd_table_name = self.schema_name+'.'+full_table_name
+
+            cursor = connection.cursor()
+            sql = 'SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema=%s AND table_name=%s)'
+            cursor.execute(sql, [self.schema_name,full_table_name])
+            layer_exists = cursor.fetchall()[0][0]       
+
+            if not layer_exists or not self.options['no_overwrite']:
+                print('Layer does not exists or no_overwrite unset, we import...')          
 
             if crop:
                 bbox = settings.OFFLINE_OSM_BBOX
@@ -167,10 +199,13 @@ class Command(BaseCommand):
 
                 ogr_layer.SetSpatialFilter(bbox_geom)
 
+                ogr_postgres_layer = ogrds.CopyLayer(ogr_layer,qulfd_table_name,['OGR_INTERLEAVED_READING=YES','OVERWRITE=YES'])
+            else:
+                print('Layer already exists, we skip...')   
 
-            ogr_postgres_layer = ogrds.CopyLayer(ogr_layer,full_table_name,['OGR_INTERLEAVED_READING=YES','OVERWRITE=YES'])
 
     def add_to_geoserver(self):
+        # Inspired (copied :) ) from https://groups.google.com/forum/#!msg/geonode-users/R-u57r8aECw/AuEpydZayfIJ # TODO : check license
         
         Log.objects.create( message="Started createbaselayers", success=True )
 
@@ -207,13 +242,11 @@ class Command(BaseCommand):
             ft.abstract = 'This is an automated extract of the OpenStreetMap database. It is available offline. It is intended to be used as a background layer, but the data can also server analysis purposes.'
             cat.save(ft)
 
-            
-
             print('adding the style for {}'.format(layername))
             # We get or create the workspace
             style_path = os.path.join(os.path.dirname(app_offline_osm.__file__),layername+'.sld')
             print(style_path)
-            cat.create_style(layername+'_style', open(style_path,'r').read(), overwrite=True, workspace=settings.DEFAULT_WORKSPACE)
+            cat.create_style(layername+'_style', open(style_path,'r').read(), overwrite=True, workspace=settings.DEFAULT_WORKSPACE, raw=True)
             
             style = cat.get_style(layername+'_style', ws)
             if style is None:
@@ -244,24 +277,27 @@ class Command(BaseCommand):
             if created:
                 layer.set_default_permissions()
 
-        # # We get or create the laygroup
-        # print('adding layergroup to geoserver')
-        # layername = 'offline_osm'
-        # layergroup = cat.get_layergroup(layername, workspace=settings.DEFAULT_WORKSPACE)
-        # if layergroup is None:
-        #     layergroup = cat.create_layergroup(layername, layers=layernames, workspace=settings.DEFAULT_WORKSPACE)
-        #     if layergroup is None:
-        #         raise Exception('unable to publish layer %s'%layername)
-        # layergroup.title = 'OpenStreetMap Offline'
-        # layergroup.abstract = 'This is an automated extract of the OpenStreetMap database. It is available offline. It is intended to be used as a background layer, but the data can also server analysis purposes.'
-        # cat.save(layergroup)
+        # We get or create the laygroup
+        print('adding layergroup to geoserver')
+        layername = 'offline_osm'
+        layergroup = cat.get_layergroup(layername, workspace=settings.DEFAULT_WORKSPACE)
+        if layergroup is None:
+            layergroup = cat.create_layergroup(layername, layers=layernames, workspace=settings.DEFAULT_WORKSPACE)
+            if layergroup is None:
+                raise Exception('unable to publish layer %s'%layername)
+        layergroup.title = 'OpenStreetMap Offline'
+        layergroup.abstract = 'This is an automated extract of the OpenStreetMap database. It is available offline. It is intended to be used as a background layer, but the data can also server analysis purposes.'
+        cat.save(layergroup)
 
+
+        # TODO : can we add layergroups to Geonode ?
+        print("laygroup won't be added to geonode (not supported yet)")
         # resource = layergroup
 
-        # # print('registering {} into geonode'.format(layername))          
-        # # resource = cat.get_resource(layername, store, ws)
-        # # if resource is None:
-        # #     raise Exception('resource not found (%s)'%layername)
+        # print('registering {} into geonode'.format(layername))          
+        # resource = cat.get_resource(layername, store, ws)
+        # if resource is None:
+        #     raise Exception('resource not found (%s)'%layername)
     
         # layer, created = Layer.objects.get_or_create(name=layername)
         # layer.workspace = ws.name
@@ -276,115 +312,3 @@ class Command(BaseCommand):
         # if created:
         #     layer.set_default_permissions()
 
-
-
-        """
-        def publishTable(layerName, epsg, style=None):
-   
-    if not epsg.startswith('EPSG:'): epsg = 'EPSG:'+epsg
-   
-    gsUrl = settings.OGC_SERVER['default']['LOCATION'] + "rest"
-    gsUser = settings.OGC_SERVER['default']['USER']
-    gsPassword = settings.OGC_SERVER['default']['PASSWORD']
-   
-    cat = Catalog(gsUrl, gsUser, gsPassword)   
-    if cat is None: raise GeonodeManagementError('unable to instantiate geoserver catalog')
-
-    ws = cat.get_workspace(settings.DEFAULT_WORKSPACE)
-    if ws is None: raise GeonodeManagementError('workspace %s not found in geoserver'%settings.DEFAULT_WORKSPACE)
-   
-    storeName = settings.OGC_SERVER['default']['DATASTORE']
-    store = cat.get_store(storeName, ws)
-    if store is None: raise GeonodeManagementError('workspace %s not found in geoserver'%storeName)
-   
-    ft = cat.publish_featuretype(layerName, store, epsg, srs=epsg)
-    if ft is None: raise GeonodeManagementError('unable to publish layer %s'%layerName)
-   
-    cat.save(ft)
-   
-    if style is not None:
-        publishing = cat.get_layer(layerName)
-        if publishing is None: raise GeonodeManagementError('layer not found (%s)'%layerName)
-        publishing.default_style = cat.get_style(style)
-        cat.save(publishing)
-   
-    resource = cat.get_resource(layerName, store, ws)
-    if resource is None: raise GeonodeManagementError('resource not found (%s)'%layerName)
-   
-    layer, created = Layer.objects.get_or_create(name=layerName, defaults={
-                    "workspace": ws.name,
-                    "store": store.name,
-                    "storeType": store.resource_type,
-                    "typename": "%s:%s" % (ws.name.encode('utf-8'), resource.name.encode('utf-8')),
-                    "title": resource.title or 'No title provided',
-                    "abstract": resource.abstract or 'No abstract provided',
-                    #"owner": owner,
-                    "uuid": str(uuid.uuid4()),
-                    "bbox_x0": Decimal(resource.latlon_bbox[0]),
-                    "bbox_x1": Decimal(resource.latlon_bbox[1]),
-                    "bbox_y0": Decimal(resource.latlon_bbox[2]),
-                    "bbox_y1": Decimal(resource.latlon_bbox[3])
-                })
-   
-    set_attributes(layer, overwrite=True)
-   
-    if created: layer.set_default_permissions()
-    """
-        
-        # # TODO : use from geoserver.catalog import Catalog instead of REST API (see https://groups.google.com/forum/#!msg/geonode-users/R-u57r8aECw/AuEpydZayfIJ)
-
-        # print('creating datastore')
-        # res = requests.post(
-        #     rest_endpoint + '/workspaces/geonode/datastores',
-        #     auth=('admin', 'geoserver'), # TODO : set this
-        #     data=self.datastore_xml.format(datastore_name=self.datastore_name),
-        #     headers={'Content-type':'text/xml'}
-        # )
-        # if res.status_code==500 and res.text == "Store 'offline_osm' already exists in workspace 'geonode'":
-        #     print('datastore already exists')
-        # else:
-        #     res.raise_for_status()
-        #     print('datastore successfully created')
-
-
-        # for layername in ['offline_osm_lines','offline_osm_multipolygons','offline_osm_multilinestrings','offline_osm_points']:
-        #     print('creating layer {}'.format(layername))
-        #     res = requests.post(
-        #         rest_endpoint + '/workspaces/geonode/datastores/offline_osm/featuretypes?recalculate=nativebbox,latlonbbox',
-        #     auth=('admin', 'geoserver'), # TODO : set this
-        #         data=self.featuretype_xml.format(layername=layername),
-        #         headers={'Content-type':'text/xml'}
-        #     )
-        #     if res.status_code==500 and res.text == "Resource named '{}' already exists in store: 'offline_osm'".format(layername):
-        #         print('layer already exists')
-        #     else:
-        #         res.raise_for_status()
-        #         print('layer successfully created')
-
-    datastore_xml = '''
-        <dataStore>
-            <name>{datastore_name}</name>
-            <connectionParameters>
-                <host>postgres</host>
-                <port>5432</port>
-                <database>postgres</database>
-                <schema>offline_osm</schema>
-                <user>postgres</user>
-                <passwd>postgres</passwd>
-                <dbtype>postgis</dbtype>
-            </connectionParameters>
-        </dataStore>'''
-
-    featuretype_xml = '''
-        <featureType>
-            <name>{layername}</name>
-            <nativeName>{layername}</nativeName>
-            <title>{layername}</title>
-            <keywords>
-                <string>features</string>
-                <string>{layername}</string>
-            </keywords>
-            <srs>EPSG:4326</srs>
-            <projectionPolicy>FORCE_DECLARED</projectionPolicy>
-            <enabled>true</enabled>
-        </featureType>'''

@@ -56,3 +56,9 @@ Key differences :
 - other services (postgres, elasticsearch, rabbit) images use a specific tag, so we know which one will be pulled, making 
 - settings imports from geonode.settings so most defaults don't need to be modified
 - geoserver starts with empty geodatadir. Geonode's entrypoint script ensures there is a geonode workspace initialized using REST API. (in geonode-project, initial data-dir is pulled from http://build.geonode.org/geoserver/latest/data-$GEOSERVER_VERSION.zip , see waybarrios/geoserver Docker image) 
+
+## WIP
+
+- get styles to load properly
+- fix recurring URL errors in geoserver
+- ...

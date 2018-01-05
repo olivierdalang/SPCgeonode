@@ -20,10 +20,6 @@ echo "import sys,time,psycopg2\nfrom spcnode.settings import DATABASE_URL\nwhile
 printf '\nRunning migrations\n'
 python manage.py migrate --noinput
 
-# Load fixtures
-printf '\nLoading initial data\n'
-python manage.py loaddata initial_data
-
 # Collect static
 printf '\nRunning collectstatic\n'
 python manage.py collectstatic --noinput
@@ -33,10 +29,19 @@ printf '\nCreating superuser\n'
 # TODO : fix login
 echo "import os, django\nos.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spcnode.settings')\ndjango.setup()\nfrom geonode.people.models import Profile\ntry:\n  user = Profile.objects.create_superuser('super','admin@test.com','duper')\n  print('superuser successfully created')\nexcept django.db.IntegrityError as e:\n  print('superuser exists already')" | python
 
+# Load fixtures
+printf '\nLoading initial data\n'
+python manage.py loaddata initial_data
+
 # Initialize Geoserver (this waits for geonode and creates the geonode workspace if it doesn't exist)
 printf '\nWaiting for geoserver rest endpoint and creating workspace if needed\n'
 # TODO : workspace name is DEFAULT_WORKSPACE
-curl -u admin:geoserver -o /dev/null -s -X POST -H "Content-type: text/xml" -d "<workspace><name>geonode</name></workspace>" --retry 100000 --retry-connrefused --retry-delay 5 http://nginx/geoserver/rest/workspaces
+curl -u admin:geoserver -o /dev/null -X POST -H "Content-type: text/xml" -d "<workspace><name>geonode</name></workspace>" --retry 100000 --retry-connrefused --retry-delay 5 http://nginx/geoserver/rest/workspaces
+
+# Load fixtures
+printf '\nInitialize offline osm data\n'
+python manage.py updateofflineosm --no_overwrite --no_fail
+
 
 printf '\n--- END Django Docker Entrypoint ---\n\n'
 

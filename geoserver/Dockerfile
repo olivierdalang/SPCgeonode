@@ -18,6 +18,11 @@ RUN wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.1/ex
 RUN unzip geoserver-2.12.1-printing-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
 RUN rm geoserver-2.12.1-printing-plugin.zip
 
+# Download geonode module
+RUN wget http://build.geonode.org/geoserver/latest/geonode-geoserver-ext-2.12.x-geoserver-plugin.zip
+RUN unzip geonode-geoserver-ext-2.12.x-geoserver-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
+RUN rm geonode-geoserver-ext-2.12.x-geoserver-plugin.zip
+
 # Setup workdir
 WORKDIR /geoserver-2.12.1/
 
