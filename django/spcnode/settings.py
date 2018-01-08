@@ -1,5 +1,7 @@
 import os
 from geonode.settings import *
+from datetime import timedelta
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -11,8 +13,6 @@ SPCNODE_APPS = (
     'app_customization_sample',
 
     'geonode_offlineosm',
-
-    'django_celery_results',
     
     'overextends', # we use this to be able to override templates still extending the parent template
 )
@@ -20,13 +20,19 @@ SPCNODE_APPS = (
 INSTALLED_APPS = SPCNODE_APPS + INSTALLED_APPS 
 
 
-OFFLINE_OSM_UPDATE_INTERVAL = 1
+
+OFFLINE_OSM_UPDATE_INTERVAL = 5 # TODO : remove this
 OFFLINE_OSM_DATA_DIR = '/spcnode-media/urlretrieve/' # TODO : remove this ?
 
 CELERY_IMPORTS = CELERY_IMPORTS + ('geonode_offlineosm.tasks',)
-CELERY_RESULT_BACKEND = 'django-db'
-
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+CELERYBEAT_SCHEDULE = {
+    'update_offline_osm': {
+        'task': 'geonode_offlineosm.tasks.update_offline_osm',
+        'schedule': timedelta(minutes=OFFLINE_OSM_UPDATE_INTERVAL),
+        # 'args': (16, 16)
+    },
+}
+CELERY_ALWAYS_EAGER = False
 
 
 # Because of https://github.com/GeoNode/geonode/issues/3520 we need to manually add our templates/static folders so that they can override static files/templatest

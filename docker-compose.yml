@@ -47,7 +47,12 @@ services:
       - media:/spcnode-media
     depends_on:
       - django
+    # entrypoint: ["/spcnode/docker-entrypoint.sh"]
+    # command: ["uwsgi", "--chdir=/spcnode", "--module=spcnode.wsgi", "--socket=:8000", "--processes=5"]
+    # command: ["celery", "worker", "--app=geonode.celery_app:app", "-B", "-l", "INFO"]
+    entrypoint: ["/spcnode/docker-entrypoint.sh"]
     command: ["celery", "worker", "--app=geonode.celery_app:app", "-B", "-l", "INFO"]
+    # command: ["ls", "."]
 
   geoserver:
     image: spcnode/geoserver:latest # TODO : versionize

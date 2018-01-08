@@ -1,0 +1,5 @@
+TODO
+
+geodatadir-template is taken from data-2.12.x (from geonode builds)
+
+It contains OAuth2 secret and master password. Those should be modified !!!

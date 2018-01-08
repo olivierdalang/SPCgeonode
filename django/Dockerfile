@@ -19,6 +19,12 @@ RUN rm /requirements.txt
 # TODO : move this to top
 RUN apt-get install -y curl
 
+# TODO : remove this
+RUN apt-get install -y git
+ADD ./requirements2.txt /requirements2.txt
+RUN pip install -r /requirements2.txt
+RUN rm /requirements2.txt
+
 # 5. Add the application
 RUN mkdir /spcnode
 WORKDIR /spcnode/
