@@ -24,7 +24,7 @@
     <layer-tree-layer providerKey="wms" name="OpenStreetMap" expanded="0" checked="Qt::Unchecked" source="crs=EPSG:3857&amp;format&amp;type=xyz&amp;url=http://a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&amp;zmax=19&amp;zmin=0" id="OpenStreetMap_b693e892_1f89_4974_8e87_c3bb5f62fd51">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer providerKey="postgres" name="Offline Osm Points" expanded="1" checked="Qt::Unchecked" source="dbname='postgres' host=127.0.0.1 port=5432 sslmode=disable authcfg=ck95m7p key='ogc_fid' srid=4326 type=Point table=&quot;offline_osm&quot;.&quot;offline_osm_points&quot; (wkb_geometry) sql=" id="Offline_Osm_Points_7010787d_7d88_4580_967b_dcfec8758d42">
+    <layer-tree-layer providerKey="postgres" name="Offline Osm Points" expanded="1" checked="Qt::Checked" source="dbname='postgres' host=127.0.0.1 port=5432 sslmode=disable authcfg=ck95m7p key='ogc_fid' srid=4326 type=Point table=&quot;offline_osm&quot;.&quot;offline_osm_points&quot; (wkb_geometry) sql=" id="Offline_Osm_Points_7010787d_7d88_4580_967b_dcfec8758d42">
       <customproperties/>
     </layer-tree-layer>
     <layer-tree-layer providerKey="postgres" name="Offline Osm Lines" expanded="1" checked="Qt::Checked" source="dbname='postgres' host=127.0.0.1 port=5432 sslmode=disable authcfg=ck95m7p key='ogc_fid' srid=4326 type=LineString table=&quot;offline_osm&quot;.&quot;offline_osm_lines&quot; (wkb_geometry) sql=" id="Offline_Osm_Lines_b2f6d472_0151_40a0_8a71_3ba4d5a20f5c">
@@ -59,10 +59,10 @@
   <mapcanvas name="theMapCanvas" annotationsVisible="1">
     <units>degrees</units>
     <extent>
-      <xmin>178.29062900456878538</xmin>
-      <ymin>-18.17715445736350333</ymin>
-      <xmax>178.59565672788116331</xmax>
-      <ymax>-18.00155054608287131</ymax>
+      <xmin>178.32785326936567571</xmin>
+      <ymin>-18.17698912923147603</ymin>
+      <xmax>178.63288099267805364</xmax>
+      <ymax>-18.00138521795084401</ymax>
     </extent>
     <rotation>0</rotation>
     <destinationsrs>
@@ -90,9 +90,9 @@
         <legendlayerfile isInOverview="0" layerid="OpenStreetMap_b693e892_1f89_4974_8e87_c3bb5f62fd51" visible="0"/>
       </filegroup>
     </legendlayer>
-    <legendlayer open="true" name="Offline Osm Points" checked="Qt::Unchecked" showFeatureCount="0" drawingOrder="-1">
+    <legendlayer open="true" name="Offline Osm Points" checked="Qt::Checked" showFeatureCount="0" drawingOrder="-1">
       <filegroup open="true" hidden="false">
-        <legendlayerfile isInOverview="0" layerid="Offline_Osm_Points_7010787d_7d88_4580_967b_dcfec8758d42" visible="0"/>
+        <legendlayerfile isInOverview="0" layerid="Offline_Osm_Points_7010787d_7d88_4580_967b_dcfec8758d42" visible="1"/>
       </filegroup>
     </legendlayer>
     <legendlayer open="true" name="Offline Osm Lines" checked="Qt::Checked" showFeatureCount="0" drawingOrder="-1">

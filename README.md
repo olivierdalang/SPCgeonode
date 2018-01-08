@@ -6,7 +6,7 @@ The setup should be usable for production.
 
 ## Usage
 
-For **developpement** (this will mount django source, static and media in the volumes folder, set debug=True, set uwsgi to live reload, expose postgres port 5432 and mount geoserver's data volume):
+For **developpement** (this will mount django source, static and media in the volumes folder, set debug=True, set uwsgi to live reload, expose postgres port 5432, activates nginx debug mode and mount geoserver's data volume):
 
 ```
 docker-compose -f docker-compose.yml -f docker-compose-dev.yml up -d --build
@@ -59,6 +59,5 @@ Key differences :
 
 ## WIP
 
-- get styles to load properly
-- fix recurring URL errors in geoserver
-- ...
+- get auth django<=>geoserver either through OAuth2 (looks complicated) or through database level (looks even worse)
+- end offline_osm integration (mainly make periodic celery tasks work and cleanup import (from git instead of local volume thing)

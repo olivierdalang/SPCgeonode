@@ -9,12 +9,25 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 # Apps that should be prepended to INSTALLED APPS
 SPCNODE_APPS = (
     'app_customization_sample',
-    'app_offline_osm',
+
+    'geonode_offlineosm',
+
+    'django_celery_results',
     
     'overextends', # we use this to be able to override templates still extending the parent template
 )
 
 INSTALLED_APPS = SPCNODE_APPS + INSTALLED_APPS 
+
+
+OFFLINE_OSM_UPDATE_INTERVAL = 1
+OFFLINE_OSM_DATA_DIR = '/spcnode-media/urlretrieve/' # TODO : remove this ?
+
+CELERY_IMPORTS = CELERY_IMPORTS + ('geonode_offlineosm.tasks',)
+CELERY_RESULT_BACKEND = 'django-db'
+
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
 
 # Because of https://github.com/GeoNode/geonode/issues/3520 we need to manually add our templates/static folders so that they can override static files/templatest
 for app in reversed(SPCNODE_APPS):
