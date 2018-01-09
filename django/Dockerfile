@@ -11,19 +11,16 @@ RUN pip install uwsgi
 # 3. Manually install python gdal (for some reason pip install gdal doesn't work out of the box)
 RUN CPLUS_INCLUDE_PATH=/usr/include/gdal C_INCLUDE_PATH=/usr/include/gdal pip install GDAL==2.0.1
 
+# TODO : move this to top
+RUN apt-get install -y curl
+
 # 4. Install python dependencies
+# TODO : remove git once we don't need git for pip installs anymore
+RUN apt-get install -y git
 ADD ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 RUN rm /requirements.txt
 
-# TODO : move this to top
-RUN apt-get install -y curl
-
-# TODO : remove this
-RUN apt-get install -y git
-ADD ./requirements2.txt /requirements2.txt
-RUN pip install -r /requirements2.txt
-RUN rm /requirements2.txt
 
 # 5. Add the application
 RUN mkdir /spcnode

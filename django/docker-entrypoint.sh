@@ -6,17 +6,9 @@ set -e
 printf '\n--- START Django Docker Entrypoint ---\n\n'
 
 
-# TODO : move to requirements.txt (once the app is published)
-# pip install git+https://github.com/PacificCommunity/geonode_offlineosm.git@master
-pip install -e /offlineosm/
+# DEV : use installed geonode_offlineosm python library
+# pip install -e /offlineosm/
 
-
-# Initializing Django
-
-# disabled, you have to rebuild when we change requirements
-# # Install the migrations (in case requirements.txt changed but the image was not rebuilt)
-# printf '\nInstalling python requirements\n'
-# pip install -r /spcnode/requirements.txt
 
 # Wait for postgres
 printf '\nWaiting for postgres...\n'

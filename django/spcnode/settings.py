@@ -11,7 +11,7 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 SPCNODE_APPS = (
     'app_customization_sample',
 
-    'geonode_offlineosm',
+    # 'geonode_offlineosm',
     
     'overextends', # we use this to be able to override templates still extending the parent template
 )
@@ -24,7 +24,7 @@ OFFLINE_OSM_UPDATE_INTERVAL = 1 # TODO : remove this
 OFFLINE_OSM_DATA_DIR = '/spcnode-media/urlretrieve/' # TODO : remove this ?
 OFFLINE_OSM_UPDATE_AFTER_MIGRATE = False
 
-CELERY_IMPORTS = CELERY_IMPORTS + ('geonode_offlineosm.tasks',)
+# CELERY_IMPORTS = CELERY_IMPORTS + ('geonode_offlineosm.tasks',)
 CELERY_ALWAYS_EAGER = False
 
 

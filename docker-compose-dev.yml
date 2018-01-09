@@ -7,7 +7,6 @@ services:
     # volumes:
       # - ./volumes/database:/var/lib/postgresql/data # doesn't work because of ownership
   nginx:
-    # command: [nginx-debug, '-g', 'daemon off;']
     volumes:
       - ./volumes/static:/spcnode-static
       - ./volumes/media:/spcnode-media
@@ -18,14 +17,14 @@ services:
       - './django:/spcnode'
       - ./volumes/static:/spcnode-static
       - ./volumes/media:/spcnode-media
-      - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # TODO : remove this (once geonode-offlineosm is in pypi)
+      # - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # DEV : use local geonode_offlineosm library
     command: ["uwsgi", "--chdir=/spcnode", "--module=spcnode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcnode.settings", "--socket=:8000", "--py-autoreload=2"]
   celery:
     volumes:
       - './django:/spcnode'
       - ./volumes/static:/spcnode-static
       - ./volumes/media:/spcnode-media      
-      - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # TODO : remove this (once geonode-offlineosm is in pypi)
+      # - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # DEV : use local geonode_offlineosm library
   geoserver:
     volumes:
       - ./volumes/geodatadir:/spcnode-geodatadir/
