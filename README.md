@@ -6,7 +6,14 @@ The setup should be usable for production.
 
 ## Usage
 
-For **developpement** (this will mount django source, static and media in the volumes folder, set debug=True, set uwsgi to live reload, expose postgres port 5432, activates nginx debug mode and mount geoserver's data volume):
+For **developpement** which will :
+- mount django source as volume and set uwsgi to live reload
+- mount django static and media in the volumes folder
+- mount geoserver's data volume in the volumes folder
+- set django debug=True
+- expose postgres port 5432
+- activates nginx debug mode
+- run celery using djcelery (so that output goes to admin) 
 
 ```
 docker-compose -f docker-compose.yml -f docker-compose-dev.yml up -d --build
@@ -43,7 +50,7 @@ Nginx proxies to uwsgi (django) and geoserver. It also directly serves django st
 - TODO : clean Dockerfiles to make lighter images
 - TODO : allow setup superuser password/login and set geoserver admin password
 - TODO : optimise dockerfiles
-- TODO : reorganize folders : django as main, other services in subfolders
+- TODO : reorganize folders : django as main, other services in subfolders ?
 - TODO : contribute back to geonode-project
 
 ## Compared to Geonode project
