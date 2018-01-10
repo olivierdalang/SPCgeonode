@@ -14,6 +14,7 @@ For **developpement** which will :
 - expose postgres port 5432
 - activates nginx debug mode
 - run celery using djcelery (so that output goes to admin) 
+- use defaults secrets from /dev/secrets
 
 ```
 docker-compose up -d --build
