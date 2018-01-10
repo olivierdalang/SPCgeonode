@@ -21,12 +21,15 @@ services:
     command: ["uwsgi", "--chdir=/spcnode", "--module=spcnode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcnode.settings", "--socket=:8000", "--py-autoreload=2"]
   celery:
     volumes:
-      - './django:/spcnode'
-      - ./volumes/static:/spcnode-static
-      - ./volumes/media:/spcnode-media      
+      - './django:/spcnode'    
       - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # DEV : use local geonode_offlineosm library
-    command: ["python", "manage.py", "celery", "worker", "--app=geonode.celery_app:app", "-B", "-l", "INFO"]
-     
+    entrypoint: ["/spcnode/docker-entrypoint-celery.sh"]
+  celerycam:
+    volumes:
+      - './django:/spcnode'    
+      - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # DEV : use local geonode_offlineosm library
+    entrypoint: ["/spcnode/docker-entrypoint-celery.sh"]
+
   geoserver:
     volumes:
       - ./volumes/geodatadir:/spcnode-geodatadir/

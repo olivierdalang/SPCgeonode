@@ -3,3 +3,5 @@ Thumbs.db
 volumes/*
 !volumes/.gitkeep
 *~
+celerybeat-schedule
+celeryev.pid

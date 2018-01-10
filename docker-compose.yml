@@ -3,6 +3,7 @@ version: '3'
 services:
 
   postgres:
+    # Vanilla PostGIS database.
     image: mdillon/postgis:9.6-alpine
     volumes:
       - database:/var/lib/postgresql/data 
@@ -11,9 +12,11 @@ services:
   #   image: elasticsearch:5.6
 
   rabbitmq:
+    # Vanilla RabbitMQ service. This is needed by celery
     image: rabbitmq:3.7
   
   nginx:
+    # Nginx is serving django static and media files and proxies to django and geonode
     image: spcnode/nginx:latest # TODO : versionize
     build: ./nginx/
     ports:
@@ -26,6 +29,7 @@ services:
       - media:/spcnode-media
 
   django:
+    # This is our custom django application. It includes Geonode.
     image: spcnode/django:latest # TODO : versionize
     build: ./django/
     env_file:
@@ -39,17 +43,25 @@ services:
     command: ["uwsgi", "--chdir=/spcnode", "--module=spcnode.wsgi", "--socket=:8000", "--processes=5"]
     
   celery:
+    # This is the celery worker that executes celery tasks created by Django.
     image: spcnode/django:latest # TODO : versionize
     env_file:
       - ./django/docker-compose.env
-    volumes:
-      - static:/spcnode-static
-      - media:/spcnode-media
     depends_on:
       - django
-    command: ["celery", "worker", "--app=geonode.celery_app:app", "-B", "-l", "INFO"]
+    command: 'python manage.py celery worker --app=geonode.celery_app:app -B -E -l INFO'
+
+  celerycam:
+    # This is the celery camera that monitors celery tasks and populate the djcelery django admin interface
+    image: spcnode/django:latest # TODO : versionize
+    env_file:
+      - ./django/docker-compose.env
+    depends_on:
+      - django
+    command: 'python manage.py celerycam'
 
   geoserver:
+    # This is the geoserver backend required by geonode.
     image: spcnode/geoserver:latest # TODO : versionize
     build: ./geoserver/
     env_file:

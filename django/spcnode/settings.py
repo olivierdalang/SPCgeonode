@@ -24,13 +24,16 @@ ADDITIONNAL_INSTALLED_APPS = ('app_customization_sample','overextends',)
 ADDITIONNAL_INSTALLED_APPS += ('geonode_offlineosm',)
 
 # Config
-OFFLINE_OSM_UPDATE_INTERVAL = 10 # TODO : remove this
-OFFLINE_OSM_DATA_DIR = '/spcnode-media/urlretrieve/' # TODO : remove this ?
+OFFLINE_OSM_UPDATE_INTERVAL = 3 # TODO : remove this
+# OFFLINE_OSM_DATA_DIR = '/spcnode-media/urlretrieve/' # TODO : remove this ?
 OFFLINE_OSM_UPDATE_AFTER_MIGRATE = True
 
 # Celery tasks
+CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
 CELERY_IMPORTS = CELERY_IMPORTS + ('geonode_offlineosm.tasks',)
 CELERY_ALWAYS_EAGER = False
+import djcelery
+djcelery.setup_loader()
 
 ##################################
 # Geonode Offline OSM
