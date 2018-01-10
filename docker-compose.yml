@@ -1,4 +1,13 @@
-version: '3'
+version: '3.1'
+
+# TODO : replace olivierdalang repository by pacificcommunity
+secrets:
+  geonode_admin_username:
+    external: true
+  geonode_admin_email:
+    external: true
+  geonode_admin_password:
+    external: true
 
 services:
 
@@ -39,6 +48,10 @@ services:
       - media:/spcgeonode-media
     depends_on:
       - postgres
+    secrets:
+      - geonode_admin_username
+      - geonode_admin_email
+      - geonode_admin_password
     entrypoint: ["/spcgeonode/docker-entrypoint.sh"]
     command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--socket=:8000", "--processes=5"]
     

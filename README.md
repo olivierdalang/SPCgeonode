@@ -22,7 +22,12 @@ docker-compose -f docker-compose.yml -f docker-compose-dev.yml up -d --build
 For **production** :
 
 ```
-docker-compose up -d # TODO : test this... # TODO : use swarm ?
+# 0. Create secrets (for each file in dev/secrets)
+echo "mysecret" | docker secret create geonode_admin_username -
+# 1. Create a swarm
+docker swarm init
+# 2. Deploy the stack
+docker stack deploy spcgeonode --compose-file docker-compose.yml
 ```
 
 To see logs, use `docker-compose logs` or that practical `docker-log.bat` script that opens a separate window for each service.

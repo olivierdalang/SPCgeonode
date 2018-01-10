@@ -39,7 +39,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spcgeonode.settings')\n\
 django.setup()\n\
 from geonode.people.models import Profile\n\
 try:\n\
-  user = Profile.objects.create_superuser('super','admin@test.com','duper')\n\
+  user = Profile.objects.create_superuser(open('/run/secrets/geonode_admin_username','r').read(),open('/run/secrets/geonode_admin_email','r').read(),open('/run/secrets/geonode_admin_password','r').read())\n\
   print('superuser successfully created')\n\
 except django.db.IntegrityError as e:\n\
   print('superuser exists already')" | python -u

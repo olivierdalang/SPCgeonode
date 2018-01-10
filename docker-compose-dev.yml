@@ -1,4 +1,15 @@
-version: '3'
+version: '3.1'
+
+secrets:
+  geonode_admin_username:
+    file: dev/secrets/geonode_admin_username
+    external: false
+  geonode_admin_email:
+    file: dev/secrets/geonode_admin_email
+    external: false
+  geonode_admin_password:
+    file: dev/secrets/geonode_admin_password
+    external: false
 
 services:
   postgres:
