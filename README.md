@@ -16,7 +16,7 @@ For **developpement** which will :
 - run celery using djcelery (so that output goes to admin) 
 
 ```
-docker-compose -f docker-compose.yml -f docker-compose-dev.yml up -d --build
+docker-compose up -d --build
 ```
 
 For **production** :
