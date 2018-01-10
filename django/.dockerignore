@@ -1,0 +1,6 @@
+*.pyc
+Thumbs.db
+
+# We ignore celery artifacts (as they may be added when volume is mounted, then cause startup errors because celery thinks it's running already)
+celerybeat-schedule
+celeryev.pid

@@ -58,6 +58,7 @@ Nginx proxies to uwsgi (django) and geoserver. It also directly serves django st
 When you want to publish the changes, use
 
 ```
+docker login
 docker-compose push
 ```
 
