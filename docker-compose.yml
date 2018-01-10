@@ -16,13 +16,25 @@ services:
     image: mdillon/postgis:9.6-alpine
     volumes:
       - database:/var/lib/postgresql/data 
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - default-net
 
   # elasticsearch:
   #   image: elasticsearch:5.6
 
   rabbitmq:
     # Vanilla RabbitMQ service. This is needed by celery
-    image: rabbitmq:3.7
+    image: rabbitmq:3.7 
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - default-net
   
   nginx:
     # Nginx is serving django static and media files and proxies to django and geonode
@@ -35,7 +47,13 @@ services:
       - geoserver
     volumes:
       - static:/spcgeonode-static
-      - media:/spcgeonode-media
+      - media:/spcgeonode-media 
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - default-net
 
   django:
     # This is our custom django application. It includes Geonode.
@@ -51,9 +69,15 @@ services:
     secrets:
       - geonode_admin_username
       - geonode_admin_email
-      - geonode_admin_password
+      - geonode_admin_password 
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
     entrypoint: ["/spcgeonode/docker-entrypoint.sh"]
     command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--socket=:8000", "--processes=5"]
+    networks:
+      - default-net
     
   celery:
     # This is the celery worker that executes celery tasks created by Django.
@@ -61,8 +85,14 @@ services:
     env_file:
       - ./django/docker-compose.env
     depends_on:
-      - django
+      - django 
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
     command: 'python manage.py celery worker --app=geonode.celery_app:app -B -E -l INFO'
+    networks:
+      - default-net
 
   celerycam:
     # This is the celery camera that monitors celery tasks and populate the djcelery django admin interface
@@ -70,8 +100,14 @@ services:
     env_file:
       - ./django/docker-compose.env
     depends_on:
-      - django
+      - django 
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
     command: 'python manage.py celerycam'
+    networks:
+      - default-net
 
   geoserver:
     # This is the geoserver backend required by geonode.
@@ -82,7 +118,13 @@ services:
     volumes:
       - geodatadir:/spcgeonode-geodatadir/
     depends_on:
-      - postgres
+      - postgres 
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - default-net
 
   # backuper:
   #   image: olivierdalang/spcgeonode-backuper:latest # TODO : versionize
@@ -90,10 +132,32 @@ services:
   #   volumes:
   #     - database:/tobackup/spcgeonode-database
   #     - media:/tobackup/spcgeonode-media
-  #     - geodatadir:/tobackup/spcgeonode-geodatadir
+  #     - geodatadir:/tobackup/spcgeonode-geodatadir 
+  #   deploy:
+  #     replicas: 1
+  #     restart_policy:
+  #       condition: on-failure
+  #   networks:
+  #     - default-net
+
+  # visualizer:
+  #   image: dockersamples/visualizer:stable
+  #   ports:
+  #     - "8080:8080"
+  #   # volumes:
+  #   #   - "/var/run/docker.sock:/var/run/docker.sock"
+  #   deploy:
+  #     placement:
+  #       constraints: [node.role == manager]
+  #   networks:
+  #     - default-net
 
 volumes:
   static:
   media:
   database:
   geodatadir:
+
+
+networks:
+   default-net:
