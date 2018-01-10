@@ -1,6 +1,6 @@
-# SPCNode
+# spcgeonode
 
-SPCNode is a skeletton for Geonode deployement at SPC. It makes it easy to deploy a customized version of Geonode.
+spcgeonode is a skeletton for Geonode deployement at SPC. It makes it easy to deploy a customized version of Geonode.
 
 The setup should be usable for production.
 
@@ -52,6 +52,14 @@ Nginx proxies to uwsgi (django) and geoserver. It also directly serves django st
 - TODO : optimise dockerfiles
 - TODO : reorganize folders : django as main, other services in subfolders ?
 - TODO : contribute back to geonode-project
+
+## Publish
+
+When you want to publish the changes, use
+
+```
+docker-compose push
+```
 
 ## Compared to Geonode project
 

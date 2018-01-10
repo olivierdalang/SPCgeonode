@@ -7,11 +7,11 @@ printf '\n--- START Geoserver Docker Entrypoint ---\n'
 
 # Run migrations
 printf '\nInitializing data dir\n'
-if test "$(ls -A "/spcnode-geodatadir/")"; then
+if test "$(ls -A "/spcgeonode-geodatadir/")"; then
     printf 'Geodatadir not empty, skipping initialization...\n'
 else
     printf 'Geodatadir empty, we copy the files...\n'
-    cp -R /geodatadir-template/* /spcnode-geodatadir/
+    cp -R /geodatadir-template/* /spcgeonode-geodatadir/
 fi
 
 printf '\n--- END Geoserver Docker Entrypoint ---\n\n'

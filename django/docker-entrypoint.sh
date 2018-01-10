@@ -13,7 +13,7 @@ pip install -e /offlineosm/
 # Wait for postgres
 printf '\nWaiting for postgres...\n'
 printf "import sys,time,psycopg2\n\
-from spcnode.settings import DATABASE_URL\n\
+from spcgeonode.settings import DATABASE_URL\n\
 while 1:\n\
   try:\n\
     psycopg2.connect(DATABASE_URL)\n\
@@ -35,7 +35,7 @@ python manage.py collectstatic --noinput
 printf '\nCreating superuser...\n'
 # TODO : fix login
 printf "import os, django\n\
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spcnode.settings')\n\
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spcgeonode.settings')\n\
 django.setup()\n\
 from geonode.people.models import Profile\n\
 try:\n\

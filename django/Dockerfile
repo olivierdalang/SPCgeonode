@@ -23,8 +23,8 @@ RUN rm /requirements.txt
 
 
 # 5. Add the application
-RUN mkdir /spcnode
-WORKDIR /spcnode/
-ADD . /spcnode/
+RUN mkdir /spcgeonode
+WORKDIR /spcgeonode/
+ADD . /spcgeonode/
 
 EXPOSE 8000

@@ -6,7 +6,7 @@ from geonode.settings import *
 # Basic config
 ##################################
 
-ROOT_URLCONF = os.getenv('ROOT_URLCONF', 'spcnode.urls')
+ROOT_URLCONF = os.getenv('ROOT_URLCONF', 'spcgeonode.urls')
 
 ##################################
 # Customization sample
@@ -25,7 +25,7 @@ ADDITIONNAL_INSTALLED_APPS += ('geonode_offlineosm',)
 
 # Config
 OFFLINE_OSM_UPDATE_INTERVAL = 3 # TODO : remove this
-# OFFLINE_OSM_DATA_DIR = '/spcnode-media/urlretrieve/' # TODO : remove this ?
+# OFFLINE_OSM_DATA_DIR = '/spcgeonode-media/urlretrieve/' # TODO : remove this ?
 OFFLINE_OSM_UPDATE_AFTER_MIGRATE = True
 
 # Celery tasks

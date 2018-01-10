@@ -17,7 +17,7 @@ services:
   
   nginx:
     # Nginx is serving django static and media files and proxies to django and geonode
-    image: spcnode/nginx:latest # TODO : versionize
+    image: spcgeonode/nginx:latest # TODO : versionize
     build: ./nginx/
     ports:
       - "80:80"
@@ -25,26 +25,26 @@ services:
       - django
       - geoserver
     volumes:
-      - static:/spcnode-static
-      - media:/spcnode-media
+      - static:/spcgeonode-static
+      - media:/spcgeonode-media
 
   django:
     # This is our custom django application. It includes Geonode.
-    image: spcnode/django:latest # TODO : versionize
+    image: spcgeonode/django:latest # TODO : versionize
     build: ./django/
     env_file:
       - ./django/docker-compose.env
     volumes:
-      - static:/spcnode-static
-      - media:/spcnode-media
+      - static:/spcgeonode-static
+      - media:/spcgeonode-media
     depends_on:
       - postgres
-    entrypoint: ["/spcnode/docker-entrypoint.sh"]
-    command: ["uwsgi", "--chdir=/spcnode", "--module=spcnode.wsgi", "--socket=:8000", "--processes=5"]
+    entrypoint: ["/spcgeonode/docker-entrypoint.sh"]
+    command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--socket=:8000", "--processes=5"]
     
   celery:
     # This is the celery worker that executes celery tasks created by Django.
-    image: spcnode/django:latest # TODO : versionize
+    image: spcgeonode/django:latest # TODO : versionize
     env_file:
       - ./django/docker-compose.env
     depends_on:
@@ -53,7 +53,7 @@ services:
 
   celerycam:
     # This is the celery camera that monitors celery tasks and populate the djcelery django admin interface
-    image: spcnode/django:latest # TODO : versionize
+    image: spcgeonode/django:latest # TODO : versionize
     env_file:
       - ./django/docker-compose.env
     depends_on:
@@ -62,22 +62,22 @@ services:
 
   geoserver:
     # This is the geoserver backend required by geonode.
-    image: spcnode/geoserver:latest # TODO : versionize
+    image: spcgeonode/geoserver:latest # TODO : versionize
     build: ./geoserver/
     env_file:
       - ./geoserver/docker-compose.env
     volumes:
-      - geodatadir:/spcnode-geodatadir/
+      - geodatadir:/spcgeonode-geodatadir/
     depends_on:
       - postgres
 
   # backuper:
-  #   image: spcnode/backuper:latest # TODO : versionize
+  #   image: spcgeonode/backuper:latest # TODO : versionize
   #   build: ./backuper/
   #   volumes:
-  #     - database:/tobackup/spcnode-database
-  #     - media:/tobackup/spcnode-media
-  #     - geodatadir:/tobackup/spcnode-geodatadir
+  #     - database:/tobackup/spcgeonode-database
+  #     - media:/tobackup/spcgeonode-media
+  #     - geodatadir:/tobackup/spcgeonode-geodatadir
 
 volumes:
   static:

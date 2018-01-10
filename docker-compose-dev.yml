@@ -8,33 +8,33 @@ services:
       # - ./volumes/database:/var/lib/postgresql/data # doesn't work because of ownership
   nginx:
     volumes:
-      - ./volumes/static:/spcnode-static
-      - ./volumes/media:/spcnode-media
+      - ./volumes/static:/spcgeonode-static
+      - ./volumes/media:/spcgeonode-media
   django:
     environment:
       - "DEBUG=True"
     volumes:
-      - './django:/spcnode'
-      - ./volumes/static:/spcnode-static
-      - ./volumes/media:/spcnode-media
+      - './django:/spcgeonode'
+      - ./volumes/static:/spcgeonode-static
+      - ./volumes/media:/spcgeonode-media
       - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # DEV : use local geonode_offlineosm library
-    command: ["uwsgi", "--chdir=/spcnode", "--module=spcnode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcnode.settings", "--socket=:8000", "--py-autoreload=2"]
+    command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcgeonode.settings", "--socket=:8000", "--py-autoreload=2"]
   celery:
     volumes:
-      - './django:/spcnode'    
+      - './django:/spcgeonode'    
       - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # DEV : use local geonode_offlineosm library
-    entrypoint: ["/spcnode/docker-entrypoint-celery.sh"]
+    entrypoint: ["/spcgeonode/docker-entrypoint-celery.sh"]
   celerycam:
     volumes:
-      - './django:/spcnode'    
+      - './django:/spcgeonode'    
       - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # DEV : use local geonode_offlineosm library
-    entrypoint: ["/spcnode/docker-entrypoint-celery.sh"]
+    entrypoint: ["/spcgeonode/docker-entrypoint-celery.sh"]
 
   geoserver:
     volumes:
-      - ./volumes/geodatadir:/spcnode-geodatadir/
+      - ./volumes/geodatadir:/spcgeonode-geodatadir/
   # backuper:
   #   volumes:
-  #     # - ./volumes/database:/tobackup/spcnode-database # doesn't work because of ownership
-  #     - ./volumes/media:/tobackup/spcnode-media
-  #     - ./volumes/geodatadir:/tobackup/spcnode-geodatadir
+  #     # - ./volumes/database:/tobackup/spcgeonode-database # doesn't work because of ownership
+  #     - ./volumes/media:/tobackup/spcgeonode-media
+  #     - ./volumes/geodatadir:/tobackup/spcgeonode-geodatadir
