@@ -21,6 +21,8 @@ services:
     volumes:
       - ./volumes/static:/spcgeonode-static
       - ./volumes/media:/spcgeonode-media
+      - ./volumes/certbot-challenge:/spcgeonode-certbot-challenge
+      - ./volumes/certbot-keys:/spcgeonode-certbot-keys
   django:
     environment:
       - "DEBUG=True"
@@ -47,6 +49,12 @@ services:
   geoserver:
     volumes:
       - ./volumes/geodatadir:/spcgeonode-geodatadir/
+
+  letsencrypt:
+    volumes:
+      - ./volumes/certbot-challenge:/spcgeonode-certbot-challenge/
+      - ./volumes/certbot-keys:/etc/letsencrypt/
+
   # backuper:
   #   volumes:
   #     # - ./volumes/database:/tobackup/spcgeonode-database # doesn't work because of ownership

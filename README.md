@@ -10,6 +10,7 @@ For **developpement** which will :
 - mount django source as volume and set uwsgi to live reload
 - mount django static and media in the volumes folder
 - mount geoserver's data volume in the volumes folder
+- mount letsencyrpt volumes in the volumes folder
 - set django debug=True
 - expose postgres port 5432
 - activates nginx debug mode
@@ -88,4 +89,5 @@ Key differences :
 ## WIP
 
 - get auth django<=>geoserver either through OAuth2 (looks complicated) or through database level (looks even worse)
-- end offline_osm integration (mainly make periodic celery tasks work and cleanup import (from git instead of local volume thing)
+- end offline_osm integration (mainly make periodic celery tasks work and cleanup import (from git instead of local volume thing)- end offline_osm integration (mainly make periodic celery tasks work and cleanup import (from git instead of local volume thing)
+- have ssl working online

@@ -42,12 +42,15 @@ services:
     build: ./nginx/
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       - django
       - geoserver
     volumes:
       - static:/spcgeonode-static
       - media:/spcgeonode-media 
+      - certbot-challenge:/spcgeonode-certbot-challenge
+      - certbot-keys:/spcgeonode-certbot-keys
     deploy:
       replicas: 1
       restart_policy:
@@ -126,6 +129,17 @@ services:
     networks:
       - default-net
 
+  letsencrypt:
+    image: olivierdalang/spcgeonode-letsencrypt:latest # TODO : versionize
+    build: ./letsencrypt/
+    # command: /bin/true
+    volumes:
+      - certbot-challenge:/spcgeonode-certbot-challenge/
+      - certbot-keys:/etc/letsencrypt/
+    # volumes:
+    #   - letsencrypt_certs:/etc/letsencrypt
+    #   - letsencrypt_www:/var/www/letsencrypt
+
   # backuper:
   #   image: olivierdalang/spcgeonode-backuper:latest # TODO : versionize
   #   build: ./backuper/
@@ -157,6 +171,8 @@ volumes:
   media:
   database:
   geodatadir:
+  certbot-challenge:
+  certbot-keys:
 
 
 networks:
