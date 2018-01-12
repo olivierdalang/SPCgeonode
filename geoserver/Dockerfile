@@ -35,8 +35,21 @@ RUN wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geos
 RUN unzip -n geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
 RUN rm geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip
 
+# # Download geofence module
+RUN wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-geofence-plugin.zip
+# TODO : this seems to override with some existing files, is it OK to override ???
+RUN unzip -n geoserver-2.12-SNAPSHOT-geofence-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
+RUN rm geoserver-2.12-SNAPSHOT-geofence-plugin.zip
+
+# # Download geofence module
+RUN wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
+# TODO : this seems to override with some existing files, is it OK to override ???
+RUN unzip -n geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
+RUN rm geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
+
+# 
+
 # Setup workdir
-WORKDIR /geoserver-2.12.1/
 
 # Inject our specific customizations for security
 # ADD web-inf/web.xml ./webapps/geoserver/WEB-INF/web.xml
@@ -45,7 +58,13 @@ WORKDIR /geoserver-2.12.1/
 # RUN rm etc/jetty.xml.extension
 
 # Add the template geodatadir
-ADD geodatadir-template /geodatadir-template
+# ADD geodatadir-template /geodatadir-template
+# TODO : see if it's possible to start with less pregenerated files (only take what's really useful)
+RUN wget http://build.geonode.org/geoserver/latest/data-2.12.x.zip
+
+# ADD data-2.12.x.zip /data-2.12.x.zip
+
+WORKDIR /geoserver-2.12.1/
 
 # Export ports
 EXPOSE 8080
