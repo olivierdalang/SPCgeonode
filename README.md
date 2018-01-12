@@ -21,7 +21,11 @@ For **developpement** which will :
 docker-compose up -d --build
 ```
 
+To see logs, use `docker-compose logs` or that practical `docker-log.bat` script that opens a separate window for each service.
+
 For **production** :
+
+Prerequisites
 
 ```
 # 1. Create a swarm
@@ -30,15 +34,21 @@ docker swarm init
 echo "super" | docker secret create geonode_admin_username -
 echo "duper" | docker secret create geonode_admin_password -
 echo "null@localhost" | docker secret create geonode_admin_email -
-# 3. Deploy the stack
-docker stack deploy spcgeonode --compose-file docker-compose.yml
-# 4. Check if everything is runing
-docker service ls
-# 5. If something is not fine, inspect witj
-docker service logs SERVICE_NAME
 ```
 
-To see logs, use `docker-compose logs` or that practical `docker-log.bat` script that opens a separate window for each service.
+Actual deployement
+```
+# 3. Deploy the stack
+docker stack deploy spcgeonode --compose-file docker-compose.yml
+```
+
+Checks
+```
+# 4. Check if everything is runing
+docker service ls
+# 5. If something is not fine, inspect with
+docker service logs SERVICE_NAME
+```
 
 ## How it works
 
@@ -86,8 +96,17 @@ Key differences :
 - settings imports from geonode.settings so most defaults don't need to be modified
 - geoserver starts with empty geodatadir. Geonode's entrypoint script ensures there is a geonode workspace initialized using REST API. (in geonode-project, initial data-dir is pulled from http://build.geonode.org/geoserver/latest/data-$GEOSERVER_VERSION.zip , see waybarrios/geoserver Docker image) 
 
+This is very similar to https://github.com/kartoza/kartoza-rancher-catalogue
+
+Key differences :
+
+- we use geoserver instead of qgis server
+- working celery admin panels
+- https encryption
+- use secrets for sensitive data instead of env variables
+
 ## WIP
 
 - get auth django<=>geoserver either through OAuth2 (looks complicated) or through database level (looks even worse)
-- end offline_osm integration (mainly make periodic celery tasks work and cleanup import (from git instead of local volume thing)- end offline_osm integration (mainly make periodic celery tasks work and cleanup import (from git instead of local volume thing)
+- end offline_osm integration (mainly make periodic celery tasks work and cleanup import (from git instead of local volume thing)
 - have ssl working online

@@ -1,3 +1,4 @@
+# TODO : use python 2.7.13 as this is what we use for letsencryipt as well (so we have less to download)
 FROM python:2.7.14-slim-stretch
 # FROM python:3.6.3-slim-jessie
 

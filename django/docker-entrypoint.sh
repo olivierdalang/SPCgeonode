@@ -7,7 +7,7 @@ printf '\n--- START Django Docker Entrypoint ---\n\n'
 
 
 # DEV : use installed geonode_offlineosm python library
-pip install -e /offlineosm/
+# pip install -e /offlineosm/
 
 
 # Wait for postgres
