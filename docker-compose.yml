@@ -139,6 +139,8 @@ services:
     # volumes:
     #   - letsencrypt_certs:/etc/letsencrypt
     #   - letsencrypt_www:/var/www/letsencrypt
+    networks:
+      - default-net
 
   # backuper:
   #   image: olivierdalang/spcgeonode-backuper:latest # TODO : versionize
@@ -174,6 +176,6 @@ volumes:
   certbot-challenge:
   certbot-keys:
 
-
+# For some reason docker-swarm doesn't work when networks arent explicitely set
 networks:
    default-net:

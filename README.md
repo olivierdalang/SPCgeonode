@@ -23,14 +23,14 @@ docker-compose up -d --build
 
 To see logs, use `docker-compose logs` or that practical `docker-log.bat` script that opens a separate window for each service.
 
-For **production** :
+For **production**, make sure you've just rebuilt the containers, then use :
 
 Prerequisites
 
 ```
 # 1. Create a swarm
 docker swarm init
-# 2. Create secrets (for each file in dev/secrets)
+# 2. Create secrets (for each file in _devsecrets)
 echo "super" | docker secret create geonode_admin_username -
 echo "duper" | docker secret create geonode_admin_password -
 echo "null@localhost" | docker secret create geonode_admin_email -
@@ -78,7 +78,7 @@ Nginx proxies to uwsgi (django) and geoserver. It also directly serves django st
 
 ## Publish
 
-When you want to publish the changes, use
+When you want to publish the changes, make sure you've just rebuilt the containers, then use :
 
 ```
 docker login

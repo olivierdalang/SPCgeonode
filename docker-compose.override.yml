@@ -2,13 +2,13 @@ version: '3.1'
 
 secrets:
   geonode_admin_username:
-    file: _dev-secrets/geonode_admin_username
+    file: _devsecrets/geonode_admin_username
     external: false
   geonode_admin_email:
-    file: _dev-secrets/geonode_admin_email
+    file: _devsecrets/geonode_admin_email
     external: false
   geonode_admin_password:
-    file: _dev-secrets/geonode_admin_password
+    file: _devsecrets/geonode_admin_password
     external: false
 
 services:
