@@ -79,11 +79,11 @@ Nginx proxies to uwsgi (django) and geoserver. It also directly serves django st
 
 ## Publish
 
-When you want to publish the changes, make sure you've just rebuilt the containers, then use :
+When you want to publish the changes, make sure you've just rebuilt the containers (`docker-compose -f docker-compose.yml build`, then use :
 
 ```
 docker login
-docker-compose push
+docker-compose -f docker-compose.yml push
 ```
 
 ## Compared to Geonode project
@@ -108,6 +108,6 @@ Key differences :
 
 ## WIP
 
-- get auth django<=>geoserver either through OAuth2 (looks complicated) or through database level (looks even worse)
-- end offline_osm integration (mainly make periodic celery tasks work and cleanup import (from git instead of local volume thing)
-- have ssl working online
+- have ssl working online => TEST
+- use env variables / secrets where applicable
+- publish on git and autobuild images
