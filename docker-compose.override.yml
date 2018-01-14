@@ -18,12 +18,14 @@ services:
     # volumes:
       # - ./volumes/database:/var/lib/postgresql/data # doesn't work because of ownership
   nginx:
+    image: olivierdalang/spcgeonode-nginx:dev
     volumes:
       - ./volumes/static:/spcgeonode-static
       - ./volumes/media:/spcgeonode-media
       - ./volumes/certbot-challenge:/spcgeonode-certbot-challenge
       - ./volumes/certbot-keys:/spcgeonode-certbot-keys
   django:
+    image: olivierdalang/spcgeonode-django:dev
     environment:
       - "DEBUG=True"
     volumes:
@@ -34,12 +36,14 @@ services:
       - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # DEV : use local geonode_offlineosm library
     command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcgeonode.settings", "--socket=:8000", "--py-autoreload=2"]
   celery:
+    image: olivierdalang/spcgeonode-django:dev
     volumes:
       - './django:/spcgeonode'
       - ./volumes/temp:/spcgeonode-temp
       - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # DEV : use local geonode_offlineosm library
     entrypoint: ["/spcgeonode/docker-entrypoint-celery.sh"]
   celerycam:
+    image: olivierdalang/spcgeonode-django:dev
     volumes:
       - './django:/spcgeonode'
       - ./volumes/temp:/spcgeonode-temp
@@ -47,10 +51,12 @@ services:
     entrypoint: ["/spcgeonode/docker-entrypoint-celery.sh"]
 
   geoserver:
+    image: olivierdalang/spcgeonode-geoserver:dev
     volumes:
       - ./volumes/geodatadir:/spcgeonode-geodatadir/
 
   letsencrypt:
+    image: olivierdalang/spcgeonode-letsencrypt:dev
     volumes:
       - ./volumes/certbot-challenge:/spcgeonode-certbot-challenge/
       - ./volumes/certbot-keys:/etc/letsencrypt/

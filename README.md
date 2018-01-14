@@ -16,6 +16,7 @@ For **developpement** which will :
 - activates nginx debug mode
 - run celery using djcelery (so that output goes to admin) 
 - use defaults secrets from _dev-secrets
+- use :dev tags instead of :latest
 
 ```
 docker-compose up -d --build
