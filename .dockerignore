@@ -1,5 +1,4 @@
 *.pyc
 Thumbs.db
-volumes/*
-!volumes/.gitkeep
+_volume_*
 _misc/*

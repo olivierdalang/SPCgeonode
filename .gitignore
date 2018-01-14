@@ -1,7 +1,6 @@
 *.pyc
 Thumbs.db
-volumes/*
-!volumes/.gitkeep
+_volume_*
 *~
 celerybeat-schedule
 celeryev.pid
