@@ -25,25 +25,21 @@ RUN rm geonode-geoserver-ext-2.12.x-geoserver-plugin.zip
 
 # # Download oauth2 module
 RUN wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-authkey-plugin.zip
-# TODO : this wants to override, I guess it's safe not to ???
 RUN unzip -n geoserver-2.12-SNAPSHOT-authkey-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
 RUN rm geoserver-2.12-SNAPSHOT-authkey-plugin.zip
 
 # # Download oauth2-geonode module
 RUN wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip
-# TODO : this seems to override with some existing files, is it OK to override ???
 RUN unzip -n geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
 RUN rm geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip
 
 # # Download geofence module
 RUN wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-geofence-plugin.zip
-# TODO : this seems to override with some existing files, is it OK to override ???
 RUN unzip -n geoserver-2.12-SNAPSHOT-geofence-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
 RUN rm geoserver-2.12-SNAPSHOT-geofence-plugin.zip
 
 # # Download geofence module
 RUN wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
-# TODO : this seems to override with some existing files, is it OK to override ???
 RUN unzip -n geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
 RUN rm geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
 
@@ -60,6 +56,7 @@ RUN rm geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
 # Add the template geodatadir
 # ADD geodatadir-template /geodatadir-template
 # TODO : see if it's possible to start with less pregenerated files (only take what's really useful)
+# TODO : move this to the repo (as it's a bit critical)
 RUN wget http://build.geonode.org/geoserver/latest/data-2.12.x.zip
 
 # ADD data-2.12.x.zip /data-2.12.x.zip
