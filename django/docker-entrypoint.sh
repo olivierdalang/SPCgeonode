@@ -42,6 +42,7 @@ except django.db.IntegrityError as e:\n\
 # Load fixtures
 printf '\nLoading initial data...\n'
 python manage.py loaddata initial_data
+python manage.py loaddata oauth2_initial_data
 
 # Creating OAuth2 data
 # printf "print('todo')" | python -u
