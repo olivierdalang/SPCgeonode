@@ -43,23 +43,8 @@ RUN wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geos
 RUN unzip -n geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
 RUN rm geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
 
-# 
-
-# Setup workdir
-
-# Inject our specific customizations for security
-# ADD web-inf/web.xml ./webapps/geoserver/WEB-INF/web.xml
-# RUN cat ./etc/jetty.xml.extension >> 
-# RUN cat ./etc/jetty.xml
-# RUN rm etc/jetty.xml.extension
-
-# Add the template geodatadir
-# ADD geodatadir-template /geodatadir-template
-# TODO : see if it's possible to start with less pregenerated files (only take what's really useful)
-# TODO : move this to the repo (as it's a bit critical)
-RUN wget http://build.geonode.org/geoserver/latest/data-2.12.x.zip
-
-# ADD data-2.12.x.zip /data-2.12.x.zip
+# # Add initial geodatadir (adapted from http://build.geonode.org/geoserver/latest/data-2.12.x.zip)
+ADD geodatadir-init /geodatadir-init
 
 WORKDIR /geoserver-2.12.1/
 
