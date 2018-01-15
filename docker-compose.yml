@@ -2,11 +2,11 @@ version: '3.1'
 
 # TODO : replace olivierdalang repository by pacificcommunity
 secrets:
-  geonode_admin_username:
+  admin_username:
     external: true
-  geonode_admin_email:
+  admin_email:
     external: true
-  geonode_admin_password:
+  admin_password:
     external: true
 
 services:
@@ -38,7 +38,7 @@ services:
   
   nginx:
     # Nginx is serving django static and media files and proxies to django and geonode
-    image: olivierdalang/spcgeonode-nginx:latest # TODO : versionize
+    image: olivierdalang/spcgeonode:nginx-latest # TODO : versionize
     build: ./nginx/
     ports:
       - "80:80"
@@ -60,7 +60,7 @@ services:
 
   django:
     # This is our custom django application. It includes Geonode.
-    image: olivierdalang/spcgeonode-django:latest # TODO : versionize
+    image: olivierdalang/spcgeonode:django-latest # TODO : versionize
     build: ./django/
     env_file:
       - ./django/docker-compose.env
@@ -70,9 +70,9 @@ services:
     depends_on:
       - postgres
     secrets:
-      - geonode_admin_username
-      - geonode_admin_email
-      - geonode_admin_password 
+      - admin_username
+      - admin_email
+      - admin_password 
     deploy:
       replicas: 1
       restart_policy:
@@ -84,11 +84,14 @@ services:
     
   celery:
     # This is the celery worker that executes celery tasks created by Django.
-    image: olivierdalang/spcgeonode-django:latest # TODO : versionize
+    image: olivierdalang/spcgeonode:django-latest # TODO : versionize
     env_file:
       - ./django/docker-compose.env
     depends_on:
       - django 
+    secrets:
+      - admin_username
+      - admin_password 
     deploy:
       replicas: 1
       restart_policy:
@@ -99,11 +102,14 @@ services:
 
   celerycam:
     # This is the celery camera that monitors celery tasks and populate the djcelery django admin interface
-    image: olivierdalang/spcgeonode-django:latest # TODO : versionize
+    image: olivierdalang/spcgeonode:django-latest # TODO : versionize
     env_file:
       - ./django/docker-compose.env
     depends_on:
       - django 
+    secrets:
+      - admin_username
+      - admin_password 
     deploy:
       replicas: 1
       restart_policy:
@@ -114,7 +120,7 @@ services:
 
   geoserver:
     # This is the geoserver backend required by geonode.
-    image: olivierdalang/spcgeonode-geoserver:latest # TODO : versionize
+    image: olivierdalang/spcgeonode:geoserver-latest # TODO : versionize
     build: ./geoserver/
     env_file:
       - ./geoserver/docker-compose.env
@@ -122,6 +128,9 @@ services:
       - geodatadir:/spcgeonode-geodatadir/
     depends_on:
       - postgres 
+    secrets:
+      - admin_username
+      - admin_password 
     deploy:
       replicas: 1
       restart_policy:
@@ -130,7 +139,7 @@ services:
       - default-net
 
   letsencrypt:
-    image: olivierdalang/spcgeonode-letsencrypt:latest # TODO : versionize
+    image: olivierdalang/spcgeonode:letsencrypt-latest # TODO : versionize
     build: ./letsencrypt/
     # command: /bin/true
     volumes:
@@ -143,7 +152,7 @@ services:
       - default-net
 
   # backuper:
-  #   image: olivierdalang/spcgeonode-backuper:latest # TODO : versionize
+  #   image: olivierdalang/spcgeonode:backuper-latest # TODO : versionize
   #   build: ./backuper/
   #   volumes:
   #     - database:/tobackup/spcgeonode-database
