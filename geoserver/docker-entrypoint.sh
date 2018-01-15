@@ -17,10 +17,12 @@ else
 
     printf 'Adapting geoserver configuration...\n'
     # TODO : http://localhost:8000/geoserver with GEOSERVER_PUBLIC_URL and http://localhost:8000/ with GEONODE_PUBLIC_URL
-    sed -i 's|http://localhost:8000/geoserver|/geoserver|g' '/spcgeonode-geodatadir/security/filter/geonode-oauth2/config.xml' # TODO : parametrize GEOSERVER_PUBLIC_URL
-    sed -i 's|http://localhost:8000/|/|g' '/spcgeonode-geodatadir/security/filter/geonode-oauth2/config.xml' # TODO : parametrize GEONODE_PUBLIC_URL
-    sed -i 's|http://localhost:8000/geoserver|/geoserver|g' '/spcgeonode-geodatadir/security/role/geonode REST role service/config.xml' # TODO : parametrize GEOSERVER_PUBLIC_URL
-    sed -i 's|http://localhost:8000/|/|g' '/spcgeonode-geodatadir/security/role/geonode REST role service/config.xml' # TODO : parametrize GEONODE_PUBLIC_URL
+    # TODO : see if we can use relative urls here (/geoserver instead of http://host/geoserver) so that services are accessible both on LAN an WAN
+    # TODO : parametrize GEOSERVER_PUBLIC_URL
+    sed -i 's|http://localhost:8000/|http://127.0.0.1/|g' '/spcgeonode-geodatadir/security/filter/geonode-oauth2/config.xml'
+    sed -i 's|http://localhost:8000/|http://127.0.0.1/|g' '/spcgeonode-geodatadir/security/role/geonode REST role service/config.xml'
+    sed -i 's|http://localhost:8080/geoserver|http://nginx/geoserver/|g' '/spcgeonode-geodatadir/global.xml' # TODO : parametrize GEONODE_PUBLIC_URL
+
 
     printf 'Adapting geoserver admin login...\n'
     # We change the default admin//geoserver user using the secrets
