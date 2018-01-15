@@ -27,9 +27,8 @@ python manage.py migrate --noinput
 printf '\nRunning collectstatic...\n'
 python manage.py collectstatic --noinput
 
-# Createng superuser
+# Creating superuser if it doesn't exist
 printf '\nCreating superuser...\n'
-# TODO : fix login
 printf "import os, django\n\
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spcgeonode.settings')\n\
 django.setup()\n\
