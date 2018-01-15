@@ -15,7 +15,6 @@ ROOT_URLCONF = os.getenv('ROOT_URLCONF', 'spcgeonode.urls')
 # Install
 ADDITIONNAL_INSTALLED_APPS = ('app_customization_sample','overextends',)
 
-
 ##################################
 # Geonode Offline OSM
 ##################################
@@ -53,10 +52,18 @@ MAP_BASELAYERS.append(
     }
 )
 
+##################################
+# Geoserver fix admin password
+##################################
+
+OGC_SERVER['default']['USER'] = open('/run/secrets/admin_username','r').read()
+OGC_SERVER['default']['PASSWORD'] = open('/run/secrets/admin_password','r').read()
+
 
 ##################################
 # Misc / debug / hack
 ##################################
+
 
 # Add our additionnal installed apps
 INSTALLED_APPS = INSTALLED_APPS + ADDITIONNAL_INSTALLED_APPS
