@@ -6,10 +6,6 @@ set -e
 printf '\n--- START Django Docker Entrypoint ---\n\n'
 
 
-# DEV : use installed geonode_offlineosm python library
-# pip install -e /offlineosm/
-
-
 # Wait for postgres
 printf '\nWaiting for postgres...\n'
 printf "import sys,time,psycopg2\n\

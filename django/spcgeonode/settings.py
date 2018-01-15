@@ -24,7 +24,6 @@ ADDITIONNAL_INSTALLED_APPS += ('geonode_offlineosm',)
 
 # Config
 # OFFLINE_OSM_UPDATE_INTERVAL = 5 # TODO : remove this
-OFFLINE_OSM_DATA_DIR = '/spcgeonode-temp/urlretrieve/' # TODO : remove this ?
 OFFLINE_OSM_UPDATE_AFTER_MIGRATE = True
 
 # Celery tasks

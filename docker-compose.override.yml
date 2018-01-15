@@ -32,23 +32,15 @@ services:
       - './django:/spcgeonode'
       - ./_volume_static:/spcgeonode-static
       - ./_volume_media:/spcgeonode-media
-      - ./_volume_temp:/spcgeonode-temp
-      - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # DEV : use local geonode_offlineosm library
     command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcgeonode.settings", "--socket=:8000", "--py-autoreload=2"]
   celery:
     image: olivierdalang/spcgeonode:django-dev
     volumes:
       - './django:/spcgeonode'
-      - ./_volume_temp:/spcgeonode-temp
-      - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # DEV : use local geonode_offlineosm library
-    entrypoint: ["/spcgeonode/docker-entrypoint-celery.sh"]
   celerycam:
     image: olivierdalang/spcgeonode:django-dev
     volumes:
       - './django:/spcgeonode'
-      - ./_volume_temp:/spcgeonode-temp
-      - 'C:\Users\Olivier\Dropbox\Affaires\SPC\Sources\geonode-offlineosm:/offlineosm' # DEV : use local geonode_offlineosm library
-    entrypoint: ["/spcgeonode/docker-entrypoint-celery.sh"]
 
   geoserver:
     image: olivierdalang/spcgeonode:geoserver-dev
