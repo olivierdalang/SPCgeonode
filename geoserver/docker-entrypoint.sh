@@ -13,7 +13,7 @@ else
     printf 'Geodatadir empty, we copy the files...\n'
 
     # We unzip the folder
-    cp /geodatadir-init/* /spcgeonode-geodatadir/
+    cp -r /geodatadir-init/* /spcgeonode-geodatadir/
 
     printf 'Adapting geoserver configuration...\n'
     # TODO : http://localhost:8000/geoserver with GEOSERVER_PUBLIC_URL and http://localhost:8000/ with GEONODE_PUBLIC_URL
