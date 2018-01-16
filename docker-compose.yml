@@ -12,7 +12,7 @@ secrets:
 x-common-django:
   # Common Django template for geonode, celery and celerycam
   &default-common-django
-  image: olivierdalang/spcgeonode:django-latest # TODO : versionize
+  image: olivierdalang/spcgeonode:django-0.0.1
   build: ./django/
   environment: # WARNING changes here must be repercuted to django, celery and celerycam
     - GEOSERVER_PUBLIC_LOCATION=http://${DOMAIN_NAME}/geoserver/
@@ -82,7 +82,7 @@ services:
   
   nginx:
     # Nginx is serving django static and media files and proxies to django and geonode
-    image: olivierdalang/spcgeonode:nginx-latest # TODO : versionize
+    image: olivierdalang/spcgeonode:nginx-0.0.1
     build: ./nginx/
     environment:
       - WAN_HOST=${WAN_HOST}
@@ -107,7 +107,7 @@ services:
 
   geoserver:
     # This is the geoserver backend required by geonode.
-    image: olivierdalang/spcgeonode:geoserver-latest # TODO : versionize
+    image: olivierdalang/spcgeonode:geoserver-0.0.1
     build: ./geoserver/
     env_file:
       - ./geoserver/docker-compose.env
@@ -126,7 +126,7 @@ services:
       - default-net
 
   letsencrypt:
-    image: olivierdalang/spcgeonode:letsencrypt-latest # TODO : versionize
+    image: olivierdalang/spcgeonode:letsencrypt-0.0.1
     build: ./letsencrypt/
     environment:
       - WAN_HOST=${WAN_HOST}
@@ -143,7 +143,7 @@ services:
       - default-net
 
   # backuper:
-  #   image: olivierdalang/spcgeonode:backuper-latest # TODO : versionize
+  #   image: olivierdalang/spcgeonode:backuper-0.0.1
   #   build: ./backuper/
   #   volumes:
   #     - database:/tobackup/spcgeonode-database
