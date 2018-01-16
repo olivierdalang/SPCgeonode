@@ -38,7 +38,7 @@ For **developpement** which will :
 - activates nginx debug mode
 - run celery using djcelery (so that output goes to admin) 
 - use docker dev tags instead of latest
-- use defaults secrets from _dev-secrets
+- use defaults secrets from _dev-secrets `admin_username=super2` and `admin_password=duper2`
 - use defaut .env variables which set `LAN_HOST=127.0.0.1`, `WAN_HOST=localhost` and `ADMIN_EMAIL=admin@null`
 
 ```
@@ -60,7 +60,7 @@ And then
 # 1. Create a swarm
 docker swarm init
 
-# 2. Set variables
+# 2. Set variables (Windows)
 $WAN_HOST="localhost"
 $LAN_HOST="127.0.0.1"
 $ADMIN_USERNAME="super"
@@ -70,7 +70,7 @@ $ADMIN_EMAIL="admin@null"
 # 3. Deploy the stack (again: MAKE SURE YOU'VE JUST REBUILD THE IMAGES)
 # this creates the docker secrets
 echo "$ADMIN_USERNAME" | docker secret create admin_username -
-echo "$ADMIN_PASSWOR" | docker secret create admin_password -
+echo "$ADMIN_PASSWORD" | docker secret create admin_password -
 docker stack deploy spcgeonode --compose-file docker-compose.yml
 ```
 
@@ -78,8 +78,15 @@ Checks
 ```
 # 1. Check if everything is runing
 docker service ls
-# 2. If something is not fine, inspect with
+# 2. If something is not fine, like container doesn't start
+docker service ps SERVICE_NAME --no-trunc
+# 3. If something is not fine, container crashes
 docker service logs SERVICE_NAME
+# or
+# 1. Use portainer and check on http://127.0.0.1:9000
+docker service create --name portainer --publish 9000:9000 --replicas=1 --constraint 'node.role == manager' --mount type=bind,src=//var/run/docker.sock,dst=/var/run/docker.sock --mount type=bind,src=//opt/portainer,dst=/data portainer/portainer -H unix:///var/run/docker.sock
+
+# If container donesn't start, I could debug it sometime with docker ps -a (then you may see a long list of retries) and then manually doing docker start CONTAINER_ID
 ```
 
 ## How it works
@@ -88,9 +95,7 @@ docker service logs SERVICE_NAME
 
 Geonode is installed as a "geonode django project" (under `django`). This allows easy customization/extension as it is a regular django application.
 
-An example customization app (`customization_sample`) and an offline openstreetmap base layer app (`offline_osm`) are installed by default.
-
-The django project is rebuilt (install requirements, makemigrations, collectstatic) at launch, and then served using uwsgi.
+The django project is initialised (install requirements, migrate, collectstatic and fixtures) at launch, and then served using uwsgi.
 
 ### Nginx
 
@@ -125,6 +130,7 @@ This is very similar to https://github.com/GeoNode/geonode-project but aims to b
 
 Key differences :
 
+
 - dockerfiles for nginx and geoserver are in same repo, since they need to be customized for a deployement
 - other services (postgres, elasticsearch, rabbit) images use a specific tag, so we know which one will be pulled, making 
 - settings imports from geonode.settings so most defaults don't need to be modified
@@ -142,5 +148,6 @@ Key differences :
 ## WIP
 
 - have ssl working online => TEST
-- use env variables / secrets where applicable
-- publish on git and autobuild images
+- use env variables / secrets where applicable => DONE ?
+- publish on git and autobuild images => DONE ?
+- make docker deploy work again (see if finally service launched after waiting during a long time (docker service ls))
