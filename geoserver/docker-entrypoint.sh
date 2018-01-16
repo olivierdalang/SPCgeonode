@@ -36,11 +36,13 @@ else
     admin=''
     passw=''
 
-    printf 'Disabling master password...\n'
-    # TODO CRITICAL : do not use default master password
+    printf 'Randomizing root password...\n'
+    # TODO CRITICAL : do not use default master password... to be adapted once security issue is adressed
+    # this doesnt work (i was hoping a password would be regenerated but it doenst happen)
     # rm -rf /spcgeonode-geodatadir/security/masterpw
-    # rm /spcgeonode-geodatadir/security/masterpw.info
+    # rm -rf /spcgeonode-geodatadir/security/pwpolicy/master
     # rm /spcgeonode-geodatadir/security/masterpw.digest
+    # rm /spcgeonode-geodatadir/security/masterpw.info
     # rm /spcgeonode-geodatadir/security/masterpw.xml
 
     
