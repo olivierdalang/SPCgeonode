@@ -1,15 +1,59 @@
-version: '3.1'
+version: '3.4'
 
 # TODO : replace olivierdalang repository by pacificcommunity
 secrets:
   admin_username:
     external: true
-  admin_email:
-    external: true
   admin_password:
     external: true
 
+
+
+x-common-django:
+  # Common Django template for geonode, celery and celerycam
+  &default-common-django
+  image: olivierdalang/spcgeonode:django-latest # TODO : versionize
+  build: ./django/
+  environment: # WARNING changes here must be repercuted to django, celery and celerycam
+    - GEOSERVER_PUBLIC_LOCATION=http://${DOMAIN_NAME}/geoserver/
+    - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver
+    - ADMIN_EMAIL=${ADMIN_EMAIL}
+  env_file:
+    - ./django/docker-compose.env
+  volumes:
+    - static:/spcgeonode-static
+    - media:/spcgeonode-media
+  depends_on:
+    - postgres
+  secrets:
+    - admin_username
+    - admin_password 
+  deploy:
+    replicas: 1
+    restart_policy:
+      condition: on-failure
+  networks:
+    - default-net
+    
+
+
 services:
+
+  django:
+    # This is our custom django application. It includes Geonode.
+    << : *default-common-django
+    entrypoint: ["/spcgeonode/docker-entrypoint.sh"]
+    command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--socket=:8000", "--processes=5"]
+    
+  celery:
+    # This is the celery worker that executes celery tasks created by Django.
+    << : *default-common-django
+    command: 'python manage.py celery worker --app=geonode.celery_app:app -B -E -l INFO'
+
+  celerycam:
+    # This is the celery camera that monitors celery tasks and populate the djcelery django admin interface
+    << : *default-common-django
+    command: 'python manage.py celerycam'
 
   postgres:
     # Vanilla PostGIS database.
@@ -40,6 +84,9 @@ services:
     # Nginx is serving django static and media files and proxies to django and geonode
     image: olivierdalang/spcgeonode:nginx-latest # TODO : versionize
     build: ./nginx/
+    environment:
+      - WAN_HOST=${WAN_HOST}
+      - LAN_HOST=${LAN_HOST}
     ports:
       - "80:80"
       - "443:443"
@@ -55,66 +102,6 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
-    networks:
-      - default-net
-
-  django:
-    # This is our custom django application. It includes Geonode.
-    image: olivierdalang/spcgeonode:django-latest # TODO : versionize
-    build: ./django/
-    env_file:
-      - ./django/docker-compose.env
-    volumes:
-      - static:/spcgeonode-static
-      - media:/spcgeonode-media
-    depends_on:
-      - postgres
-    secrets:
-      - admin_username
-      - admin_email
-      - admin_password 
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-    entrypoint: ["/spcgeonode/docker-entrypoint.sh"]
-    command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--socket=:8000", "--processes=5"]
-    networks:
-      - default-net
-    
-  celery:
-    # This is the celery worker that executes celery tasks created by Django.
-    image: olivierdalang/spcgeonode:django-latest # TODO : versionize
-    env_file:
-      - ./django/docker-compose.env
-    depends_on:
-      - django 
-    secrets:
-      - admin_username
-      - admin_password 
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-    command: 'python manage.py celery worker --app=geonode.celery_app:app -B -E -l INFO'
-    networks:
-      - default-net
-
-  celerycam:
-    # This is the celery camera that monitors celery tasks and populate the djcelery django admin interface
-    image: olivierdalang/spcgeonode:django-latest # TODO : versionize
-    env_file:
-      - ./django/docker-compose.env
-    depends_on:
-      - django 
-    secrets:
-      - admin_username
-      - admin_password 
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-    command: 'python manage.py celerycam'
     networks:
       - default-net
 
@@ -141,6 +128,10 @@ services:
   letsencrypt:
     image: olivierdalang/spcgeonode:letsencrypt-latest # TODO : versionize
     build: ./letsencrypt/
+    environment:
+      - WAN_HOST=${WAN_HOST}
+      - LAN_HOST=${LAN_HOST}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
     # command: /bin/true
     volumes:
       - certbot-challenge:/spcgeonode-certbot-challenge/

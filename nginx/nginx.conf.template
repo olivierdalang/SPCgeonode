@@ -9,10 +9,10 @@ http{
     # https - listens on specific name - we use letsencrypt cert
     server {
         listen              443 ssl;
-        server_name         example.com; # TODO : configurize HOSTNAME
+        server_name         $WAN_HOST; # TODO : configurize HOSTNAME
 
-        ssl_certificate     /spcgeonode-certbot-keys/live/example.com/fullchain.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
-        ssl_certificate_key /spcgeonode-certbot-keys/live/example.com/privkey.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
+        ssl_certificate     /spcgeonode-certbot-keys/live/$WAN_HOST/fullchain.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
+        ssl_certificate_key /spcgeonode-certbot-keys/live/$WAN_HOST/privkey.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
 
         include spcgeonode.conf;
     }
@@ -20,14 +20,14 @@ http{
     # TODO : do not use unencrypted connection even on LAN, but is it possible to have browser not complaining about unknown authority ?
     server {
         listen              80;
-        server_name         127.0.0.1 nginx; # TODO : configurize LAN HOSTNAME
+        server_name         $LAN_HOST nginx; # we add nginx as this is the host for internal API requests # TODO : configurize LAN HOSTNAME
 
         include spcgeonode.conf;
     }
     # https - listens on all other names - for example for LAN - we use autoissued cert
     # server {
     #     listen              443 ssl default_server;
-    #     # server_name         127.0.0.1; # TODO : configurize LAN HOSTNAME
+    #     # server_name         $LAN_HOST; # TODO : configurize LAN HOSTNAME
         
     #     ssl_certificate     /etc/letsencrypt/autoissued/cert;
     #     ssl_certificate_key /etc/letsencrypt/autoissued/key;
@@ -49,8 +49,8 @@ http{
 
         # Redirect to https
         location / {
-            # return 301 https://example.com$request_uri; # TODO : configurize HOSTNAME
-            return 302 https://example.com$request_uri; # TODO : configurize HOSTNAME # TODO : remove this, we should use 301 (but not practical for debug)
+            # return 301 https://$WAN_HOST$request_uri; # TODO : configurize HOSTNAME
+            return 302 https://$WAN_HOST$request_uri; # TODO : configurize HOSTNAME # TODO : remove this, we should use 301 (but not practical for debug)
         }
     }
 

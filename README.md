@@ -15,8 +15,9 @@ For **developpement** which will :
 - expose postgres port 5432
 - activates nginx debug mode
 - run celery using djcelery (so that output goes to admin) 
+- use docker dev tags instead of latest
 - use defaults secrets from _dev-secrets
-- use :dev tags instead of :latest
+- use defaut .env variables which set `LAN_HOST=127.0.0.1`, `WAN_HOST=localhost` and `ADMIN_EMAIL=admin@null`
 
 ```
 docker-compose up -d --build
@@ -24,30 +25,32 @@ docker-compose up -d --build
 
 To see logs, use `docker-compose logs` or that practical `docker-log.bat` script that opens a separate window for each service.
 
-For **production**, make sure you've just rebuilt the containers, then use :
+For **production**, make sure you've just rebuilt the images, then use :
 
 Prerequisites
 
 ```
 # 1. Create a swarm
 docker swarm init
-# 2. Create secrets (for each file in _devsecrets)
-echo "super" | docker secret create geonode_admin_username -
-echo "duper" | docker secret create geonode_admin_password -
-echo "null@localhost" | docker secret create geonode_admin_email -
-```
 
-Actual deployement
-```
-# 3. Deploy the stack
+# 2. Create secrets (for each file in _devsecrets)
+echo "super" | docker secret create admin_username -
+echo "duper" | docker secret create admin_password -
+
+# 3. Set variables
+$WAN_HOST="localhost"
+$LAN_HOST="127.0.0.1"
+$ADMIN_EMAIL="admin@null"
+
+# 4. Deploy the stack (again: MAKE SURE YOU'VE JUST REBUILD THE IMAGES)
 docker stack deploy spcgeonode --compose-file docker-compose.yml
 ```
 
 Checks
 ```
-# 4. Check if everything is runing
+# 1. Check if everything is runing
 docker service ls
-# 5. If something is not fine, inspect with
+# 2. If something is not fine, inspect with
 docker service logs SERVICE_NAME
 ```
 
@@ -85,6 +88,8 @@ When you want to publish the changes, make sure you've just rebuilt the containe
 docker login
 docker-compose -f docker-compose.yml push
 ```
+
+Note that this should be done autmatically using Docker autobuilds.
 
 ## Compared to Geonode project
 
