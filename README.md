@@ -4,6 +4,28 @@ spcgeonode is a skeletton for Geonode deployement at SPC. It makes it easy to de
 
 The setup should be usable for production.
 
+## Prerequisites
+
+Make sure you have a version of Docker (tested with 17.12) and docker-compose.
+
+On Ubuntu 16.04 :
+```
+# Docker
+wget https://download.docker.com/linux/ubuntu/dists/xenial/pool/stable/amd64/docker-ce_17.12.0~ce-0~ubuntu_amd64.deb
+sudo dpkg -i docker-ce_17.12.0~ce-0~ubuntu_amd64.deb
+rm docker-ce_17.12.0~ce-0~ubuntu_amd64.deb
+
+# Docker-compose
+sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Test
+sudo docker run hello-world
+```
+
+On Windows: https://store.docker.com/editions/community/docker-ce-desktop-windows
+
+
 ## Usage
 
 For **developpement** which will :
@@ -25,24 +47,30 @@ docker-compose up -d --build
 
 To see logs, use `docker-compose logs` or that practical `docker-log.bat` script that opens a separate window for each service.
 
-For **production**, make sure you've just rebuilt the images, then use :
+For **production** :
 
-Prerequisites
 
+If using local images, build them first. If not, make sure you published the images to docker hub first (see below).
+```
+docker-compose -f docker-compose.yml up --build
+```
+
+And then
 ```
 # 1. Create a swarm
 docker swarm init
 
-# 2. Create secrets (for each file in _devsecrets)
-echo "super" | docker secret create admin_username -
-echo "duper" | docker secret create admin_password -
-
-# 3. Set variables
+# 2. Set variables
 $WAN_HOST="localhost"
 $LAN_HOST="127.0.0.1"
+$ADMIN_USERNAME="super"
+$ADMIN_PASSWORD="duper"
 $ADMIN_EMAIL="admin@null"
 
-# 4. Deploy the stack (again: MAKE SURE YOU'VE JUST REBUILD THE IMAGES)
+# 3. Deploy the stack (again: MAKE SURE YOU'VE JUST REBUILD THE IMAGES)
+# this creates the docker secrets
+echo "$ADMIN_USERNAME" | docker secret create admin_username -
+echo "$ADMIN_PASSWOR" | docker secret create admin_password -
 docker stack deploy spcgeonode --compose-file docker-compose.yml
 ```
 
