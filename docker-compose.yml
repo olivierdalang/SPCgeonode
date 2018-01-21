@@ -15,7 +15,7 @@ x-common-django:
   image: olivierdalang/spcgeonode:django-latest # TODO : versionize
   build: ./django/
   environment: # WARNING changes here must be repercuted to django, celery and celerycam
-    - GEOSERVER_PUBLIC_LOCATION=http://${DOMAIN_NAME}/geoserver/
+    - GEOSERVER_PUBLIC_LOCATION=http://${WAN_HOST}/geoserver/
     - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver
     - ADMIN_EMAIL=${ADMIN_EMAIL}
     - DJANGO_SETTINGS_MODULE=spcgeonode.settings
