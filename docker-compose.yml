@@ -43,7 +43,7 @@ x-common-django:
     restart_policy:
       condition: on-failure
   networks:
-    - default-net
+    - deploy-network
     
 
 
@@ -75,7 +75,7 @@ services:
       restart_policy:
         condition: on-failure
     networks:
-      - default-net
+      - deploy-network
 
   # elasticsearch:
   #   image: elasticsearch:5.6
@@ -88,7 +88,7 @@ services:
       restart_policy:
         condition: on-failure
     networks:
-      - default-net
+      - deploy-network
   
   nginx:
     # Nginx is serving django static and media files and proxies to django and geonode
@@ -113,7 +113,7 @@ services:
       restart_policy:
         condition: on-failure
     networks:
-      - default-net
+      - deploy-network
 
   geoserver:
     # This is the geoserver backend required by geonode.
@@ -134,7 +134,7 @@ services:
       restart_policy:
         condition: on-failure
     networks:
-      - default-net
+      - deploy-network
 
   letsencrypt:
     image: olivierdalang/spcgeonode:letsencrypt-latest # TODO : versionize
@@ -151,7 +151,7 @@ services:
     #   - letsencrypt_certs:/etc/letsencrypt
     #   - letsencrypt_www:/var/www/letsencrypt
     networks:
-      - default-net
+      - deploy-network
 
   # backuper:
   #   image: olivierdalang/spcgeonode:backuper-latest # TODO : versionize
@@ -165,7 +165,7 @@ services:
   #     restart_policy:
   #       condition: on-failure
   #   networks:
-  #     - default-net
+  #     - deploy-network
 
   # visualizer:
   #   image: dockersamples/visualizer:stable
@@ -177,7 +177,7 @@ services:
   #     placement:
   #       constraints: [node.role == manager]
   #   networks:
-  #     - default-net
+  #     - deploy-network
 
 volumes:
   static:
@@ -189,4 +189,8 @@ volumes:
 
 # For some reason docker-swarm doesn't work when networks arent explicitely set
 networks:
-   default-net:
+  deploy-network: # TODO : properly understand this (without it, it doesn't work with docker stack deploy)
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
