@@ -54,6 +54,7 @@ EXPOSE 8080
 # Run geoserver
 ADD docker-entrypoint.sh docker-entrypoint.sh 
 ENTRYPOINT ["./docker-entrypoint.sh"]
+RUN chmod +x docker-entrypoint.sh
 
 # ENV GEOSERVER_VERSION=2.9.x-oauth2
 # ENV GEOSERVER_DATA_DIR="/geoserver_data/data"
