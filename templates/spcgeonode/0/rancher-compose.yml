@@ -1,0 +1,53 @@
+version: '2'
+catalog:
+  name: "SPC Geonode"
+  description: "SPC Geonode"
+  version: "dev"
+  uuid: spc-geonode-dev
+  questions:
+    - variable: WAN_HOST
+      label: "Hostname for WAN access"
+      description: "Enter the domain name you will be using. This will setup SSL certificates and configure Nginx to accept connections on this domain name. Leave this empty if you only plan to use Geonode on LAN."
+      required: false
+      default: null
+      type: "string"
+    - variable: LAN_HOST
+      label: "Hostname for LAN access"
+      description: "Enter the hostname name you will be using (most likely a LAN IP). This will configure Nginx to accept unencrypted connections on this domain name. Leave this empty if you only plan to use Geonode on WAN."
+      required: false
+      default: null
+      type: "string"
+    - variable: ADMIN_EMAIL
+      label: "Email of the administrator"
+      description: "This will be used as contact information for Let's Encrypt certificates and as email for the superuser"
+      required: true
+      type: "string"
+services:    
+  django:
+    scale: 1
+    start_on_create: true
+  celery:
+    scale: 1
+    start_on_create: true
+  celerycam:
+    scale: 1
+    start_on_create: true
+  postgres:
+    scale: 1
+    start_on_create: true
+  # elasticsearch:
+  #   scale: 1
+  #   start_on_create: true
+  rabbitmq:
+    scale: 1
+    start_on_create: true
+  nginx:
+    scale: 1
+    start_on_create: true
+  geoserver:
+    scale: 1
+    start_on_create: true
+  letsencrypt:
+    scale: 1
+    start_on_create: true
+  
