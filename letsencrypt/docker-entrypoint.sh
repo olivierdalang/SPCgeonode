@@ -11,10 +11,11 @@ mkdir -p "/etc/letsencrypt/live/$WAN_HOST/"
 openssl req -x509 -nodes -days 0 -newkey rsa:2048 -keyout "/etc/letsencrypt/live/$WAN_HOST/privkey.pem" -out "/etc/letsencrypt/live/$WAN_HOST/fullchain.pem" -subj "/CN=$WAN_HOST"
 
 printf "\n\nInstalling certbot\n"
-certbot certonly --webroot -w /spcgeonode-certbot-challenge/ -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive
+# TODO : remove --staging !
+certbot certonly --webroot -w /spcgeonode-certbot-challenge/ -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive --staging
 
 printf "\n\nTesting autorenew\n"
-certbot renew
+certbot renew --dry-run
 
 printf "\n\nCreating autoissued certificate (for LAN)\n"
 mkdir -p /etc/letsencrypt/autoissued/
