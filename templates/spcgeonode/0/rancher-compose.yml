@@ -22,6 +22,24 @@ catalog:
       description: "This will be used as contact information for Let's Encrypt certificates and as email for the superuser"
       required: true
       type: "string"
+    - variable: _CHECK_ADDED_SECRET_SERVICE
+      label: "Reminder : did you add the Rancher Secrets service from the catalog ?"
+      description: "For this stack to work, you need to add the Rancher Secrets service from the catalog. See http://rancher.com/docs/rancher/v1.4/en/cattle/secrets/#enabling-secrets-in-containers for more informations."
+      required: true
+      default: null
+      type: "boolean"
+    - variable: _CHECK_ADDED_SECRET_ADMIN_USERNAME
+      label: "Reminder : did you create the ADMIN_USERNAME secret ?"
+      description: "For this stack to work, you need to create an ADMIN_USERNAME secret. This will be the Geonode and Geoserver administrator username"
+      required: true
+      default: null
+      type: "boolean"
+    - variable: _CHECK_ADDED_SECRET_ADMIN_PASSWORD
+      label: "Reminder : did you create the ADMIN_PASSWORD secret ?"
+      description: "For this stack to work, you need to create an ADMIN_PASSWORD secret. This will be the Geonode and Geoserver administrator password"
+      required: true
+      default: null
+      type: "boolean"
 services:    
   django:
     scale: 1
