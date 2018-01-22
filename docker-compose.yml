@@ -150,6 +150,11 @@ services:
     # volumes:
     #   - letsencrypt_certs:/etc/letsencrypt
     #   - letsencrypt_www:/var/www/letsencrypt
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 60s
     networks:
       - deploy-network
 

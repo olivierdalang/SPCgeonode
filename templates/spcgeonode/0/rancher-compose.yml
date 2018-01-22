@@ -66,6 +66,7 @@ services:
     scale: 1
     start_on_create: true
   letsencrypt:
+    # TODO : find a way to not restart too quickely on failure, because then we hit letsencrypt limits
     scale: 1
     start_on_create: true
   
