@@ -58,6 +58,8 @@ python manage.py loaddata oauth2_initial_data
 # http://geoserver:8080/geoserver
 # http://geoserver:8080/geoserver/
 
+# TODO : See if we need to run updateip here
+
 printf '\n--- END Django Docker Entrypoint ---\n\n'
 
 # Run the CMD 
