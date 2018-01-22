@@ -15,11 +15,21 @@ x-common-django:
   image: olivierdalang/spcgeonode:django-0.0.1
   build: ./django/
   environment: # WARNING changes here must be repercuted to django, celery and celerycam
-    - GEOSERVER_PUBLIC_LOCATION=http://${DOMAIN_NAME}/geoserver/
+    - GEOSERVER_PUBLIC_LOCATION=http://${WAN_HOST}/geoserver/
     - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver
     - ADMIN_EMAIL=${ADMIN_EMAIL}
-  env_file:
-    - ./django/docker-compose.env
+    - DJANGO_SETTINGS_MODULE=spcgeonode.settings
+    - DEBUG=False
+    - REGISTRATION_OPEN=True
+    - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
+    - BROKER_URL=amqp://guest:guest@rabbitmq:5672/
+    - STATIC_ROOT=/spcgeonode-static/
+    - MEDIA_ROOT=/spcgeonode-media/
+    - STATIC_URL=/static/
+    - MEDIA_URL=/media/
+    - GEOSERVER_LOCATION=http://nginx/geoserver/
+    - C_FORCE_ROOT=1 # TODO : understand that (is it a security concern ?)
+    - TIME_ZONE=Pacific/Fiji
   volumes:
     - static:/spcgeonode-static
     - media:/spcgeonode-media
@@ -33,7 +43,7 @@ x-common-django:
     restart_policy:
       condition: on-failure
   networks:
-    - default-net
+    - deploy-network
     
 
 
@@ -65,7 +75,7 @@ services:
       restart_policy:
         condition: on-failure
     networks:
-      - default-net
+      - deploy-network
 
   # elasticsearch:
   #   image: elasticsearch:5.6
@@ -78,7 +88,7 @@ services:
       restart_policy:
         condition: on-failure
     networks:
-      - default-net
+      - deploy-network
   
   nginx:
     # Nginx is serving django static and media files and proxies to django and geonode
@@ -103,14 +113,15 @@ services:
       restart_policy:
         condition: on-failure
     networks:
-      - default-net
+      - deploy-network
 
   geoserver:
     # This is the geoserver backend required by geonode.
     image: olivierdalang/spcgeonode:geoserver-0.0.1
     build: ./geoserver/
-    env_file:
-      - ./geoserver/docker-compose.env
+    environment:
+     - GEOSERVER_HOME=/geoserver-2.12.1
+     - GEOSERVER_DATA_DIR=/spcgeonode-geodatadir
     volumes:
       - geodatadir:/spcgeonode-geodatadir/
     depends_on:
@@ -123,7 +134,7 @@ services:
       restart_policy:
         condition: on-failure
     networks:
-      - default-net
+      - deploy-network
 
   letsencrypt:
     image: olivierdalang/spcgeonode:letsencrypt-0.0.1
@@ -140,7 +151,7 @@ services:
     #   - letsencrypt_certs:/etc/letsencrypt
     #   - letsencrypt_www:/var/www/letsencrypt
     networks:
-      - default-net
+      - deploy-network
 
   # backuper:
   #   image: olivierdalang/spcgeonode:backuper-0.0.1
@@ -154,7 +165,7 @@ services:
   #     restart_policy:
   #       condition: on-failure
   #   networks:
-  #     - default-net
+  #     - deploy-network
 
   # visualizer:
   #   image: dockersamples/visualizer:stable
@@ -166,7 +177,7 @@ services:
   #     placement:
   #       constraints: [node.role == manager]
   #   networks:
-  #     - default-net
+  #     - deploy-network
 
 volumes:
   static:
@@ -178,4 +189,8 @@ volumes:
 
 # For some reason docker-swarm doesn't work when networks arent explicitely set
 networks:
-   default-net:
+  deploy-network: # TODO : properly understand this (without it, it doesn't work with docker stack deploy)
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16

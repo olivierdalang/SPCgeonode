@@ -9,6 +9,7 @@ RUN apk add certbot --repository http://dl-3.alpinelinux.org/alpine/edge/testing
 # The entrypoint creates the certificate
 ADD docker-entrypoint.sh docker-entrypoint.sh 
 ENTRYPOINT ["./docker-entrypoint.sh"]
+RUN chmod +x docker-entrypoint.sh
 
 # We run cron in foreground
 CMD ["/usr/sbin/crond", "-f"]

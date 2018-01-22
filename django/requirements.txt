@@ -1,5 +1,3 @@
 geonode==2.6.3
 six==1.10.0 # workaround for https://github.com/benjaminp/six/issues/210
 transifex-client==0.12.5 # fix because 0.13.0 requires python-slugify 1.6.4 which has a bug (shadows awesome 1.6.5)
-django-overextends
-git+https://github.com/PacificCommunity/geonode_offlineosm.git@0.0.3 # TODO : publish to pypi

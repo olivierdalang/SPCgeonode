@@ -28,4 +28,6 @@ RUN mkdir /spcgeonode
 WORKDIR /spcgeonode/
 ADD . /spcgeonode/
 
+RUN chmod +x docker-entrypoint.sh
+
 EXPOSE 8000
