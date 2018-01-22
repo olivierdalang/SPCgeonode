@@ -112,6 +112,7 @@ Nginx proxies to uwsgi (django) and geoserver. It also directly serves django st
 - TODO : optimise dockerfiles
 - TODO : reorganize folders : django as main, other services in subfolders ?
 - TODO : contribute back to geonode-project
+- TODO : move rancher catalog out of this repo
 
 ## Publish
 
