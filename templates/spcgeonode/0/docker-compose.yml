@@ -103,10 +103,6 @@ services:
     image: mdillon/postgis:9.6-alpine
     volumes:
       - database:/var/lib/postgresql/data 
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
     networks:
       - deploy-network
 
@@ -116,10 +112,6 @@ services:
   rabbitmq:
     # Vanilla RabbitMQ service. This is needed by celery
     image: rabbitmq:3.7 
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
     networks:
       - deploy-network
   
@@ -141,10 +133,6 @@ services:
       - media:/spcgeonode-media 
       - certbot-challenge:/spcgeonode-certbot-challenge
       - certbot-keys:/spcgeonode-certbot-keys
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
     networks:
       - deploy-network
 
@@ -162,10 +150,6 @@ services:
     secrets:
       - admin_username
       - admin_password 
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
     networks:
       - deploy-network
 
@@ -193,10 +177,6 @@ services:
   #     - database:/tobackup/spcgeonode-database
   #     - media:/tobackup/spcgeonode-media
   #     - geodatadir:/tobackup/spcgeonode-geodatadir 
-  #   deploy:
-  #     replicas: 1
-  #     restart_policy:
-  #       condition: on-failure
   #   networks:
   #     - deploy-network
 
@@ -206,9 +186,6 @@ services:
   #     - "8080:8080"
   #   # volumes:
   #   #   - "/var/run/docker.sock:/var/run/docker.sock"
-  #   deploy:
-  #     placement:
-  #       constraints: [node.role == manager]
   #   networks:
   #     - deploy-network
 
