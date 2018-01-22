@@ -14,9 +14,9 @@ x-common-django:
   &default-common-django
   image: olivierdalang/spcgeonode:django-latest # TODO : versionize
   build: ./django/
-  environment: # WARNING changes here must be repercuted to django, celery and celerycam
+  environment:
     - GEOSERVER_PUBLIC_LOCATION=http://${WAN_HOST}/geoserver/
-    - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver
+    - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver # TODO : remove this if we don't use OAuth2
     - ADMIN_EMAIL=${ADMIN_EMAIL}
     - DJANGO_SETTINGS_MODULE=spcgeonode.settings
     - DEBUG=False
@@ -143,13 +143,9 @@ services:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
-    # command: /bin/true
     volumes:
       - certbot-challenge:/spcgeonode-certbot-challenge/
       - certbot-keys:/etc/letsencrypt/
-    # volumes:
-    #   - letsencrypt_certs:/etc/letsencrypt/
-    #   - letsencrypt_www:/var/www/letsencrypt/
     deploy:
       replicas: 1
       restart_policy:
