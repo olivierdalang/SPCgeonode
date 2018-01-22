@@ -118,7 +118,6 @@ services:
   nginx:
     # Nginx is serving django static and media files and proxies to django and geonode
     image: olivierdalang/spcgeonode:nginx-latest # TODO : versionize
-    build: ./nginx/
     environment:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
@@ -139,7 +138,6 @@ services:
   geoserver:
     # This is the geoserver backend required by geonode.
     image: olivierdalang/spcgeonode:geoserver-latest # TODO : versionize
-    build: ./geoserver/
     environment:
      - GEOSERVER_HOME=/geoserver-2.12.1
      - GEOSERVER_DATA_DIR=/spcgeonode-geodatadir
@@ -155,7 +153,6 @@ services:
 
   letsencrypt:
     image: olivierdalang/spcgeonode:letsencrypt-latest # TODO : versionize
-    build: ./letsencrypt/
     environment:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
@@ -172,7 +169,6 @@ services:
 
   # backuper:
   #   image: olivierdalang/spcgeonode:backuper-latest # TODO : versionize
-  #   build: ./backuper/
   #   volumes:
   #     - database:/tobackup/spcgeonode-database
   #     - media:/tobackup/spcgeonode-media
