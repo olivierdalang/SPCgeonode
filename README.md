@@ -84,7 +84,7 @@ docker service ps SERVICE_NAME --no-trunc
 docker service logs SERVICE_NAME
 # or
 # 1. Use portainer and check on http://127.0.0.1:9000
-docker service create --name portainer --publish 9000:9000 --replicas=1 --constraint 'node.role == manager' --mount type=bind,src=//var/run/docker.sock,dst=/var/run/docker.sock --mount type=bind,src=//opt/portainer,dst=/data portainer/portainer -H unix:///var/run/docker.sock
+docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
 
 # If container donesn't start, I could debug it sometime with docker ps -a (then you may see a long list of retries) and then manually doing docker start CONTAINER_ID
 ```
