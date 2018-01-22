@@ -6,7 +6,7 @@ events {
 
 http{
 
-    # https - listens on specific name - we use letsencrypt cert
+    # https - listens on specific name - this uses letsencrypt cert
     server {
         listen              443 ssl;
         server_name         $WAN_HOST; # TODO : configurize HOSTNAME
@@ -17,6 +17,7 @@ http{
         include spcgeonode.conf;
     }
 
+    # http - listens to specific IP - this is not encrypted (not ideal but admissible on LAN)
     # TODO : do not use unencrypted connection even on LAN, but is it possible to have browser not complaining about unknown authority ?
     server {
         listen              80;
@@ -35,7 +36,6 @@ http{
     #     include spcgeonode.conf;
     # }
 
-    # http - listens to specific IP - we are non encrypted (admissible on LAN)
 
     # http - listen on all servers - we redirect to https
     server {
