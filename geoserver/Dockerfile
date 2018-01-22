@@ -1,47 +1,40 @@
 FROM java:8-jre-alpine
 
 # Install dependencies
-RUN apk update
-RUN apk add ca-certificates
+RUN apk add --no-cache ca-certificates openssl
 RUN update-ca-certificates
-RUN apk add openssl
 
 WORKDIR /
 
-# Download geoserver
-RUN wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.1/geoserver-2.12.1-bin.zip
-RUN unzip geoserver-2.12.1-bin.zip
-RUN rm geoserver-2.12.1-bin.zip
-
-# Download printing module
-RUN wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.1/extensions/geoserver-2.12.1-printing-plugin.zip
-RUN unzip geoserver-2.12.1-printing-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
-RUN rm geoserver-2.12.1-printing-plugin.zip
-
-# Download geonode module
-RUN wget http://build.geonode.org/geoserver/latest/geonode-geoserver-ext-2.12.x-geoserver-plugin.zip
-RUN unzip geonode-geoserver-ext-2.12.x-geoserver-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
-RUN rm geonode-geoserver-ext-2.12.x-geoserver-plugin.zip
-
-# # Download oauth2 module
-RUN wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-authkey-plugin.zip
-RUN unzip -n geoserver-2.12-SNAPSHOT-authkey-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
-RUN rm geoserver-2.12-SNAPSHOT-authkey-plugin.zip
-
-# # Download oauth2-geonode module
-RUN wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip
-RUN unzip -n geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
-RUN rm geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip
-
-# # Download geofence module
-RUN wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-geofence-plugin.zip
-RUN unzip -n geoserver-2.12-SNAPSHOT-geofence-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
-RUN rm geoserver-2.12-SNAPSHOT-geofence-plugin.zip
-
-# # Download geofence module
-RUN wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
-RUN unzip -n geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/
-RUN rm geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
+# Download Geoserver and related modules
+RUN echo "Download geoserver" && \
+    wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.1/geoserver-2.12.1-bin.zip && \
+    unzip geoserver-2.12.1-bin.zip && \
+    rm geoserver-2.12.1-bin.zip && \
+    echo "Download printing module" && \
+    wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.1/extensions/geoserver-2.12.1-printing-plugin.zip && \
+    unzip geoserver-2.12.1-printing-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/ && \
+    rm geoserver-2.12.1-printing-plugin.zip && \
+    echo "Download geonode module" && \
+    wget http://build.geonode.org/geoserver/latest/geonode-geoserver-ext-2.12.x-geoserver-plugin.zip && \
+    unzip geonode-geoserver-ext-2.12.x-geoserver-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/ && \
+    rm geonode-geoserver-ext-2.12.x-geoserver-plugin.zip && \
+    echo "Download oauth2 module" && \
+    wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-authkey-plugin.zip && \
+    unzip -n geoserver-2.12-SNAPSHOT-authkey-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/ && \
+    rm geoserver-2.12-SNAPSHOT-authkey-plugin.zip && \
+    echo "Download oauth2-geonode module" && \
+    wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip && \
+    unzip -n geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/ && \
+    rm geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip && \
+    echo "Download geofence module" && \
+    wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-geofence-plugin.zip && \
+    unzip -n geoserver-2.12-SNAPSHOT-geofence-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/ && \
+    rm geoserver-2.12-SNAPSHOT-geofence-plugin.zip && \
+    echo "Download geofence module" && \
+    wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip && \
+    unzip -n geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/ && \
+    rm geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
 
 # # Add initial geodatadir (adapted from http://build.geonode.org/geoserver/latest/data-2.12.x.zip)
 ADD geodatadir-init /geodatadir-init
@@ -55,56 +48,3 @@ EXPOSE 8080
 ADD docker-entrypoint.sh docker-entrypoint.sh 
 ENTRYPOINT ["./docker-entrypoint.sh"]
 RUN chmod +x docker-entrypoint.sh
-
-# ENV GEOSERVER_VERSION=2.9.x-oauth2
-# ENV GEOSERVER_DATA_DIR="/geoserver_data/data"
-
-# #
-# # Download and install GeoServer
-# #
-# RUN cd /usr/local/tomcat/webapps \
-#     && wget --progress=bar:force:noscroll http://build.geonode.org/geoserver/latest/geoserver-${GEOSERVER_VERSION}.war \
-#     && unzip -q geoserver-${GEOSERVER_VERSION}.war -d geoserver \
-#     && rm geoserver-${GEOSERVER_VERSION}.war \
-#     && mkdir -p $GEOSERVER_DATA_DIR
-
-# VOLUME $GEOSERVER_DATA_DIR
-
-# # Set DOCKER_HOST address
-# ARG DOCKER_HOST=${DOCKER_HOST}
-# # for debugging
-# RUN echo -n DOCKER_HOST=$DOCKER_HOST
-# #
-# ENV DOCKER_HOST ${DOCKER_HOST}
-# # for debugging
-# RUN echo -n DOCKER_HOST=$DOCKER_HOST
-
-# ENV DOCKER_HOST_IP ${DOCKER_HOST_IP}
-# RUN echo export DOCKER_HOST_IP=${DOCKER_HOST} | sed 's/tcp:\/\/\([^:]*\).*/\1/' >> /root/.bashrc
-
-# # for debugging
-# RUN echo -n DOCKER_HOST_IP=${DOCKER_HOST_IP}
-# # ENV DOCKER_HOST_IP ${DOCKER_HOST_IP}
-# # Set WEBSERVER public port
-# ARG PUBLIC_PORT=${PUBLIC_PORT}
-# # for debugging
-# RUN echo -n PUBLIC_PORT=${PUBLIC_PORT}
-# #
-# ENV PUBLIC_PORT=${PUBLIC_PORT}
-# # for debugging
-# RUN echo -n PUBLIC_PORT=${PUBLIC_PORT}
-
-# # set nginx base url for geoserver
-# RUN echo export BASE_URL=http://${NGINX_HOST}:${NGINX_PORT}/ | sed 's/tcp:\/\/\([^:]*\).*/\1/' >> /root/.bashrc
-
-# # copy the script and perform the change to config.xml
-# RUN mkdir -p /usr/local/tomcat/tmp
-# WORKDIR /usr/local/tomcat/tmp
-# COPY set_geoserver_auth.sh /usr/local/tomcat/tmp
-# RUN chmod +x /usr/local/tomcat/tmp/set_geoserver_auth.sh
-
-# COPY setup_auth.sh /usr/local/tomcat/tmp
-# RUN chmod +x /usr/local/tomcat/tmp/setup_auth.sh
-# COPY entrypoint.sh /usr/local/tomcat/tmp/entrypoint.sh
-# RUN chmod +x /usr/local/tomcat/tmp/entrypoint.sh
-# CMD ["/usr/local/tomcat/tmp/entrypoint.sh"]
