@@ -12,7 +12,7 @@ services:
 
   django:
     # This is our custom django application. It includes Geonode.
-    image: olivierdalang/spcgeonode:django-latest # TODO : versionize
+    image: olivierdalang/spcgeonode:django-0.0.3
     environment: # WARNING changes here must be repercuted to django, celery and celerycam
       - GEOSERVER_PUBLIC_LOCATION=http://${WAN_HOST}/geoserver/
       - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver
@@ -30,8 +30,8 @@ services:
       - C_FORCE_ROOT=1 # TODO : understand that (is it a security concern ?)
       - TIME_ZONE=Pacific/Fiji
     volumes:
-      - static:/spcgeonode-static/
-      - media:/spcgeonode-media/
+      - static:/spcgeonode-static
+      - media:/spcgeonode-media
     depends_on:
       - postgres
     secrets:
@@ -42,7 +42,7 @@ services:
     
   celery:
     # This is the celery worker that executes celery tasks created by Django.
-    image: olivierdalang/spcgeonode:django-latest # TODO : versionize
+    image: olivierdalang/spcgeonode:django-0.0.3
     environment: # WARNING changes here must be repercuted to django, celery and celerycam
       - GEOSERVER_PUBLIC_LOCATION=http://${WAN_HOST}/geoserver/
       - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver
@@ -60,8 +60,8 @@ services:
       - C_FORCE_ROOT=1 # TODO : understand that (is it a security concern ?)
       - TIME_ZONE=Pacific/Fiji
     volumes:
-      - static:/spcgeonode-static/
-      - media:/spcgeonode-media/
+      - static:/spcgeonode-static
+      - media:/spcgeonode-media
     depends_on:
       - postgres
     secrets:
@@ -71,7 +71,7 @@ services:
 
   celerycam:
     # This is the celery camera that monitors celery tasks and populate the djcelery django admin interface
-    image: olivierdalang/spcgeonode:django-latest # TODO : versionize
+    image: olivierdalang/spcgeonode:django-0.0.3
     environment: # WARNING changes here must be repercuted to django, celery and celerycam
       - GEOSERVER_PUBLIC_LOCATION=http://${WAN_HOST}/geoserver/
       - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver
@@ -89,8 +89,8 @@ services:
       - C_FORCE_ROOT=1 # TODO : understand that (is it a security concern ?)
       - TIME_ZONE=Pacific/Fiji
     volumes:
-      - static:/spcgeonode-static/
-      - media:/spcgeonode-media/
+      - static:/spcgeonode-static
+      - media:/spcgeonode-media
     depends_on:
       - postgres
     secrets:
@@ -102,7 +102,7 @@ services:
     # Vanilla PostGIS database.
     image: mdillon/postgis:9.6-alpine
     volumes:
-      - database:/var/lib/postgresql/data/
+      - database:/var/lib/postgresql/data 
 
   # elasticsearch:
   #   image: elasticsearch:5.6
@@ -113,7 +113,7 @@ services:
   
   nginx:
     # Nginx is serving django static and media files and proxies to django and geonode
-    image: olivierdalang/spcgeonode:nginx-latest # TODO : versionize
+    image: olivierdalang/spcgeonode:nginx-0.0.3
     environment:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
@@ -124,14 +124,14 @@ services:
       - django
       - geoserver
     volumes:
-      - static:/spcgeonode-static/
-      - media:/spcgeonode-media/
-      - certbot-challenge:/spcgeonode-certbot-challenge/
-      - certbot-keys:/spcgeonode-certbot-keys/
+      - static:/spcgeonode-static
+      - media:/spcgeonode-media 
+      - certbot-challenge:/spcgeonode-certbot-challenge
+      - certbot-keys:/spcgeonode-certbot-keys
 
   geoserver:
     # This is the geoserver backend required by geonode.
-    image: olivierdalang/spcgeonode:geoserver-latest # TODO : versionize
+    image: olivierdalang/spcgeonode:geoserver-0.0.3
     environment:
      - GEOSERVER_HOME=/geoserver-2.12.1
      - GEOSERVER_DATA_DIR=/spcgeonode-geodatadir
@@ -144,7 +144,7 @@ services:
       - admin_password 
 
   letsencrypt:
-    image: olivierdalang/spcgeonode:letsencrypt-latest # TODO : versionize
+    image: olivierdalang/spcgeonode:letsencrypt-0.0.3
     environment:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
@@ -154,15 +154,15 @@ services:
       - certbot-challenge:/spcgeonode-certbot-challenge/
       - certbot-keys:/etc/letsencrypt/
     # volumes:
-    #   - letsencrypt_certs:/etc/letsencrypt/
-    #   - letsencrypt_www:/var/www/letsencrypt/
+    #   - letsencrypt_certs:/etc/letsencrypt
+    #   - letsencrypt_www:/var/www/letsencrypt
 
   # backuper:
-  #   image: olivierdalang/spcgeonode:backuper-latest # TODO : versionize
+  #   image: olivierdalang/spcgeonode:backuper-0.0.3
   #   volumes:
-  #     - database:/tobackup/spcgeonode-database/
-  #     - media:/tobackup/spcgeonode-media/
-  #     - geodatadir:/tobackup/spcgeonode-geodatadir/
+  #     - database:/tobackup/spcgeonode-database
+  #     - media:/tobackup/spcgeonode-media
+  #     - geodatadir:/tobackup/spcgeonode-geodatadir 
 
   # visualizer:
   #   image: dockersamples/visualizer:stable

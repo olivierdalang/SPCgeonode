@@ -14,9 +14,9 @@ x-common-django:
   &default-common-django
   image: olivierdalang/spcgeonode:django-0.0.3
   build: ./django/
-  environment: # WARNING changes here must be repercuted to django, celery and celerycam
+  environment:
     - GEOSERVER_PUBLIC_LOCATION=http://${WAN_HOST}/geoserver/
-    - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver
+    - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver # TODO : remove this if we don't use OAuth2
     - ADMIN_EMAIL=${ADMIN_EMAIL}
     - DJANGO_SETTINGS_MODULE=spcgeonode.settings
     - DEBUG=False
@@ -31,8 +31,8 @@ x-common-django:
     - C_FORCE_ROOT=1 # TODO : understand that (is it a security concern ?)
     - TIME_ZONE=Pacific/Fiji
   volumes:
-    - static:/spcgeonode-static
-    - media:/spcgeonode-media
+    - static:/spcgeonode-static/
+    - media:/spcgeonode-media/
   depends_on:
     - postgres
   secrets:
@@ -69,7 +69,7 @@ services:
     # Vanilla PostGIS database.
     image: mdillon/postgis:9.6-alpine
     volumes:
-      - database:/var/lib/postgresql/data 
+      - database:/var/lib/postgresql/data/ 
     deploy:
       replicas: 1
       restart_policy:
@@ -104,10 +104,10 @@ services:
       - django
       - geoserver
     volumes:
-      - static:/spcgeonode-static
-      - media:/spcgeonode-media 
-      - certbot-challenge:/spcgeonode-certbot-challenge
-      - certbot-keys:/spcgeonode-certbot-keys
+      - static:/spcgeonode-static/
+      - media:/spcgeonode-media/
+      - certbot-challenge:/spcgeonode-certbot-challenge/
+      - certbot-keys:/spcgeonode-certbot-keys/
     deploy:
       replicas: 1
       restart_policy:
@@ -143,13 +143,14 @@ services:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
-    # command: /bin/true
     volumes:
       - certbot-challenge:/spcgeonode-certbot-challenge/
       - certbot-keys:/etc/letsencrypt/
-    # volumes:
-    #   - letsencrypt_certs:/etc/letsencrypt
-    #   - letsencrypt_www:/var/www/letsencrypt
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 60s
     networks:
       - deploy-network
 
@@ -157,9 +158,9 @@ services:
   #   image: olivierdalang/spcgeonode:backuper-0.0.3
   #   build: ./backuper/
   #   volumes:
-  #     - database:/tobackup/spcgeonode-database
-  #     - media:/tobackup/spcgeonode-media
-  #     - geodatadir:/tobackup/spcgeonode-geodatadir 
+  #     - database:/tobackup/spcgeonode-database/
+  #     - media:/tobackup/spcgeonode-media/
+  #     - geodatadir:/tobackup/spcgeonode-geodatadir/
   #   deploy:
   #     replicas: 1
   #     restart_policy:

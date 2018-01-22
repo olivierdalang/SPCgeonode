@@ -2,8 +2,8 @@ version: '2'
 catalog:
   name: "SPC Geonode"
   description: "SPC Geonode"
-  version: "dev"
-  uuid: spc-geonode-dev
+  version: "0.0.3"
+  uuid: spc-geonode-0-0-3
   questions:
     - variable: WAN_HOST
       label: "Hostname for WAN access"
@@ -66,7 +66,6 @@ services:
     scale: 1
     start_on_create: true
   letsencrypt:
-    # TODO : find a way to not restart too quickely on failure, because then we hit letsencrypt limits
     scale: 1
     start_on_create: true
   
