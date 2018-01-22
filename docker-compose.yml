@@ -31,8 +31,8 @@ x-common-django:
     - C_FORCE_ROOT=1 # TODO : understand that (is it a security concern ?)
     - TIME_ZONE=Pacific/Fiji
   volumes:
-    - static:/spcgeonode-static
-    - media:/spcgeonode-media
+    - static:/spcgeonode-static/
+    - media:/spcgeonode-media/
   depends_on:
     - postgres
   secrets:
@@ -69,7 +69,7 @@ services:
     # Vanilla PostGIS database.
     image: mdillon/postgis:9.6-alpine
     volumes:
-      - database:/var/lib/postgresql/data 
+      - database:/var/lib/postgresql/data/ 
     deploy:
       replicas: 1
       restart_policy:
@@ -104,10 +104,10 @@ services:
       - django
       - geoserver
     volumes:
-      - static:/spcgeonode-static
-      - media:/spcgeonode-media 
-      - certbot-challenge:/spcgeonode-certbot-challenge
-      - certbot-keys:/spcgeonode-certbot-keys
+      - static:/spcgeonode-static/
+      - media:/spcgeonode-media/
+      - certbot-challenge:/spcgeonode-certbot-challenge/
+      - certbot-keys:/spcgeonode-certbot-keys/
     deploy:
       replicas: 1
       restart_policy:
@@ -148,8 +148,8 @@ services:
       - certbot-challenge:/spcgeonode-certbot-challenge/
       - certbot-keys:/etc/letsencrypt/
     # volumes:
-    #   - letsencrypt_certs:/etc/letsencrypt
-    #   - letsencrypt_www:/var/www/letsencrypt
+    #   - letsencrypt_certs:/etc/letsencrypt/
+    #   - letsencrypt_www:/var/www/letsencrypt/
     deploy:
       replicas: 1
       restart_policy:
@@ -162,9 +162,9 @@ services:
   #   image: olivierdalang/spcgeonode:backuper-latest # TODO : versionize
   #   build: ./backuper/
   #   volumes:
-  #     - database:/tobackup/spcgeonode-database
-  #     - media:/tobackup/spcgeonode-media
-  #     - geodatadir:/tobackup/spcgeonode-geodatadir 
+  #     - database:/tobackup/spcgeonode-database/
+  #     - media:/tobackup/spcgeonode-media/
+  #     - geodatadir:/tobackup/spcgeonode-geodatadir/
   #   deploy:
   #     replicas: 1
   #     restart_policy:

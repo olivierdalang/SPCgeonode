@@ -30,8 +30,8 @@ services:
       - C_FORCE_ROOT=1 # TODO : understand that (is it a security concern ?)
       - TIME_ZONE=Pacific/Fiji
     volumes:
-      - static:/spcgeonode-static
-      - media:/spcgeonode-media
+      - static:/spcgeonode-static/
+      - media:/spcgeonode-media/
     depends_on:
       - postgres
     secrets:
@@ -60,8 +60,8 @@ services:
       - C_FORCE_ROOT=1 # TODO : understand that (is it a security concern ?)
       - TIME_ZONE=Pacific/Fiji
     volumes:
-      - static:/spcgeonode-static
-      - media:/spcgeonode-media
+      - static:/spcgeonode-static/
+      - media:/spcgeonode-media/
     depends_on:
       - postgres
     secrets:
@@ -89,8 +89,8 @@ services:
       - C_FORCE_ROOT=1 # TODO : understand that (is it a security concern ?)
       - TIME_ZONE=Pacific/Fiji
     volumes:
-      - static:/spcgeonode-static
-      - media:/spcgeonode-media
+      - static:/spcgeonode-static/
+      - media:/spcgeonode-media/
     depends_on:
       - postgres
     secrets:
@@ -102,7 +102,7 @@ services:
     # Vanilla PostGIS database.
     image: mdillon/postgis:9.6-alpine
     volumes:
-      - database:/var/lib/postgresql/data 
+      - database:/var/lib/postgresql/data/
 
   # elasticsearch:
   #   image: elasticsearch:5.6
@@ -124,10 +124,10 @@ services:
       - django
       - geoserver
     volumes:
-      - static:/spcgeonode-static
-      - media:/spcgeonode-media 
-      - certbot-challenge:/spcgeonode-certbot-challenge
-      - certbot-keys:/spcgeonode-certbot-keys
+      - static:/spcgeonode-static/
+      - media:/spcgeonode-media/
+      - certbot-challenge:/spcgeonode-certbot-challenge/
+      - certbot-keys:/spcgeonode-certbot-keys/
 
   geoserver:
     # This is the geoserver backend required by geonode.
@@ -154,15 +154,15 @@ services:
       - certbot-challenge:/spcgeonode-certbot-challenge/
       - certbot-keys:/etc/letsencrypt/
     # volumes:
-    #   - letsencrypt_certs:/etc/letsencrypt
-    #   - letsencrypt_www:/var/www/letsencrypt
+    #   - letsencrypt_certs:/etc/letsencrypt/
+    #   - letsencrypt_www:/var/www/letsencrypt/
 
   # backuper:
   #   image: olivierdalang/spcgeonode:backuper-latest # TODO : versionize
   #   volumes:
-  #     - database:/tobackup/spcgeonode-database
-  #     - media:/tobackup/spcgeonode-media
-  #     - geodatadir:/tobackup/spcgeonode-geodatadir 
+  #     - database:/tobackup/spcgeonode-database/
+  #     - media:/tobackup/spcgeonode-media/
+  #     - geodatadir:/tobackup/spcgeonode-geodatadir/
 
   # visualizer:
   #   image: dockersamples/visualizer:stable
