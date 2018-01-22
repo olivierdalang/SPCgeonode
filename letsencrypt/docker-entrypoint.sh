@@ -10,16 +10,19 @@ printf "\n\nCreating autoissued certificate (placeholder while waiting for real 
 mkdir -p "/etc/letsencrypt/autoissued/wan/"
 openssl req -x509 -nodes -days 0 -newkey rsa:2048 -keyout "/etc/letsencrypt/autoissued/wan/privkey.pem" -out "/etc/letsencrypt/autoissued/wan/fullchain.pem" -subj "/CN=$WAN_HOST"
 mkdir -p "/etc/letsencrypt/live/$WAN_HOST/"
-ln -s /etc/letsencrypt/autoissued/wan/privkey.pem /etc/letsencrypt/live/$WAN_HOST/privkey.pem
-ln -s /etc/letsencrypt/autoissued/wan/fullchain.pem /etc/letsencrypt/live/$WAN_HOST/fullchain.pem
+cp -rf "/etc/letsencrypt/autoissued/wan/privkey.pem" "/etc/letsencrypt/live/$WAN_HOST/privkey.pem"
+cp -rf "/etc/letsencrypt/autoissued/wan/fullchain.pem" "/etc/letsencrypt/live/$WAN_HOST/fullchain.pem"
 
 printf "\n\nWaiting for Nginx\n"
-until $(curl --output /dev/null --silent --head --fail http://nginx); do
+mkdir -p "/spcgeonode-certbot-challenge/.well-known/"
+echo "online" > /spcgeonode-certbot-challenge/.well-known/online.html
+until $(curl --output /dev/null --silent --head --fail http://nginx/.well-known/online.html); do
     printf 'No answer... Waiting 5 more seconds...'
     sleep 5
 done
 
 printf "\n\nInstalling certbot\n"
+echo "certbot certonly --webroot -w /spcgeonode-certbot-challenge/ -d \"$WAN_HOST\" -m \"$ADMIN_EMAIL\" --agree-tos --non-interactive --staging"
 # TODO : remove --staging !
 certbot certonly --webroot -w /spcgeonode-certbot-challenge/ -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive --staging
 

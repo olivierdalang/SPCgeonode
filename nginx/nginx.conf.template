@@ -22,6 +22,12 @@ http{
     server {
         listen              80;
         server_name         $LAN_HOST nginx; # we add nginx as this is the host for internal API requests # TODO : configurize LAN HOSTNAME
+        
+        # Let's encrypt challenge
+        location /.well-known {
+            alias /spcgeonode-certbot-challenge/.well-known;
+            include  /etc/nginx/mime.types;
+        }
 
         include spcgeonode.conf;
     }

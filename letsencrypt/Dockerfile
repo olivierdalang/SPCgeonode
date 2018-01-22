@@ -6,6 +6,9 @@ RUN apk add openssl
 RUN apk add certbot --repository http://dl-3.alpinelinux.org/alpine/edge/testing/
 
 
+# TODO: move to top
+RUN apk add --no-cache curl
+
 # The entrypoint creates the certificate
 ADD docker-entrypoint.sh docker-entrypoint.sh 
 ENTRYPOINT ["./docker-entrypoint.sh"]
