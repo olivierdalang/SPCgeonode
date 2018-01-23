@@ -54,8 +54,7 @@ else
 fi
 
 
-printf "\nWaiting a little bit\n"
-# We wait a little bit to avoid hitting Letsencrypt rate limits in case there's a failure and the the container is restarted with low delay
+printf "\nWaiting 20s to avoid hitting Letsencrypt rate limits if restarting in case of failure\n"
 sleep 20
 
 printf "\nGetting the certificates\n"
@@ -64,7 +63,12 @@ certbot --config-dir /spcgeonode-certbot/ -vvv certonly --webroot -w /spcgeonode
 printf "\nTesting autorenew\n"
 certbot --config-dir /spcgeonode-certbot/ -vvv renew --dry-run
 
+
+
+# Cron jobs
+
 printf "\n\nInstalling cronjobs\n"
+
 # notes : first one is letsencrypt (we run it twice a day), second one is autoissued (we renew every year, as it's duration is 365 days + 30 days)
 ( echo "0 0,12 * * * date && certbot renew" ; echo "0 0 1 1 * date && openssl req -x509 -nodes -days 395 -newkey rsa:2048 -keyout /spcgeonode-certbot/autoissued/$LAN_HOST/privkey.pem -out /spcgeonode-certbot/autoissued/$LAN_HOST/fullchain.pem -subj \"/CN=$LAN_HOST\"") | /usr/bin/crontab -
 # We print the crontab just for debugging purposes
