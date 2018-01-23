@@ -37,9 +37,15 @@ if [ ! -f "/spcgeonode-certbot/live/$WAN_HOST/privkey.pem" ] || [ ! -f "/spcgeon
     
     mkdir -p "/spcgeonode-certbot/autoissued/$WAN_HOST/"
     openssl req -x509 -nodes -days 0 -newkey rsa:2048 -keyout "/spcgeonode-certbot/autoissued/$WAN_HOST/privkey.pem" -out "/spcgeonode-certbot/autoissued/$WAN_HOST/fullchain.pem" -subj "/CN=$WAN_HOST"
+
     mkdir -p "/spcgeonode-certbot/live/$WAN_HOST/"
     ln -s -f "/spcgeonode-certbot/autoissued/$WAN_HOST/privkey.pem" "/spcgeonode-certbot/live/$WAN_HOST/privkey.pem"
     ln -s -f "/spcgeonode-certbot/autoissued/$WAN_HOST/fullchain.pem" "/spcgeonode-certbot/live/$WAN_HOST/fullchain.pem"
+
+    mkdir -p "/spcgeonode-certbot/renewal/"
+    touch "/spcgeonode-certbot/renewal/$WAN_HOST.conf"
+    # printf "see what we need in there" > "/spcgeonode-certbot/renewal/$WAN_HOST.conf"
+
 
 else
 
