@@ -61,17 +61,21 @@ And then
 docker swarm init
 
 # 2. Set variables (Windows)
-$WAN_HOST="localhost"
-$LAN_HOST="127.0.0.1"
-$ADMIN_USERNAME="super"
-$ADMIN_PASSWORD="duper"
-$ADMIN_EMAIL="admin@null"
+set WAN_HOST="localhost"
+set LAN_HOST="127.0.0.1"
+set ADMIN_USERNAME="super"
+set ADMIN_PASSWORD="duper"
+set ADMIN_EMAIL="admin@null"
 
 # 3. Deploy the stack (again: MAKE SURE YOU'VE JUST REBUILD THE IMAGES)
 # this creates the docker secrets
 echo "$ADMIN_USERNAME" | docker secret create admin_username -
 echo "$ADMIN_PASSWORD" | docker secret create admin_password -
 docker stack deploy spcgeonode --compose-file docker-compose.yml
+
+# Remove the secrets
+set ADMIN_USERNAME=""
+set ADMIN_PASSWORD=""
 ```
 
 Checks
