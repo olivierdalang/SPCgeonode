@@ -55,10 +55,35 @@ If using local images, build them first. If not, make sure you published the ima
 docker-compose -f docker-compose.yml up --build
 ```
 
-And then
+And then (Windows Powershell)
 ```
 # 1. Create a swarm
 docker swarm init
+
+# 2. Set variables (Windows)
+$env:WAN_HOST="localhost"
+$env:LAN_HOST="127.0.0.1"
+$env:ADMIN_USERNAME="super"
+$env:ADMIN_PASSWORD="duper"
+$env:ADMIN_EMAIL="admin@null"
+
+# 3. Deploy the stack
+
+docker secret rm admin_username
+echo "$ADMIN_USERNAME" | docker secret create admin_username -
+docker secret rm admin_password
+echo "$ADMIN_PASSWORD" | docker secret create admin_password -
+docker stack deploy spcgeonode --compose-file docker-compose.yml
+
+# 4. Cleanup
+$env:ADMIN_USERNAME=""
+$env:ADMIN_PASSWORD=""
+```
+
+And then (Linux)
+```
+# 1. Create a swarm
+sudo docker swarm init
 
 # 2. Set variables (Windows)
 set WAN_HOST="localhost"
@@ -69,11 +94,13 @@ set ADMIN_EMAIL="admin@null"
 
 # 3. Deploy the stack (again: MAKE SURE YOU'VE JUST REBUILD THE IMAGES)
 # this creates the docker secrets
-echo "$ADMIN_USERNAME" | docker secret create admin_username -
-echo "$ADMIN_PASSWORD" | docker secret create admin_password -
-docker stack deploy spcgeonode --compose-file docker-compose.yml
+sudo docker secret rm admin_username
+echo "$ADMIN_USERNAME" | sudo docker secret create admin_username -
+sudo docker secret rm admin_password
+echo "$ADMIN_PASSWORD" | sudo docker secret create admin_password -
+sudo docker stack deploy spcgeonode --compose-file docker-compose.yml
 
-# Remove the secrets
+# 4. Cleanup
 set ADMIN_USERNAME=""
 set ADMIN_PASSWORD=""
 ```
