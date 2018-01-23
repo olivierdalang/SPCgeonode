@@ -1,13 +1,5 @@
 version: '3.4'
 
-secrets:
-  admin_username:
-    file: _devsecrets/admin_username
-    external: false
-  admin_password:
-    file: _devsecrets/admin_password
-    external: false
-
 services:
   postgres:
     ports:
@@ -55,3 +47,11 @@ services:
   #     # - ./_volume_database:/tobackup/spcgeonode-database/ # doesn't work because of ownership
   #     - ./_volume_media:/tobackup/spcgeonode-media/
   #     - ./_volume_geodatadir:/tobackup/spcgeonode-geodatadir/
+
+secrets:
+  admin_username:
+    file: _devsecrets/admin_username
+    external: false
+  admin_password:
+    file: _devsecrets/admin_password
+    external: false

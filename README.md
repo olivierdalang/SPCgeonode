@@ -73,7 +73,7 @@ docker secret rm admin_username
 echo "$ADMIN_USERNAME" | docker secret create admin_username -
 docker secret rm admin_password
 echo "$ADMIN_PASSWORD" | docker secret create admin_password -
-docker stack deploy spcgeonode --compose-file docker-compose.yml
+docker stack deploy spcgeonode_stack --compose-file docker-compose.yml
 
 # 4. Cleanup
 $env:ADMIN_USERNAME=""

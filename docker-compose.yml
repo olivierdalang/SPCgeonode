@@ -1,18 +1,13 @@
 version: '3.4'
 
 # TODO : replace olivierdalang repository by pacificcommunity
-secrets:
-  admin_username:
-    external: true
-  admin_password:
-    external: true
 
 
 
+# Common Django template for Geonode, Celery and Celerycam services below
 x-common-django:
-  # Common Django template for geonode, celery and celerycam
   &default-common-django
-  image: olivierdalang/spcgeonode:django-latest # TODO : versionize
+  image: olivierdalang/spcgeonode:django-latest
   build: ./django/
   environment:
     - GEOSERVER_PUBLIC_LOCATION=http://${WAN_HOST}/geoserver/
@@ -33,8 +28,6 @@ x-common-django:
   volumes:
     - static:/spcgeonode-static/
     - media:/spcgeonode-media/
-  # depends_on:
-  #   - postgres
   secrets:
     - admin_username
     - admin_password 
@@ -42,31 +35,28 @@ x-common-django:
     replicas: 1
     restart_policy:
       condition: on-failure
-  networks:
-    - deploy-network
     
-
 
 services:
 
+  # Our custom django application. It includes Geonode.
   django:
-    # This is our custom django application. It includes Geonode.
     << : *default-common-django
     entrypoint: ["/spcgeonode/docker-entrypoint.sh"]
     command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--socket=:8000", "--processes=5"]
     
+  # Celery worker that executes celery tasks created by Django.
   celery:
-    # This is the celery worker that executes celery tasks created by Django.
     << : *default-common-django
     command: 'python manage.py celery worker --app=geonode.celery_app:app -B -E -l INFO'
 
+  # Celery camera that monitors celery tasks and populate the djcelery django admin interface
   celerycam:
-    # This is the celery camera that monitors celery tasks and populate the djcelery django admin interface
     << : *default-common-django
     command: 'python manage.py celerycam'
 
+  # PostGIS database.
   postgres:
-    # Vanilla PostGIS database.
     image: mdillon/postgis:9.6-alpine
     volumes:
       - database:/var/lib/postgresql/data/ 
@@ -74,25 +64,22 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
-    networks:
-      - deploy-network
 
+  # TODO : Enable this
   # elasticsearch:
   #   image: elasticsearch:5.6
 
+  # Vanilla RabbitMQ service. This is needed by celery
   rabbitmq:
-    # Vanilla RabbitMQ service. This is needed by celery
     image: rabbitmq:3.7 
     deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
-    networks:
-      - deploy-network
   
+  # Nginx is serving django static and media files and proxies to django and geonode
   nginx:
-    # Nginx is serving django static and media files and proxies to django and geonode
-    image: olivierdalang/spcgeonode:nginx-latest # TODO : versionize
+    image: olivierdalang/spcgeonode:nginx-latest
     build: ./nginx/
     environment:
       - WAN_HOST=${WAN_HOST}
@@ -100,9 +87,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    # depends_on:
-    #   - django
-    #   - geoserver
     volumes:
       - static:/spcgeonode-static/
       - media:/spcgeonode-media/
@@ -112,20 +96,16 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
-    networks:
-      - deploy-network
 
+  # Geoserver backend
   geoserver:
-    # This is the geoserver backend required by geonode.
-    image: olivierdalang/spcgeonode:geoserver-latest # TODO : versionize
+    image: olivierdalang/spcgeonode:geoserver-latest
     build: ./geoserver/
     environment:
      - GEOSERVER_HOME=/geoserver-2.12.1
      - GEOSERVER_DATA_DIR=/spcgeonode-geodatadir
     volumes:
       - geodatadir:/spcgeonode-geodatadir/
-    # depends_on:
-    #   - postgres 
     secrets:
       - admin_username
       - admin_password 
@@ -133,11 +113,10 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
-    networks:
-      - deploy-network
 
+  # Gets and installs letsencrypt certificates
   letsencrypt:
-    image: olivierdalang/spcgeonode:letsencrypt-latest # TODO : versionize
+    image: olivierdalang/spcgeonode:letsencrypt-latest
     build: ./letsencrypt/
     environment:
       - WAN_HOST=${WAN_HOST}
@@ -151,34 +130,9 @@ services:
       restart_policy:
         condition: on-failure
         delay: 60s
-    networks:
-      - deploy-network
-
+ 
+  # TODO : We still need to make a service to backup all our important folders
   # backuper:
-  #   image: olivierdalang/spcgeonode:backuper-latest # TODO : versionize
-  #   build: ./backuper/
-  #   volumes:
-  #     - database:/tobackup/spcgeonode-database/
-  #     - media:/tobackup/spcgeonode-media/
-  #     - geodatadir:/tobackup/spcgeonode-geodatadir/
-  #   deploy:
-  #     replicas: 1
-  #     restart_policy:
-  #       condition: on-failure
-  #   networks:
-  #     - deploy-network
-
-  # visualizer:
-  #   image: dockersamples/visualizer:stable
-  #   ports:
-  #     - "8080:8080"
-  #   # volumes:
-  #   #   - "/var/run/docker.sock:/var/run/docker.sock"
-  #   deploy:
-  #     placement:
-  #       constraints: [node.role == manager]
-  #   networks:
-  #     - deploy-network
 
 volumes:
   static:
@@ -188,10 +142,8 @@ volumes:
   certbot-challenge:
   certbot-keys:
 
-# For some reason docker-swarm doesn't work when networks arent explicitely set
-networks:
-  deploy-network: # TODO : properly understand this (without it, it doesn't work with docker stack deploy)
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.28.0.0/16
+secrets:
+  admin_username:
+    external: true
+  admin_password:
+    external: true
