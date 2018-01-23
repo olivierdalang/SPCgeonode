@@ -48,7 +48,7 @@ services:
     image: olivierdalang/spcgeonode:letsencrypt-dev
     volumes:
       - ./_volume_certbot-challenge:/spcgeonode-certbot-challenge/
-      - ./_volume_certbot-keys:/etc/letsencrypt/
+      - ./_volume_certbot-keys:/spcgeonode-certbot-keys/
 
   # backuper:
   #   volumes:

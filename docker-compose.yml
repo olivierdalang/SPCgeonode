@@ -145,7 +145,7 @@ services:
       - ADMIN_EMAIL=${ADMIN_EMAIL}
     volumes:
       - certbot-challenge:/spcgeonode-certbot-challenge/
-      - certbot-keys:/etc/letsencrypt/
+      - certbot-keys:/spcgeonode-certbot-keys/
     deploy:
       replicas: 1
       restart_policy:
