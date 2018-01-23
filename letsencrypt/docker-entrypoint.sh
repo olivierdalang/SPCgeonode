@@ -16,7 +16,7 @@ if [ ! -f "/spcgeonode-certbot/autoissued/$LAN_HOST/key" ] || [ ! -f "/spcgeonod
     printf "\nNo existing certificates found... Creating placeholder certificates...\n"
 
     mkdir -p "/spcgeonode-certbot/autoissued/$LAN_HOST/"
-    openssl req -x509 -nodes -days 395 -newkey rsa:2048 -keyout "/spcgeonode-certbot/autoissued/$LAN_HOST/key" -out "/spcgeonode-certbot/autoissued/$LAN_HOST/cert" -subj "/CN=$LAN_HOST" 
+    openssl req -x509 -nodes -days 395 -newkey rsa:2048 -keyout "/spcgeonode-certbot/autoissued/$LAN_HOST/privkey.pem" -out "/spcgeonode-certbot/autoissued/$LAN_HOST/fullchain.pem" -subj "/CN=$LAN_HOST" 
 
 else
 
