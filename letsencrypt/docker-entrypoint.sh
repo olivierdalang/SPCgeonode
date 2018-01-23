@@ -44,8 +44,7 @@ if [ ! -f "/spcgeonode-certbot/live/$WAN_HOST/privkey.pem" ] || [ ! -f "/spcgeon
     cp "/spcgeonode-certbot/autoissued/$WAN_HOST/fullchain.pem" "/spcgeonode-certbot/live/$WAN_HOST/fullchain.pem"
 
     mkdir -p "/spcgeonode-certbot/renewal/"
-    touch "/spcgeonode-certbot/renewal/$WAN_HOST.conf"
-    # printf "see what we need in there" > "/spcgeonode-certbot/renewal/$WAN_HOST.conf"
+    printf "# renew_before_expiry = 30 days\nversion = 0.14.0\narchive_dir = /spcgeonode-certbot-keys/archive/$WAN_HOST\ncert = /spcgeonode-certbot-keys/live/$WAN_HOST/cert.pem\nprivkey = /spcgeonode-certbot-keys/live/$WAN_HOST/privkey.pem\nchain = /spcgeonode-certbot-keys/live/$WAN_HOST/chain.pem\nfullchain = /spcgeonode-certbot-keys/live/$WAN_HOST/fullchain.pem\n\n# Options used in the renewal process\n[renewalparams]\naccount = 1ec590e83d054f0b0678e9b8c6bf6167\nconfig_dir = /spcgeonode-certbot\nserver = https://acme-staging.api.letsencrypt.org/directory\nauthenticator = webroot\ninstaller = None\nwebroot_path = /spcgeonode-certbot,\n[[webroot_map]]\n$WAN_HOST = /spcgeonode-certbot" > "/spcgeonode-certbot/renewal/$WAN_HOST.conf"
 
 
 else
