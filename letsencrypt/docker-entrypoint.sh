@@ -39,8 +39,9 @@ if [ ! -f "/spcgeonode-certbot/live/$WAN_HOST/privkey.pem" ] || [ ! -f "/spcgeon
     openssl req -x509 -nodes -days 0 -newkey rsa:2048 -keyout "/spcgeonode-certbot/autoissued/$WAN_HOST/privkey.pem" -out "/spcgeonode-certbot/autoissued/$WAN_HOST/fullchain.pem" -subj "/CN=$WAN_HOST"
 
     mkdir -p "/spcgeonode-certbot/live/$WAN_HOST/"
-    ln -s -f "/spcgeonode-certbot/autoissued/$WAN_HOST/privkey.pem" "/spcgeonode-certbot/live/$WAN_HOST/privkey.pem"
-    ln -s -f "/spcgeonode-certbot/autoissued/$WAN_HOST/fullchain.pem" "/spcgeonode-certbot/live/$WAN_HOST/fullchain.pem"
+    # We use cp instead of ln so that it works in mounted volumes
+    cp "/spcgeonode-certbot/autoissued/$WAN_HOST/privkey.pem" "/spcgeonode-certbot/live/$WAN_HOST/privkey.pem"
+    cp "/spcgeonode-certbot/autoissued/$WAN_HOST/fullchain.pem" "/spcgeonode-certbot/live/$WAN_HOST/fullchain.pem"
 
     mkdir -p "/spcgeonode-certbot/renewal/"
     touch "/spcgeonode-certbot/renewal/$WAN_HOST.conf"
@@ -59,7 +60,7 @@ printf "\nWaiting a little bit\n"
 sleep 20
 
 printf "\nGetting the certificates\n"
-certbot --config-dir /spcgeonode-certbot/ -vvv certonly --standalone --preferred-challenges http -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive --staging
+certbot --config-dir /spcgeonode-certbot/ -vvv certonly --webroot -w /spcgeonode-certbot/ -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive --staging
 
 printf "\nTesting autorenew\n"
 certbot --config-dir /spcgeonode-certbot/ -vvv renew --dry-run
