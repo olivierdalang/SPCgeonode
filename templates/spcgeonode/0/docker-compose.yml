@@ -119,8 +119,7 @@ services:
     volumes:
       - static:/spcgeonode-static/
       - media:/spcgeonode-media/
-      - certbot-challenge:/spcgeonode-certbot-challenge/
-      - certbot-keys:/spcgeonode-certbot-keys/
+      - certbot:/spcgeonode-certbot/
     labels:
       io.rancher.container.pull_image: always
 
@@ -146,8 +145,7 @@ services:
       - LAN_HOST=${LAN_HOST}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
     volumes:
-      - certbot-challenge:/spcgeonode-certbot-challenge/
-      - certbot-keys:/spcgeonode-certbot-keys/
+      - certbot:/spcgeonode-certbot/
     labels:
       io.rancher.container.pull_image: always
 
@@ -160,8 +158,7 @@ volumes:
   media:
   database:
   geodatadir:
-  certbot-challenge:
-  certbot-keys:
+  certbot:
 
 secrets:
   admin_username:

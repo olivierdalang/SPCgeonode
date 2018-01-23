@@ -1,14 +1,14 @@
 #!/bin/sh
 
-# This will watch the /spcgeonode-certbot-keys folder and run nginx -s reload whenever there are some changes.
+# This will watch the /spcgeonode-certbot folder and run nginx -s reload whenever there are some changes.
 # We use this to reload nginx config when certificates changed.
 
 # inspired/copied from https://github.com/kubernetes/kubernetes/blob/master/examples/https-nginx/auto-reload-nginx.sh
 
 while true
 do
-        inotifywait -e create -e modify -e delete -e move -r /spcgeonode-certbot-keys
-        echo "Changes noticed in /spcgeonode-certbot-keys"
+        inotifywait -e create -e modify -e delete -e move -r /spcgeonode-certbot
+        echo "Changes noticed in /spcgeonode-certbot"
         # Test nginx configuration
         nginx -t
         # If it passes, we reload
