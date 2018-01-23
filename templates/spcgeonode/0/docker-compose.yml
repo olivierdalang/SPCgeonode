@@ -37,6 +37,8 @@ services:
     secrets:
       - admin_username
       - admin_password 
+    labels:
+      io.rancher.container.pull_image: always
     entrypoint: ["/spcgeonode/docker-entrypoint.sh"]
     command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--socket=:8000", "--processes=5"]
     
@@ -67,6 +69,8 @@ services:
     secrets:
       - admin_username
       - admin_password 
+    labels:
+      io.rancher.container.pull_image: always
     command: 'python manage.py celery worker --app=geonode.celery_app:app -B -E -l INFO'
 
   celerycam:
@@ -96,6 +100,8 @@ services:
     secrets:
       - admin_username
       - admin_password 
+    labels:
+      io.rancher.container.pull_image: always
     command: 'python manage.py celerycam'
 
   postgres:
@@ -128,6 +134,8 @@ services:
       - media:/spcgeonode-media/
       - certbot-challenge:/spcgeonode-certbot-challenge/
       - certbot-keys:/spcgeonode-certbot-keys/
+    labels:
+      io.rancher.container.pull_image: always
 
   geoserver:
     # This is the geoserver backend required by geonode.
@@ -142,6 +150,8 @@ services:
     secrets:
       - admin_username
       - admin_password 
+    labels:
+      io.rancher.container.pull_image: always
 
   letsencrypt:
     image: olivierdalang/spcgeonode:letsencrypt-latest # TODO : versionize
@@ -153,6 +163,8 @@ services:
     volumes:
       - certbot-challenge:/spcgeonode-certbot-challenge/
       - certbot-keys:/etc/letsencrypt/
+    labels:
+      io.rancher.container.pull_image: always
     # volumes:
     #   - letsencrypt_certs:/etc/letsencrypt/
     #   - letsencrypt_www:/var/www/letsencrypt/
