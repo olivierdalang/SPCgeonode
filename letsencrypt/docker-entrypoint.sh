@@ -11,8 +11,8 @@ set -e
 
 printf "\n\nSetting up autoissued certificates for LAN Host ($LAN_HOST)\n"
 
-mkdir -p "/etc/letsencrypt/autoissued/lan/"
-openssl req -x509 -nodes -days 395 -newkey rsa:2048 -keyout /etc/letsencrypt/autoissued/lan/key -out /etc/letsencrypt/autoissued/lan/cert -subj "/CN=$LAN_HOST" 
+mkdir -p "/etc/letsencrypt/autoissued/$LAN_HOST/"
+openssl req -x509 -nodes -days 395 -newkey rsa:2048 -keyout "/etc/letsencrypt/autoissued/$LAN_HOST/key" -out "/etc/letsencrypt/autoissued/$LAN_HOST/cert" -subj "/CN=$LAN_HOST" 
 
 
 
@@ -26,11 +26,11 @@ if [ ! -f "/etc/letsencrypt/live/$WAN_HOST/privkey.pem" ] || [ ! -f "/etc/letsen
 
     printf "\nNo existing certificates found... Creating placeholder certificates...\n"
     
-    mkdir -p "/etc/letsencrypt/autoissued/wan/"
-    openssl req -x509 -nodes -days 0 -newkey rsa:2048 -keyout "/etc/letsencrypt/autoissued/wan/privkey.pem" -out "/etc/letsencrypt/autoissued/wan/fullchain.pem" -subj "/CN=$WAN_HOST"
+    mkdir -p "/etc/letsencrypt/autoissued/$WAN_HOST/"
+    openssl req -x509 -nodes -days 0 -newkey rsa:2048 -keyout "/etc/letsencrypt/autoissued/$WAN_HOST/privkey.pem" -out "/etc/letsencrypt/autoissued/$WAN_HOST/fullchain.pem" -subj "/CN=$WAN_HOST"
     mkdir -p "/etc/letsencrypt/live/$WAN_HOST/"
-    cp -rf "/etc/letsencrypt/autoissued/wan/privkey.pem" "/etc/letsencrypt/live/$WAN_HOST/privkey.pem"
-    cp -rf "/etc/letsencrypt/autoissued/wan/fullchain.pem" "/etc/letsencrypt/live/$WAN_HOST/fullchain.pem"
+    ln -rf "/etc/letsencrypt/autoissued/$WAN_HOST/privkey.pem" "/etc/letsencrypt/live/$WAN_HOST/privkey.pem"
+    ln -rf "/etc/letsencrypt/autoissued/$WAN_HOST/fullchain.pem" "/etc/letsencrypt/live/$WAN_HOST/fullchain.pem"
 
 else
 
@@ -76,7 +76,7 @@ fi
 printf "\n\nInstalling cronjobs\n"
 
 # notes : first one is letsencrypt (we run it twice a day), second one is autoissued (we renew every year, as it's duration is 365 days + 30 days)
-( echo "0 0,12 * * * date && certbot renew" ; echo "0 0 1 1 * date && openssl req -x509 -nodes -days 395 -newkey rsa:2048 -keyout /etc/letsencrypt/autoissued/lan/key -out /etc/letsencrypt/autoissued/lan/cert -subj \"/CN=$LAN_HOST\"") | /usr/bin/crontab -
+( echo "0 0,12 * * * date && certbot renew" ; echo "0 0 1 1 * date && openssl req -x509 -nodes -days 395 -newkey rsa:2048 -keyout /etc/letsencrypt/autoissued/$LAN_HOST/key -out /etc/letsencrypt/autoissued/$LAN_HOST/cert -subj \"/CN=$LAN_HOST\"") | /usr/bin/crontab -
 # We print the crontab just for debugging purposes
 /usr/bin/crontab -l
 
