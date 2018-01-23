@@ -30,7 +30,7 @@ x-common-django:
     - media:/spcgeonode-media/
   secrets:
     - admin_username
-    - admin_password 
+    - admin_password
   deploy:
     replicas: 1
     restart_policy:

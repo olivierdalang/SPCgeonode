@@ -50,7 +50,7 @@ fi
 
 printf "\nMaking sure Nginx is running\n"
 # We need to make sure Nginx is running before getting the certificates because we must serve the challenge file
-# TODO : can't we use healthcheck ?
+# TODO : can't we use healthcheck instead of this ? (would seem less hackish)
 mkdir -p /spcgeonode-certbot-challenge/.well-known/
 echo 'ok' > /spcgeonode-certbot-challenge/.well-known/running.txt
 curl --output /dev/null --head --fail --silent -S --retry 0 http://nginx/.well-known/running.txt
