@@ -40,7 +40,7 @@ fi
 
 # We run the command
 set +e # do not exist on fail
-certbot --config-dir /spcgeonode-certbot/ certonly --webroot -w /spcgeonode-certbot/ -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive --staging
+certbot --config-dir /spcgeonode-certbot/ certonly --webroot -w /spcgeonode-certbot/ -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive
 if [ ! $? -eq 0 ]; then
     set -e # back to normal
 
