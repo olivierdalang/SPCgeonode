@@ -1,34 +1,28 @@
-# spcgeonode
+# SPCgeonode
 
-spcgeonode is a skeletton for Geonode deployement at SPC. It makes it easy to deploy a customized version of Geonode.
+SPCgeonode is a skeletton for Geonode deployement at SPC. It makes it easy to deploy a customized version of Geonode.
 
-The setup should be usable for production.
+The setup aims to be usable for production.
 
 ## Prerequisites
 
 Make sure you have a version of Docker (tested with 17.12) and docker-compose.
 
-On Ubuntu 16.04 :
-```
-# Docker
-wget https://download.docker.com/linux/ubuntu/dists/xenial/pool/stable/amd64/docker-ce_17.12.0~ce-0~ubuntu_amd64.deb
-sudo dpkg -i docker-ce_17.12.0~ce-0~ubuntu_amd64.deb
-rm docker-ce_17.12.0~ce-0~ubuntu_amd64.deb
+On **Linux** : https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-from-a-package and https://docs.docker.com/compose/install/#install-compose
 
-# Docker-compose
-sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-
-# Test
-sudo docker run hello-world
-```
-
-On Windows: https://store.docker.com/editions/community/docker-ce-desktop-windows
+On **Windows**: https://store.docker.com/editions/community/docker-ce-desktop-windows
 
 
 ## Usage
 
-For **developpement** which will :
+### Developpement
+
+```
+docker-compose up -d --build
+```
+
+Difference of dev setup vs prod setup:
+
 - mount django source as volume and set uwsgi to live reload
 - mount django static and media in the volumes folder
 - mount geoserver's data volume in the volumes folder
@@ -41,21 +35,12 @@ For **developpement** which will :
 - use defaults secrets from _dev-secrets `admin_username=super2` and `admin_password=duper2`
 - use defaut .env variables which set `LAN_HOST=127.0.0.1`, `WAN_HOST=local.example.com` and `ADMIN_EMAIL=admin@example.com` (set `local.example.com` to `127.0.0.1` in your hosts file for better local testing)
 
-```
-docker-compose up -d --build
-```
 
-To see logs, use `docker-compose logs` or that practical `docker-log.bat` script that opens a separate window for each service.
+### Production
 
-For **production** :
+Make sure the needed images are published to docker hub or that you rebuilt the images locally.
 
-
-If using local images, build them first. If not, make sure you published the images to docker hub first (see below).
-```
-docker-compose -f docker-compose.yml up --build
-```
-
-And then (Windows Powershell)
+Windows Powershell
 ```
 # 1. Create a swarm
 docker swarm init
@@ -83,7 +68,7 @@ $env:ADMIN_PASSWORD=""
 $env:ADMIN_EMAIL=""
 ```
 
-And then (Linux)
+Linux
 ```
 # 1. Create a swarm
 sudo docker swarm init
@@ -111,19 +96,15 @@ set ADMIN_PASSWORD=
 set ADMIN_EMAIL=
 ```
 
-Checks
-```
-# 1. Check if everything is runing
-docker service ls
-# 2. If something is not fine, like container doesn't start
-docker service ps SERVICE_NAME --no-trunc
-# 3. If something is not fine, container crashes
-docker service logs SERVICE_NAME
-# or
-# 1. Use portainer and check on http://127.0.0.1:9000
-docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
+### Publishing the images
 
-# If container donesn't start, I could debug it sometime with docker ps -a (then you may see a long list of retries) and then manually doing docker start CONTAINER_ID
+Pushes to github trigger automatic builds on docker hub (for master branch -> dev and for x.x.x tags -> x.x.x).
+
+If you need to publish the images manually, just rebuilt the containers (`docker-compose -f docker-compose.yml build`), then use :
+
+```
+docker login
+docker-compose -f docker-compose.yml push
 ```
 
 ## How it works
@@ -136,45 +117,18 @@ The django project is initialised (install requirements, migrate, collectstatic 
 
 ### Nginx
 
-Nginx proxies to uwsgi (django) and geoserver. It also directly serves django static and media files. 
+Nginx proxies to uwsgi (django) and geoserver. It also directly serves django static and media files.
 
-## TODOs
-
-- TODO : backup geoserver data folder, postgresql data...
-- TODO : configure nginx with let's encrypt
-- TODO : tweak nginx settings (gzip output, cache, etc...)
-- TODO : check how to make this works on production (can images be prebuilt ? do we need --build in production ? etc...). Probably need to check docker swarm
-- TODO : clean Dockerfiles to make lighter images
-- TODO : allow setup superuser password/login and set geoserver admin password
-- TODO : optimise dockerfiles
-- TODO : reorganize folders : django as main, other services in subfolders ?
-- TODO : contribute back to geonode-project
-- TODO : move rancher catalog out of this repo
-- TODO : allow empty WAN/LAN_HOST
-- TODO : think about upgrade (e.g. changing variables such as admin)
-
-## Publish
-
-When you want to publish the changes, make sure you've just rebuilt the containers (`docker-compose -f docker-compose.yml build`), then use :
-
-```
-docker login
-docker-compose -f docker-compose.yml push
-```
-
-Note that this should be done autmatically using Docker autobuilds.
-
-## Compared to Geonode project
+## Compared to similar tools
 
 This is very similar to https://github.com/GeoNode/geonode-project but aims to be suitable for deployement.
 
 Key differences :
 
-
 - dockerfiles for nginx and geoserver are in same repo, since they need to be customized for a deployement
-- other services (postgres, elasticsearch, rabbit) images use a specific tag, so we know which one will be pulled, making 
+- other services (postgres, elasticsearch, rabbit) images use a specific tag, so we know which one will be pulled 
 - settings imports from geonode.settings so most defaults don't need to be modified
-- geoserver starts with empty geodatadir. Geonode's entrypoint script ensures there is a geonode workspace initialized using REST API. (in geonode-project, initial data-dir is pulled from http://build.geonode.org/geoserver/latest/data-$GEOSERVER_VERSION.zip , see waybarrios/geoserver Docker image) 
+- geoserver starts with empty geodatadir. Geonode's entrypoint script ensures there is a geonode workspace initialized using REST API. (in geonode-project, initial data-dir is pulled from http://build.geonode.org/geoserver/latest/data-$GEOSERVER_VERSION.zip , see waybarrios/geoserver Docker image) TODO : IS THIS STILL TRUE ?
 
 This is very similar to https://github.com/kartoza/kartoza-rancher-catalogue
 
@@ -184,10 +138,3 @@ Key differences :
 - working celery admin panels
 - https encryption
 - use secrets for sensitive data instead of env variables
-
-## WIP
-
-- have ssl working online => TEST
-- use env variables / secrets where applicable => DONE ?
-- publish on git and autobuild images => DONE ?
-- make docker deploy work again (see if finally service launched after waiting during a long time (docker service ls))
