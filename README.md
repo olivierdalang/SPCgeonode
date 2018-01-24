@@ -151,10 +151,11 @@ Nginx proxies to uwsgi (django) and geoserver. It also directly serves django st
 - TODO : contribute back to geonode-project
 - TODO : move rancher catalog out of this repo
 - TODO : allow empty WAN/LAN_HOST
+- TODO : think about upgrade (e.g. changing variables such as admin)
 
 ## Publish
 
-When you want to publish the changes, make sure you've just rebuilt the containers (`docker-compose -f docker-compose.yml build`, then use :
+When you want to publish the changes, make sure you've just rebuilt the containers (`docker-compose -f docker-compose.yml build`), then use :
 
 ```
 docker login

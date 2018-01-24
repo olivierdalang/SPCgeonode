@@ -3,11 +3,9 @@
 # Exit script in case of error
 set -e
 
-# TODO : test this online
-
-
-
+##########################################
 # LAN setup
+##########################################
 
 printf "\n\nSetting up autoissued certificates for LAN Host ($LAN_HOST)\n"
 
@@ -25,7 +23,9 @@ else
 fi
 
 
+##########################################
 # WAN setup
+##########################################
 
 printf "\n\nSetting up certificates for WAN Host ($WAN_HOST)\n"
 
@@ -64,8 +64,9 @@ printf "\nTesting autorenew\n"
 certbot --config-dir /spcgeonode-certbot/ renew --dry-run
 
 
-
+##########################################
 # Cron jobs
+##########################################
 
 printf "\n\nInstalling cronjobs\n"
 
