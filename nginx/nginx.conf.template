@@ -11,8 +11,8 @@ http{
         listen              443 ssl;
         server_name         $WAN_HOST; # TODO : configurize HOSTNAME
 
-        ssl_certificate     /spcgeonode-certbot-keys/live/$WAN_HOST/fullchain.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
-        ssl_certificate_key /spcgeonode-certbot-keys/live/$WAN_HOST/privkey.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
+        ssl_certificate     /spcgeonode-certbot/live/$WAN_HOST/fullchain.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
+        ssl_certificate_key /spcgeonode-certbot/live/$WAN_HOST/privkey.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
 
         include spcgeonode.conf;
     }
@@ -22,12 +22,6 @@ http{
     server {
         listen              80;
         server_name         $LAN_HOST nginx; # we add nginx as this is the host for internal API requests # TODO : configurize LAN HOSTNAME
-        
-        # Let's encrypt challenge
-        location /.well-known {
-            alias /spcgeonode-certbot-challenge/.well-known;
-            include  /etc/nginx/mime.types;
-        }
 
         include spcgeonode.conf;
     }
@@ -36,8 +30,8 @@ http{
     #     listen              443 ssl default_server;
     #     # server_name         $LAN_HOST; # TODO : configurize LAN HOSTNAME
         
-    #     ssl_certificate     /etc/letsencrypt/autoissued/cert;
-    #     ssl_certificate_key /etc/letsencrypt/autoissued/key;
+    #     ssl_certificate     /etc/letsencrypt/autoissued/$LAN_HOST/fullchain.pem;
+    #     ssl_certificate_key /etc/letsencrypt/autoissued/$LAN_HOST/privkey.pem;
 
     #     include spcgeonode.conf;
     # }
@@ -46,10 +40,11 @@ http{
     # http - listen on all servers - we redirect to https
     server {
         listen 80 default_server;
+        server_name $WAN_HOST;
         
         # Let's encrypt challenge
         location /.well-known {
-            alias /spcgeonode-certbot-challenge/.well-known;
+            alias /spcgeonode-certbot/.well-known;
             include  /etc/nginx/mime.types;
         }
 

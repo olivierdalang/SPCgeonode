@@ -11,8 +11,7 @@ services:
     volumes:
       - ./_volume_static:/spcgeonode-static/
       - ./_volume_media:/spcgeonode-media/
-      - ./_volume_certbot-challenge:/spcgeonode-certbot-challenge/
-      - ./_volume_certbot-keys:/spcgeonode-certbot-keys/
+      - ./_volume_certbot:/spcgeonode-certbot/
   django:
     image: olivierdalang/spcgeonode:django-dev
     environment:
@@ -39,8 +38,7 @@ services:
   letsencrypt:
     image: olivierdalang/spcgeonode:letsencrypt-dev
     volumes:
-      - ./_volume_certbot-challenge:/spcgeonode-certbot-challenge/
-      - ./_volume_certbot-keys:/spcgeonode-certbot-keys/
+      - ./_volume_certbot:/spcgeonode-certbot/
 
   # backuper:
   #   volumes:

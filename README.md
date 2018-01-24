@@ -39,7 +39,7 @@ For **developpement** which will :
 - run celery using djcelery (so that output goes to admin) 
 - use docker dev tags instead of latest
 - use defaults secrets from _dev-secrets `admin_username=super2` and `admin_password=duper2`
-- use defaut .env variables which set `LAN_HOST=127.0.0.1`, `WAN_HOST=localhost` and `ADMIN_EMAIL=admin@null`
+- use defaut .env variables which set `LAN_HOST=127.0.0.1`, `WAN_HOST=local.example.com` and `ADMIN_EMAIL=admin@example.com` (set `local.example.com` to `127.0.0.1` in your hosts file for better local testing)
 
 ```
 docker-compose up -d --build
@@ -61,11 +61,11 @@ And then (Windows Powershell)
 docker swarm init
 
 # 2. Set variables (Windows)
-$env:WAN_HOST="localhost"
+$env:WAN_HOST="local.example.com"
 $env:LAN_HOST="127.0.0.1"
 $env:ADMIN_USERNAME="super"
 $env:ADMIN_PASSWORD="duper"
-$env:ADMIN_EMAIL="admin@null"
+$env:ADMIN_EMAIL="admin@example.com"
 
 # 3. Deploy the stack
 
@@ -76,8 +76,11 @@ echo "$ADMIN_PASSWORD" | docker secret create admin_password -
 docker stack deploy spcgeonode_stack --compose-file docker-compose.yml
 
 # 4. Cleanup
+$env:WAN_HOST=""
+$env:LAN_HOST=""
 $env:ADMIN_USERNAME=""
 $env:ADMIN_PASSWORD=""
+$env:ADMIN_EMAIL=""
 ```
 
 And then (Linux)
@@ -86,11 +89,11 @@ And then (Linux)
 sudo docker swarm init
 
 # 2. Set variables (Windows)
-set WAN_HOST="localhost"
+set WAN_HOST="local.example.com"
 set LAN_HOST="127.0.0.1"
 set ADMIN_USERNAME="super"
 set ADMIN_PASSWORD="duper"
-set ADMIN_EMAIL="admin@null"
+set ADMIN_EMAIL="admin@example.com"
 
 # 3. Deploy the stack (again: MAKE SURE YOU'VE JUST REBUILD THE IMAGES)
 # this creates the docker secrets
@@ -101,8 +104,11 @@ echo "$ADMIN_PASSWORD" | sudo docker secret create admin_password -
 sudo docker stack deploy spcgeonode --compose-file docker-compose.yml
 
 # 4. Cleanup
-set ADMIN_USERNAME=""
-set ADMIN_PASSWORD=""
+set WAN_HOST=
+set LAN_HOST=
+set ADMIN_USERNAME=
+set ADMIN_PASSWORD=
+set ADMIN_EMAIL=
 ```
 
 Checks
@@ -144,10 +150,12 @@ Nginx proxies to uwsgi (django) and geoserver. It also directly serves django st
 - TODO : reorganize folders : django as main, other services in subfolders ?
 - TODO : contribute back to geonode-project
 - TODO : move rancher catalog out of this repo
+- TODO : allow empty WAN/LAN_HOST
+- TODO : think about upgrade (e.g. changing variables such as admin)
 
 ## Publish
 
-When you want to publish the changes, make sure you've just rebuilt the containers (`docker-compose -f docker-compose.yml build`, then use :
+When you want to publish the changes, make sure you've just rebuilt the containers (`docker-compose -f docker-compose.yml build`), then use :
 
 ```
 docker login

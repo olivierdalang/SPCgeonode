@@ -113,8 +113,7 @@ services:
     volumes:
       - static:/spcgeonode-static/
       - media:/spcgeonode-media/
-      - certbot-challenge:/spcgeonode-certbot-challenge/
-      - certbot-keys:/spcgeonode-certbot-keys/
+      - certbot:/spcgeonode-certbot/
 
   # Geoserver backend
   geoserver:
@@ -136,8 +135,7 @@ services:
       - LAN_HOST=${LAN_HOST}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
     volumes:
-      - certbot-challenge:/spcgeonode-certbot-challenge/
-      - certbot-keys:/spcgeonode-certbot-keys/
+      - certbot:/spcgeonode-certbot/
 
  
   # TODO : We still need to make a service to backup all our important folders
@@ -148,8 +146,7 @@ volumes:
   media:
   database:
   geodatadir:
-  certbot-challenge:
-  certbot-keys:
+  certbot:
 
 secrets:
   admin_username:

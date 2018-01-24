@@ -12,5 +12,8 @@ ADD docker-entrypoint.sh docker-entrypoint.sh
 ENTRYPOINT ["./docker-entrypoint.sh"]
 RUN chmod +x docker-entrypoint.sh
 
+# We expose port 80 to use certbox standalone
+EXPOSE 80
+
 # We run cron in foreground to update the certificates
 CMD ["/usr/sbin/crond", "-f"]
