@@ -40,11 +40,14 @@ fi
 
 # We run the command
 set +e # do not exist on fail
-certbot --config-dir /spcgeonode-certbot/ -vvv certonly --webroot -w /spcgeonode-certbot/ -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive --staging
+certbot --config-dir /spcgeonode-certbot/ certonly --webroot -w /spcgeonode-certbot/ -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive --staging
 if [ ! $? -eq 0 ]; then
     set -e # back to normal
 
-    printf "\nFailed to get the certificates ! We create a placeholder certificate\n"
+    printf "\nFailed to get the certificates !\nSee /var/log/letsencrypt/letsencrypt.log :\n\n\n" 
+    cat /var/log/letsencrypt/letsencrypt.log
+    
+    printf "\n\n\nWe create a placeholder certificate\n"
 
     mkdir -p "/spcgeonode-certbot/live/$WAN_HOST/"
     openssl req -x509 -nodes -days 1 -newkey rsa:2048 -keyout "/spcgeonode-certbot/live/$WAN_HOST/privkey.pem" -out "/spcgeonode-certbot/live/$WAN_HOST/fullchain.pem" -subj "/CN=PLACEHOLDER"
@@ -58,7 +61,7 @@ fi
 set -e # back to normal
 
 printf "\nTesting autorenew\n"
-certbot --config-dir /spcgeonode-certbot/ -vvv renew --dry-run
+certbot --config-dir /spcgeonode-certbot/ renew --dry-run
 
 
 
@@ -67,7 +70,7 @@ certbot --config-dir /spcgeonode-certbot/ -vvv renew --dry-run
 printf "\n\nInstalling cronjobs\n"
 
 # notes : first one is letsencrypt (we run it twice a day), second one is autoissued (we renew every year, as it's duration is 365 days + 30 days)
-( echo "0 0,12 * * * date && certbot renew" ; echo "0 0 1 1 * date && openssl req -x509 -nodes -days 395 -newkey rsa:2048 -keyout /spcgeonode-certbot/autoissued/$LAN_HOST/privkey.pem -out /spcgeonode-certbot/autoissued/$LAN_HOST/fullchain.pem -subj \"/CN=$LAN_HOST\"") | /usr/bin/crontab -
+( echo "* * * * * date && echo\"just testing...\"" ; echo "0 0,12 * * * date && certbot renew" ; echo "0 0 1 1 * date && openssl req -x509 -nodes -days 395 -newkey rsa:2048 -keyout /spcgeonode-certbot/autoissued/$LAN_HOST/privkey.pem -out /spcgeonode-certbot/autoissued/$LAN_HOST/fullchain.pem -subj \"/CN=$LAN_HOST\"") | /usr/bin/crontab -
 # We print the crontab just for debugging purposes
 /usr/bin/crontab -l
 
