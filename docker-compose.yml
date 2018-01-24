@@ -7,7 +7,7 @@ version: '3.4'
 # Common Django template for Geonode, Celery and Celerycam services below
 x-common-django:
   &default-common-django
-  image: olivierdalang/spcgeonode:django-0.0.6
+  image: olivierdalang/spcgeonode:django-0.0.7
   build: ./django/
   environment:
     - GEOSERVER_PUBLIC_LOCATION=http://${WAN_HOST}/geoserver/
@@ -79,7 +79,7 @@ services:
   
   # Nginx is serving django static and media files and proxies to django and geonode
   nginx:
-    image: olivierdalang/spcgeonode:nginx-0.0.6
+    image: olivierdalang/spcgeonode:nginx-0.0.7
     build: ./nginx/
     environment:
       - WAN_HOST=${WAN_HOST}
@@ -98,7 +98,7 @@ services:
 
   # Geoserver backend
   geoserver:
-    image: olivierdalang/spcgeonode:geoserver-0.0.6
+    image: olivierdalang/spcgeonode:geoserver-0.0.7
     build: ./geoserver/
     environment:
      - GEOSERVER_HOME=/geoserver-2.12.1
@@ -115,7 +115,7 @@ services:
 
   # Gets and installs letsencrypt certificates
   letsencrypt:
-    image: olivierdalang/spcgeonode:letsencrypt-0.0.6
+    image: olivierdalang/spcgeonode:letsencrypt-0.0.7
     build: ./letsencrypt/
     environment:
       - WAN_HOST=${WAN_HOST}
