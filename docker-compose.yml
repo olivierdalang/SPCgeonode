@@ -121,6 +121,7 @@ services:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - LETSENCRYPT_MODE=${LETSENCRYPT_MODE}
     volumes:
       - certbot:/spcgeonode-certbot/
     deploy:

@@ -40,7 +40,15 @@ fi
 
 # We run the command
 set +e # do not exist on fail
-certbot --config-dir /spcgeonode-certbot/ certonly --webroot -w /spcgeonode-certbot/ -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive
+
+if [ "$LETSENCRYPT_MODE" == "disabled" ]; then
+    /bin/false
+elif [ "$LETSENCRYPT_MODE" == "staging" ]; then
+    certbot --config-dir /spcgeonode-certbot/ certonly --webroot -w /spcgeonode-certbot/ -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive --staging
+else
+    certbot --config-dir /spcgeonode-certbot/ certonly --webroot -w /spcgeonode-certbot/ -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive
+fi
+
 if [ ! $? -eq 0 ]; then
     set -e # back to normal
 

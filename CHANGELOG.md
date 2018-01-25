@@ -10,7 +10,8 @@
 
 ## 0.0.8
 
-- ...
+- allow to disable/test let's encrypt using env variables
+- WIP WIP WIP : use authkey module with user property (configure postgres view to have user properties)
 
 ## Roadmap
 

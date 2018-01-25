@@ -22,6 +22,15 @@ catalog:
       description: "This will be used as contact information for Let's Encrypt certificates and as email for the superuser"
       required: true
       type: "string"
+    - variable: LETSENCRYPT_MODE
+      label: "Let's Encrypt Mode"
+      description: "Let's Encrypt has very conservative limits as to failed attemps, so you can very quickly hit the limits when doing tests. This is annoying, as if you hit the limit, it may take a few days before you can actually get a valid certificate. Set mode to *disabled* to disable getting certificates from LetsEncrypt alltogether or *staging* to use LetsEncrypt tests certificates (not valid, but with much higher limits)."
+      required: true
+      type: enum
+      options:
+        - disabled
+        - staging
+        - production
     - variable: _CHECK_ADDED_SECRET_SERVICE
       label: "Reminder : did you add the Rancher Secrets service from the catalog ?"
       description: "For this stack to work, you need to add the Rancher Secrets service from the catalog. See http://rancher.com/docs/rancher/v1.4/en/cattle/secrets/#enabling-secrets-in-containers for more informations."

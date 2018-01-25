@@ -33,12 +33,14 @@ Difference of dev setup vs prod setup:
 - run celery using djcelery (so that output goes to admin) 
 - use docker dev tags instead of latest
 - use defaults secrets from _dev-secrets `admin_username=super2` and `admin_password=duper2`
-- use defaut .env variables which set `LAN_HOST=127.0.0.1`, `WAN_HOST=local.example.com` and `ADMIN_EMAIL=admin@example.com` (set `local.example.com` to `127.0.0.1` in your hosts file for better local testing)
+- use defaut .env variables which set `LAN_HOST=127.0.0.1`, `WAN_HOST=local.example.com`, `ADMIN_EMAIL=admin@example.com` and `LETSENCRYPT_MODE=disabled` (set `local.example.com` to `127.0.0.1` in your hosts file for better local testing)
 
 
 ### Production
 
 Make sure the needed images are published to docker hub or that you rebuilt the images locally.
+
+Note : to avoid hitting LetsEncrypt limits if anything fails, you should add `LETSENCRYPT_MODE=staging` to your env vars during first tests, and only remove it once you see tests certificates are properly loading. Hitting the limits is annoying as you can be blocked for a few days...
 
 Windows Powershell
 ```
