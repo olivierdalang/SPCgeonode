@@ -11,11 +11,10 @@
 ## 0.0.8
 
 - allow to disable/test let's encrypt using env variables
-- WIP WIP WIP : use authkey module with user property (configure postgres view to have user properties)
+- we use geonode users/groups table directly for geoserver's authentication
 
-## Roadmap
+## TODO : Roadmap
 
-- geonode/geoserver auth sync
 - backup geoserver data folder, postgresql data...
 - tweak nginx settings (gzip output, cache, etc...)
 - clean Dockerfiles to make lighter images
@@ -25,3 +24,4 @@
 - move rancher catalog out of this repo
 - allow empty WAN/LAN_HOST
 - think about upgrade (e.g. changing variables such as admin)
+- add HEALTHCHECKS to Dockerfiles where applicable

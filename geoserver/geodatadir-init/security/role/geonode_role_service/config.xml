@@ -1,0 +1,15 @@
+<jdbcroleservice>
+  <id>-76e0943c:1612b749927:-7fef</id>
+  <name>geonode_role_service</name>
+  <className>org.geoserver.security.jdbc.JDBCRoleService</className>
+  <propertyFileNameDDL>rolesddl.xml</propertyFileNameDDL>
+  <propertyFileNameDML>rolesdml.xml</propertyFileNameDML>
+  <jndi>false</jndi>
+  <driverClassName>org.postgresql.Driver</driverClassName>
+  <connectURL>jdbc:postgresql://postgres:5432/postgres</connectURL>
+  <userName>postgres</userName>
+  <password>crypt2:R4KGxyXsaU2uuwF/JFJTbPEGbpbXEvdin0F/4vczRUE=</password>
+  <creatingTables>true</creatingTables>
+  <adminRoleName>ADMIN</adminRoleName>
+  <groupAdminRoleName>GROUP_ADMIN</groupAdminRoleName>
+</jdbcroleservice>

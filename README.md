@@ -121,6 +121,10 @@ The django project is initialised (install requirements, migrate, collectstatic 
 
 Nginx proxies to uwsgi (django) and geoserver. It also directly serves django static and media files.
 
+### Geoserver / Django
+
+Geoserver and Django share the same users (using postgres tables).
+
 ## Compared to similar tools
 
 This is very similar to https://github.com/GeoNode/geonode-project but aims to be suitable for deployement.
@@ -131,6 +135,7 @@ Key differences :
 - other services (postgres, elasticsearch, rabbit) images use a specific tag, so we know which one will be pulled 
 - settings imports from geonode.settings so most defaults don't need to be modified
 - geoserver starts with empty geodatadir. Geonode's entrypoint script ensures there is a geonode workspace initialized using REST API. (in geonode-project, initial data-dir is pulled from http://build.geonode.org/geoserver/latest/data-$GEOSERVER_VERSION.zip , see waybarrios/geoserver Docker image) TODO : IS THIS STILL TRUE ?
+- Geonode/Geoserver user database is shared at postgres level so users are always synced
 
 This is very similar to https://github.com/kartoza/kartoza-rancher-catalogue
 
@@ -140,3 +145,4 @@ Key differences :
 - working celery admin panels
 - https encryption
 - use secrets for sensitive data instead of env variables
+- Geonode/Geoserver user database is shared at postgres level so users are always synced

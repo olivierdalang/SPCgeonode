@@ -1,0 +1,8 @@
+<authKeyAuthentication>
+  <id>-7077a377:16126c42e36:-7fec</id>
+  <name>geonode_access_token</name>
+  <className>org.geoserver.security.GeoServerAuthenticationKeyFilter</className>
+  <authKeyMapperName>userPropertyMapper</authKeyMapperName>
+  <authKeyParamName>access_token</authKeyParamName>
+  <userGroupServiceName>geonode_usergroup_service</userGroupServiceName>
+</authKeyAuthentication>
