@@ -109,6 +109,16 @@ docker login
 docker-compose -f docker-compose.yml push
 ```
 
+### Rancher
+
+This setup can almost be used as is by Rancher. Some minor adaptations must be made to docker-compose though : 
+
+- version "3.x" => "2"
+- yaml anchors are not supported : manually replace each `<< : *default-common-django` occurence by the `&default-common-django` block
+- deploy block are not supported
+- if unversionned tags (e.g. latest) add `labels: io.rancher.container.pull_image: always` to all images that may change so that they are pulled again from the repository
+
+
 ## How it works
 
 ### Geonode/Django
