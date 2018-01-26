@@ -7,7 +7,7 @@ catalog:
   questions:
     - variable: WAN_HOST
       label: "Hostname for WAN access"
-      description: "Enter the domain name you will be using. This will setup SSL certificates and configure Nginx to accept connections on this domain name. Leave this empty if you only plan to use Geonode on LAN."
+      description: "Enter the domain name you will be using. This will setup SSL certificates and configure Nginx to accept connections on this domain name. Leave this empty if you only plan to use Geonode on LAN. If you have no domain name, but still want to test encryption, you can use xip.io : X.X.X.X.xip.io (replace X.X.X.X by the IP)."
       required: false
       default: null
       type: "string"
