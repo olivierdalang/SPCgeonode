@@ -32,7 +32,7 @@ Difference of dev setup vs prod setup:
 - activates nginx debug mode
 - run celery using djcelery (so that output goes to admin) 
 - use docker dev tags instead of latest
-- use defaults secrets from _dev-secrets `admin_username=super2` and `admin_password=duper2`
+- use defaults secrets from _dev-secrets `admin_username=super` and `admin_password=duper`
 - use defaut .env variables which set `LAN_HOST=127.0.0.1`, `WAN_HOST=local.example.com`, `ADMIN_EMAIL=admin@example.com` and `LETSENCRYPT_MODE=disabled` (set `local.example.com` to `127.0.0.1` in your hosts file for better local testing)
 
 
