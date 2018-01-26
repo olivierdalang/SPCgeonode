@@ -7,7 +7,7 @@ services:
 
   # Our custom django application. It includes Geonode.
   django:
-    image: olivierdalang/spcgeonode:django-latest
+    image: olivierdalang/spcgeonode:django-0.0.8
     environment:
       - GEOSERVER_PUBLIC_LOCATION=http://${WAN_HOST}/geoserver/
       - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver # TODO : remove this if we don't use OAuth2
@@ -37,7 +37,7 @@ services:
     
   # Celery worker that executes celery tasks created by Django.
   celery:
-    image: olivierdalang/spcgeonode:django-latest
+    image: olivierdalang/spcgeonode:django-0.0.8
     environment:
       - GEOSERVER_PUBLIC_LOCATION=http://${WAN_HOST}/geoserver/
       - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver # TODO : remove this if we don't use OAuth2
@@ -66,7 +66,7 @@ services:
 
   # Celery camera that monitors celery tasks and populate the djcelery django admin interface
   celerycam:
-    image: olivierdalang/spcgeonode:django-latest
+    image: olivierdalang/spcgeonode:django-0.0.8
     environment:
       - GEOSERVER_PUBLIC_LOCATION=http://${WAN_HOST}/geoserver/
       - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver # TODO : remove this if we don't use OAuth2
@@ -109,7 +109,7 @@ services:
   
   # Nginx is serving django static and media files and proxies to django and geonode
   nginx:
-    image: olivierdalang/spcgeonode:nginx-latest
+    image: olivierdalang/spcgeonode:nginx-0.0.8
     environment:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
@@ -125,7 +125,7 @@ services:
 
   # Geoserver backend
   geoserver:
-    image: olivierdalang/spcgeonode:geoserver-latest
+    image: olivierdalang/spcgeonode:geoserver-0.0.8
     environment:
      - GEOSERVER_HOME=/geoserver-2.12.1
      - GEOSERVER_DATA_DIR=/spcgeonode-geodatadir
@@ -139,7 +139,7 @@ services:
 
   # Gets and installs letsencrypt certificates
   letsencrypt:
-    image: olivierdalang/spcgeonode:letsencrypt-latest
+    image: olivierdalang/spcgeonode:letsencrypt-0.0.8
     environment:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}

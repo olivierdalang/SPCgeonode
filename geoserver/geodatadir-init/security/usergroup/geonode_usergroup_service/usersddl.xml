@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>DDL statements for user database</comment>
+  <entry key="check.table">user_props</entry>
+  <entry key="users.create">
+<![CDATA[
+
+CREATE OR REPLACE FUNCTION dj2gs_hash(dj_hash text) RETURNS text LANGUAGE plpgsql AS $$ BEGIN
+  RETURN CASE WHEN split_part(dj_hash,'$',4)='' THEN NULL
+      WHEN split_part(dj_hash,'$',1)='geoserver_digest' THEN 'digest1'
+      WHEN split_part(dj_hash,'$',1)='geoserver_strong_pbe' THEN 'crypt2'
+      WHEN split_part(dj_hash,'$',1)='geoserver_weak_pbe' THEN 'crypt1'
+      WHEN split_part(dj_hash,'$',1)='geoserver_plain' THEN 'plain'
+      ELSE split_part(dj_hash,'$',1)
+    END || ':' || split_part(dj_hash,'$',4);
+END; $$;
+
+CREATE OR REPLACE FUNCTION gs2dj_hash(gs_hash text) RETURNS text LANGUAGE plpgsql AS $$ BEGIN
+  RETURN CASE WHEN split_part(gs_hash,':',1)='crypt2' THEN 'geoserver_strong_pbe$?$-$'
+      WHEN split_part(gs_hash,':',1)='crypt1' THEN 'geoserver_weak_pbe$?$-$'
+      WHEN split_part(gs_hash,':',1)='plain' THEN 'geoserver_plain$-$-$'
+      WHEN split_part(gs_hash,':',1)='digest1' THEN 'geoserver_digest$100000$-$'
+      ELSE split_part(gs_hash,':',1) || '?$?$'
+    END || split_part(gs_hash,':',2);
+END; $$;
+
+CREATE OR REPLACE FUNCTION dj2gs_enabled(dj_enabled boolean) RETURNS text LANGUAGE plpgsql AS $$ BEGIN
+  RETURN CASE
+    WHEN dj_enabled THEN 'Y'
+    ELSE 'N'
+  END;
+END; $$;
+
+CREATE OR REPLACE FUNCTION gs2dj_enabled(gs_enabled text) RETURNS boolean LANGUAGE plpgsql AS $$ BEGIN
+  RETURN (gs_enabled = 'Y');
+END; $$;
+
+CREATE OR REPLACE VIEW users AS
+SELECT  "username" as "name",
+        dj2gs_hash("password") as "password",
+        dj2gs_enabled("is_active") as "enabled"
+FROM    public.people_profile
+WHERE   NOT "username"='AnonymousUser';
+
+CREATE OR REPLACE FUNCTION users_view_trigger() RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN
+  IF TG_OP = 'INSERT' THEN
+    INSERT INTO public.people_profile(username, password, is_active, date_joined, is_superuser, is_staff, first_name, last_name, email) VALUES(
+      NEW.name,
+      gs2dj_hash(NEW.password),
+      gs2dj_enabled(NEW.enabled), -- is_active
+      NOW(),
+      FALSE, FALSE, '', '', '' -- is_superuser, is_staff, first_name, last_name, email       
+    );
+    RETURN NEW;
+  ELSIF TG_OP = 'UPDATE' THEN
+    UPDATE public.people_profile SET
+        username=NEW.name,
+        password=gs2dj_hash(NEW.password),
+        is_active=gs2dj_enabled(NEW.enabled)
+    WHERE username=OLD.name;
+    RETURN NEW;
+  ELSIF TG_OP = 'DELETE' THEN
+    DELETE FROM public.people_profile WHERE username=OLD.name;
+    RETURN NULL;
+  END IF;
+END; $$;
+
+DROP TRIGGER IF EXISTS users_view_trigger ON users;
+CREATE TRIGGER users_view_trigger INSTEAD OF INSERT OR UPDATE OR DELETE ON users
+FOR EACH ROW EXECUTE PROCEDURE users_view_trigger();
+
+]]>
+  </entry>
+  <entry key="userprops.create">
+<![CDATA[
+
+CREATE OR REPLACE VIEW user_props AS
+SELECT 	p.username as "username",
+		    'UUID'::text as "propname",
+		    a.token as "propvalue"
+FROM 	  oauth2_provider_accesstoken as a
+JOIN 	  people_profile as p on a.user_id = p.id
+WHERE 	a.application_id=1 AND -- TODO : allow to customize this (if we have several applications, we may not be using ID=1)
+     	  p.is_active AND
+     	  a.expires >= now();
+
+CREATE OR REPLACE FUNCTION user_props_trigger() RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN
+  IF TG_OP = 'INSERT' THEN
+    RAISE WARNING 'TODO : INSERT IS NOT IMPLEMENTED IN user_props_trigger()';
+    RETURN NEW;
+  ELSIF TG_OP = 'UPDATE' THEN
+    RAISE WARNING 'TODO : UPDATE IS NOT IMPLEMENTED IN user_props_trigger()';
+    RETURN NEW;
+  ELSIF TG_OP = 'DELETE' THEN
+    RAISE WARNING 'TODO : DELETE IS NOT IMPLEMENTED IN user_props_trigger()';
+    RETURN NULL;
+  END IF;
+END; $$;
+
+DROP TRIGGER IF EXISTS user_props_trigger ON user_props;
+CREATE TRIGGER user_props_trigger INSTEAD OF INSERT OR UPDATE OR DELETE ON user_props
+FOR EACH ROW EXECUTE PROCEDURE user_props_trigger();
+
+]]>
+  </entry>
+
+  <entry key="groups.create">
+<![CDATA[
+
+CREATE OR REPLACE VIEW groups AS
+SELECT  slug as "name",
+        'Y'::text as "enabled"
+FROM    groups_groupprofile;
+
+CREATE OR REPLACE FUNCTION groups_trigger() RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN
+  IF TG_OP = 'INSERT' THEN
+    RAISE WARNING 'TODO : INSERT IS NOT IMPLEMENTED IN groups_trigger()';
+    RETURN NEW;
+  ELSIF TG_OP = 'UPDATE' THEN
+    RAISE WARNING 'TODO : UPDATE IS NOT IMPLEMENTED IN groups_trigger()';
+    RETURN NEW;
+  ELSIF TG_OP = 'DELETE' THEN
+    RAISE WARNING 'TODO : DELETE IS NOT IMPLEMENTED IN groups_trigger()';
+    RETURN NULL;
+  END IF;
+END; $$;
+
+DROP TRIGGER IF EXISTS groups_trigger ON groups;
+CREATE TRIGGER groups_trigger INSTEAD OF INSERT OR UPDATE OR DELETE ON groups
+FOR EACH ROW EXECUTE PROCEDURE groups_trigger();
+
+]]>
+  </entry>
+  <entry key="groupmembers.create">
+<![CDATA[
+
+CREATE OR REPLACE VIEW group_members AS
+SELECT  slug as groupname,
+        username
+FROM    groups_groupmember, groups_groupprofile, people_profile
+WHERE   groups_groupmember.group_id=groups_groupprofile.id
+          and
+        user_id=people_profile.id;
+
+CREATE OR REPLACE FUNCTION group_members_trigger() RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN
+  IF TG_OP = 'INSERT' THEN
+    RAISE WARNING 'TODO : INSERT IS NOT IMPLEMENTED IN group_members_trigger()';
+    RETURN NEW;
+  ELSIF TG_OP = 'UPDATE' THEN
+    RAISE WARNING 'TODO : UPDATE IS NOT IMPLEMENTED IN group_members_trigger()';
+    RETURN NEW;
+  ELSIF TG_OP = 'DELETE' THEN
+    RAISE WARNING 'TODO : DELETE IS NOT IMPLEMENTED IN group_members_trigger()';
+    RETURN NULL;
+  END IF;
+END; $$;
+
+DROP TRIGGER IF EXISTS group_members_trigger ON group_members;
+CREATE TRIGGER group_members_trigger INSTEAD OF INSERT OR UPDATE OR DELETE ON group_members
+FOR EACH ROW EXECUTE PROCEDURE group_members_trigger();
+
+]]>
+  </entry>
+  <entry key="groupmembers.indexcreate">
+    -- NO INDEXES ON VIEWS, IF NEEDED, INDEXES MUST BE CREATED ON BASE TABLE
+	  -- create index group_members_idx on group_members(username,groupname)
+  </entry>
+
+  <entry key="users.drop">drop view users</entry>
+  <entry key="userprops.drop">drop view user_props</entry>
+  <entry key="groups.drop">drop view groups</entry>
+  <entry key="groupmembers.drop">drop view group_members</entry>
+
+  <!-- since GeoServer version 2.3.0 -->  
+  <entry key="userprops.indexcreate1">
+    -- NO INDEXES ON VIEWS, IF NEEDED, INDEXES MUST BE CREATED ON BASE TABLE
+	  -- create index user_props_idx1 on user_props(propname,propvalue)
+  </entry>  
+  <entry key="userprops.indexcreate2">
+    -- NO INDEXES ON VIEWS, IF NEEDED, INDEXES MUST BE CREATED ON BASE TABLE
+	  -- create index user_props_idx2 on user_props(propname,username)
+  </entry>
+  <!--  end GeoServer version 2.3.0 -->  
+  
+  
+	  
+</properties>

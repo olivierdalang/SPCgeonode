@@ -1,0 +1,6 @@
+<usernamePassword>
+  <id>72be526e:161026f4b01:-7ffb</id>
+  <name>geonode_auth_provider</name>
+  <className>org.geoserver.security.auth.UsernamePasswordAuthenticationProvider</className>
+  <userGroupServiceName>geonode_usergroup_service</userGroupServiceName>
+</usernamePassword>
