@@ -1,8 +1,6 @@
 from django.contrib.auth.hashers import BasePasswordHasher, mask_hash
-import hashlib, base64, random, os
+import hashlib, base64, os
 from collections import OrderedDict
-from jasypt4py import StandardPBEStringEncryptor
-from pbewithmd5anddes import PbeMd5DESEncryptor
 from django.utils.translation import gettext_noop as _
 from django.utils.crypto import constant_time_compare
 
