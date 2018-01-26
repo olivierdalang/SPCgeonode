@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import BasePasswordHasher, mask_hash
 import hashlib, base64, os
 from collections import OrderedDict
-from django.utils.translation import gettext_noop as _
+from django.utils.translation import gettext_noop as _t
 from django.utils.crypto import constant_time_compare
 
 
@@ -53,9 +53,9 @@ class GeoserverDigestPasswordHasher(BasePasswordHasher):
         algorithm, iterations, _, hash = encoded.split('$', 3)
         assert algorithm == self.algorithm
         return OrderedDict([
-            (_('algorithm'), algorithm),
-            (_('iterations'), iterations),
-            (_('hash'), mask_hash(hash)),
+            (_t('algorithm'), algorithm),
+            (_t('iterations'), iterations),
+            (_t('hash'), mask_hash(hash)),
         ])
 
 
@@ -80,8 +80,8 @@ class GeoserverPlainPasswordHasher(BasePasswordHasher):
         algorithm, _, __, hash = encoded.split('$', 3)
         assert algorithm == self.algorithm
         return OrderedDict([
-            (_('algorithm'), algorithm),
-            (_('hash'), '***'),
+            (_t('algorithm'), algorithm),
+            (_t('hash'), '***'),
         ])
 
     def verify(self, password, encoded):
