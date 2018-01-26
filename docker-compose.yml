@@ -10,7 +10,7 @@ x-common-django:
   image: olivierdalang/spcgeonode:django-latest
   build: ./django/
   environment:
-    - GEOSERVER_PUBLIC_LOCATION=http://${WAN_HOST}/geoserver/
+    - GEOSERVER_PUBLIC_LOCATION=/geoserver/ # we use a relative URL since we want to keep current scheme/host
     - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST},nginx # we need nginx to allow calls to Geonode OAuth API from Geoserver # TODO : remove this if we don't use OAuth2
     - ADMIN_EMAIL=${ADMIN_EMAIL}
     - DJANGO_SETTINGS_MODULE=spcgeonode.settings
