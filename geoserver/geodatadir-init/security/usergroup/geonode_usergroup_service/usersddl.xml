@@ -82,8 +82,7 @@ SELECT 	p.username as "username",
 FROM 	  oauth2_provider_accesstoken as a
 JOIN 	  people_profile as p on a.user_id = p.id
 WHERE 	a.application_id=1 AND -- TODO : allow to customize this (if we have several applications, we may not be using ID=1)
-     	  p.is_active AND
-     	  a.expires >= now();
+     	  p.is_active; -- AND a.expires >= now(); -- TODO CRITICAL : it seems Geonode uses expired tokens ?!
 
 CREATE OR REPLACE FUNCTION user_props_trigger() RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN
   IF TG_OP = 'INSERT' THEN
