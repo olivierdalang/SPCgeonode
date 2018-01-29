@@ -17,6 +17,10 @@
 
 - fix bug with rancher resolver on rancher
 
+## 0.0.10
+
+- we don't rely on an initial geodatadir anymore, instead we start from scratch, launch geoserver once, then do our modifications
+
 ## TODO : Roadmap
 
 - check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
@@ -29,9 +33,10 @@
 - think about upgrade (e.g. changing variables such as admin)
 - add HEALTHCHECKS to Dockerfiles where applicable
 - migrate to spc repositories
+- use Geoserver 2.13 instead of 2.12
+- use Geonode 2.8 (? is it the latest) instead of 2.6
 
 ### Geoserver
 
-- fix initial datadir root password
 - fix exceptions on first launch because of missing datadir configurations
 - see if we use all needed geoserver extensions (marlin-renderer, geonode's module)
