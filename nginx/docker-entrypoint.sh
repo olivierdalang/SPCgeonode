@@ -4,7 +4,7 @@
 set -e
 
 printf "\n\nReplacing environement variables"
-envsubst '\$LAN_HOST \$WAN_HOST' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+envsubst '\$LAN_HOST \$WAN_HOST \$RESOLVER' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 printf "\n\nLoading nginx autoreloader\n"
 sh /docker-autoreload.sh &
