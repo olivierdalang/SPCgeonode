@@ -84,6 +84,7 @@ services:
     environment:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
+      - RESOLVER=127.0.0.11 # SET THIS TO 169.254.169.250 FOR RANCHER
     ports:
       - "80:80"
       - "443:443"

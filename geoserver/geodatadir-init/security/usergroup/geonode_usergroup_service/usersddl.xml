@@ -9,17 +9,13 @@
 CREATE OR REPLACE FUNCTION dj2gs_hash(dj_hash text) RETURNS text LANGUAGE plpgsql AS $$ BEGIN
   RETURN CASE WHEN split_part(dj_hash,'$',4)='' THEN NULL
       WHEN split_part(dj_hash,'$',1)='geoserver_digest' THEN 'digest1'
-      WHEN split_part(dj_hash,'$',1)='geoserver_strong_pbe' THEN 'crypt2'
-      WHEN split_part(dj_hash,'$',1)='geoserver_weak_pbe' THEN 'crypt1'
       WHEN split_part(dj_hash,'$',1)='geoserver_plain' THEN 'plain'
       ELSE split_part(dj_hash,'$',1)
     END || ':' || split_part(dj_hash,'$',4);
 END; $$;
 
 CREATE OR REPLACE FUNCTION gs2dj_hash(gs_hash text) RETURNS text LANGUAGE plpgsql AS $$ BEGIN
-  RETURN CASE WHEN split_part(gs_hash,':',1)='crypt2' THEN 'geoserver_strong_pbe$?$-$'
-      WHEN split_part(gs_hash,':',1)='crypt1' THEN 'geoserver_weak_pbe$?$-$'
-      WHEN split_part(gs_hash,':',1)='plain' THEN 'geoserver_plain$-$-$'
+  RETURN CASE WHEN split_part(gs_hash,':',1)='plain' THEN 'geoserver_plain$-$-$'
       WHEN split_part(gs_hash,':',1)='digest1' THEN 'geoserver_digest$100000$-$'
       ELSE split_part(gs_hash,':',1) || '?$?$'
     END || split_part(gs_hash,':',2);
@@ -82,8 +78,7 @@ SELECT 	p.username as "username",
 FROM 	  oauth2_provider_accesstoken as a
 JOIN 	  people_profile as p on a.user_id = p.id
 WHERE 	a.application_id=1 AND -- TODO : allow to customize this (if we have several applications, we may not be using ID=1)
-     	  p.is_active AND
-     	  a.expires >= now();
+     	  p.is_active; -- AND a.expires >= now(); -- TODO CRITICAL : it seems Geonode uses expired tokens ?!
 
 CREATE OR REPLACE FUNCTION user_props_trigger() RETURNS TRIGGER LANGUAGE plpgsql AS $$ BEGIN
   IF TG_OP = 'INSERT' THEN
