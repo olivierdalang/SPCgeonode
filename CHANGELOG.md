@@ -19,7 +19,7 @@
 
 ## TODO : Roadmap
 
-- WIP : check auth_keys (it seems Geonode uses expired keys...)
+- check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
 - backup geoserver data folder, postgresql data...
 - tweak nginx settings (gzip output, cache, etc...)
 - optimise dockerfiles
@@ -29,3 +29,9 @@
 - think about upgrade (e.g. changing variables such as admin)
 - add HEALTHCHECKS to Dockerfiles where applicable
 - migrate to spc repositories
+
+### Geoserver
+
+- fix initial datadir root password
+- fix exceptions on first launch because of missing datadir configurations
+- see if we use all needed geoserver extensions (marlin-renderer, geonode's module)
