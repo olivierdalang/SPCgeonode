@@ -16,11 +16,10 @@
 ## 0.0.9
 
 - fix bug with rancher resolver on rancher
-- WIP : test a bit everything (esp.) user/groups auth
-- WIP : check auth_keys (it seems Geonode uses expired keys...)
 
 ## TODO : Roadmap
 
+- WIP : check auth_keys (it seems Geonode uses expired keys...)
 - backup geoserver data folder, postgresql data...
 - tweak nginx settings (gzip output, cache, etc...)
 - optimise dockerfiles
@@ -29,3 +28,4 @@
 - allow empty WAN/LAN_HOST
 - think about upgrade (e.g. changing variables such as admin)
 - add HEALTHCHECKS to Dockerfiles where applicable
+- migrate to spc repositories
