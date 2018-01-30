@@ -43,7 +43,8 @@ else
     cp -Rf /geodatadir-init/. /spcgeonode-geodatadir/
 
     # WE DON'T USE THIS. THIS WOULD BE NEEDED TO UPDATE THE ROOT PASSWORD IF WE PROVIDE AN EXISTING DATA DIR
-    # BUT IT DOESN'T WORK COMPLETELY (CAN'T LOGIN ANYMORE)
+    # BUT IT DOESN'T WORK COMPLETELY (CAN'T LOGIN ANYMORE). I THINK IT'S BECAUSE EACH PASSWORD IN THE KEYSTORE
+    # MUST BE REENCRYPTED INDIVIDUALLY
 
     # # Update the keystore main password
     # keytool -storepasswd -new '123456' -keystore /spcgeonode-geodatadir/security/geoserver.jceks -storetype JCEKS -storepass 'sKLgISITTbzDLyLboJO6'
