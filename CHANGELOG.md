@@ -35,6 +35,7 @@
 - migrate to spc repositories
 - use Geoserver 2.13 instead of 2.12
 - use Geonode 2.8 (? is it the latest) instead of 2.6
+- see if we can use postgres for geofence too https://github.com/geoserver/geofence/wiki/GeoFence-configuration#database-configuration-1
 
 ### Geoserver
 
