@@ -79,7 +79,7 @@ certbot --config-dir /spcgeonode-certbot/ renew --dry-run
 ##########################################
 
 printf "\n\nInstalling cronjobs\n"
-
+# TODO : move this to an external file
 # notes : first one is letsencrypt (we run it twice a day), second one is autoissued (we renew every year, as it's duration is 365 days + 30 days)
 ( echo "0 0,12 * * * date && certbot renew" ; echo "0 0 1 1 * date && openssl req -x509 -nodes -days 395 -newkey rsa:2048 -keyout /spcgeonode-certbot/autoissued/$LAN_HOST/privkey.pem -out /spcgeonode-certbot/autoissued/$LAN_HOST/fullchain.pem -subj \"/CN=$LAN_HOST\"") | /usr/bin/crontab -
 # We print the crontab just for debugging purposes

@@ -53,9 +53,9 @@ $env:LAN_HOST="127.0.0.1"
 $env:ADMIN_USERNAME="super"
 $env:ADMIN_PASSWORD="duper"
 $env:ADMIN_EMAIL="admin@example.com"
+$env:REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
 
 # 3. Deploy the stack
-
 docker secret rm admin_username
 echo "$ADMIN_USERNAME" | docker secret create admin_username -
 docker secret rm admin_password
@@ -68,6 +68,7 @@ $env:LAN_HOST=""
 $env:ADMIN_USERNAME=""
 $env:ADMIN_PASSWORD=""
 $env:ADMIN_EMAIL=""
+$env:REMOTE_SYNCTHING_MACHINE_ID=""
 ```
 
 Linux
@@ -81,6 +82,8 @@ set LAN_HOST="127.0.0.1"
 set ADMIN_USERNAME="super"
 set ADMIN_PASSWORD="duper"
 set ADMIN_EMAIL="admin@example.com"
+set REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
+
 
 # 3. Deploy the stack (again: MAKE SURE YOU'VE JUST REBUILD THE IMAGES)
 # this creates the docker secrets
@@ -96,6 +99,7 @@ set LAN_HOST=
 set ADMIN_USERNAME=
 set ADMIN_PASSWORD=
 set ADMIN_EMAIL=
+set REMOTE_SYNCTHING_MACHINE_ID=
 ```
 
 ### Publishing the images

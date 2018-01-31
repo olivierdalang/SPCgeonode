@@ -40,11 +40,18 @@ services:
     volumes:
       - ./_volume_certbot:/spcgeonode-certbot/
 
-  # backuper:
-  #   volumes:
-  #     # - ./_volume_database:/tobackup/spcgeonode-database/ # doesn't work because of ownership
-  #     - ./_volume_media:/tobackup/spcgeonode-media/
-  #     - ./_volume_geodatadir:/tobackup/spcgeonode-geodatadir/
+  pgdumper:
+    image: olivierdalang/spcgeonode:pgdumper-dev
+    build: ./pgdumper/
+    volumes:
+      - ./_volume_pgdumps:/spcgeonode-pgdumps/
+
+  syncthing:
+    image: olivierdalang/spcgeonode:syncthing-dev
+    volumes:
+      - ./_volume_pgdumps:/spcgeonode-pgdumps/
+      - ./_volume_media:/spcgeonode-media/
+      - ./_volume_geodatadir:/spcgeonode-geodatadir/
 
 secrets:
   admin_username:

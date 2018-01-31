@@ -20,11 +20,11 @@
 ## 0.0.10
 
 - we don't rely on an initial geodatadir anymore, instead we start from scratch, launch geoserver once, then do our modifications
+- added a backup service using Syncthings
 
 ## TODO : Roadmap
 
 - check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
-- backup geoserver data folder, postgresql data...
 - tweak nginx settings (gzip output, cache, etc...)
 - optimise dockerfiles
 - contribute back to geonode-project

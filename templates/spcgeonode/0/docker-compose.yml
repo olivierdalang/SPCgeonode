@@ -151,9 +151,27 @@ services:
     labels:
       io.rancher.container.pull_image: always
 
- 
-  # TODO : We still need to make a service to backup all our important folders
-  # backuper:
+  pgdumper:
+    image: olivierdalang/spcgeonode:pgdumper-latest
+    volumes:
+      - pgdumps:/spcgeonode-pgdumps/ 
+
+  syncthing:
+    image: olivierdalang/spcgeonode:syncthing-latest
+    environment:
+      - REMOTE_SYNCTHING_MACHINE_ID=${REMOTE_SYNCTHING_MACHINE_ID}
+    secrets:
+      - admin_username
+      - admin_password
+    ports:
+      - "8384:8384" # TODO : put this behind nginx too ?
+      - "22000:22000"
+    volumes:
+      - pgdumps:/spcgeonode-pgdumps/ 
+      - media:/spcgeonode-media/ 
+      - geodatadir:/spcgeonode-geodatadir/
+    labels:
+      io.rancher.container.pull_image: always
 
 volumes:
   static:
@@ -161,6 +179,7 @@ volumes:
   database:
   geodatadir:
   certbot:
+  pgdumps:
 
 secrets:
   admin_username:
