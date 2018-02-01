@@ -1,10 +1,11 @@
 FROM python:2.7.13-alpine3.6
 
 # 1-2. Install system dependencies
+# notes : openssl is needed for wget (https) and gettext is needed for envsubst
 # TODO : see if can avoid requiring python and pip bcrypt (a CLI tool to bcrypt, this is only needed to encrypt the Syncthing GUI password).
 # Maybe apache-utils ? see https://unix.stackexchange.com/a/419855 
-RUN apk add --no-cache openssl && \
-    apk add --no-cache --virtual BUILD-DEPS gettext gcc linux-headers build-base libffi-dev && \
+RUN apk add --no-cache openssl gettext && \
+    apk add --no-cache --virtual BUILD-DEPS gcc linux-headers build-base libffi-dev && \
     pip install bcrypt && \
     apk del BUILD-DEPS
 
