@@ -6,6 +6,7 @@ set -e
 ##########################################
 # LAN setup
 ##########################################
+# TODO : can we remove this completely and only rely on the cron ?
 
 printf "\n\nSetting up autoissued certificates for LAN Host ($LAN_HOST)\n"
 
@@ -26,6 +27,7 @@ fi
 ##########################################
 # WAN setup
 ##########################################
+# TODO : can we remove this completely and only rely on the cron ?
 
 printf "\n\nSetting up certificates for WAN Host ($WAN_HOST)\n"
 
@@ -74,16 +76,6 @@ printf "\nTesting autorenew\n"
 certbot --config-dir /spcgeonode-certbot/ renew --dry-run
 
 
-##########################################
-# Cron jobs
-##########################################
-
-printf "\n\nInstalling cronjobs\n"
-# TODO : move this to an external file
-# notes : first one is letsencrypt (we run it twice a day), second one is autoissued (we renew every year, as it's duration is 365 days + 30 days)
-( echo "0 0,12 * * * date && certbot renew" ; echo "0 0 1 1 * date && openssl req -x509 -nodes -days 395 -newkey rsa:2048 -keyout /spcgeonode-certbot/autoissued/$LAN_HOST/privkey.pem -out /spcgeonode-certbot/autoissued/$LAN_HOST/fullchain.pem -subj \"/CN=$LAN_HOST\"") | /usr/bin/crontab -
-# We print the crontab just for debugging purposes
-/usr/bin/crontab -l
 
 # Run the CMD 
 exec "$@"

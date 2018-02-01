@@ -6,6 +6,10 @@ RUN apk add --no-cache openssl && \
     apk add --no-cache certbot
 
 
+# Installing cronjobs
+ADD crontab crontab
+RUN /usr/bin/crontab crontab
+RUN rm crontab
 
 # The entrypoint creates the certificate
 ADD docker-entrypoint.sh docker-entrypoint.sh 
