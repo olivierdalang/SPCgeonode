@@ -17,15 +17,25 @@
 
 - fix bug with rancher resolver on rancher
 
+## 0.0.10
+
+- we don't rely on an initial geodatadir anymore, instead we start from scratch, launch geoserver once, then do our modifications
+- added a backup service using Syncthings
+
 ## TODO : Roadmap
 
-- WIP : check auth_keys (it seems Geonode uses expired keys...)
-- backup geoserver data folder, postgresql data...
+- check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
 - tweak nginx settings (gzip output, cache, etc...)
 - optimise dockerfiles
+- make use of entrypoint/cmd more consistent (is it in the dockerfile ? or in the docker-compose?)
 - contribute back to geonode-project
 - move rancher catalog out of this repo
 - allow empty WAN/LAN_HOST
 - think about upgrade (e.g. changing variables such as admin)
 - add HEALTHCHECKS to Dockerfiles where applicable
 - migrate to spc repositories
+- use Geoserver 2.13 instead of 2.12
+- use Geonode 2.8 (? is it the latest) instead of 2.6
+- see if we can use postgres for geofence too https://github.com/geoserver/geofence/wiki/GeoFence-configuration#database-configuration-1
+- fix Geoserver exceptions on first launch because of missing datadir configurations
+- see if we use all needed geoserver extensions (marlin-renderer, geonode's module)

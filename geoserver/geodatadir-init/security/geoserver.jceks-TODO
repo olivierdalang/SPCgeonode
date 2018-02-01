@@ -1,1 +1,0 @@
-TODO CRITICAL : the keystore shouldn't be part of geodatadir-init so that it's dynamically created by Geoserve. We need however to create the django users key using Docker secrets (see hashes.py in django code).

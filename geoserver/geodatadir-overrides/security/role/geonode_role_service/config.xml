@@ -8,7 +8,7 @@
   <driverClassName>org.postgresql.Driver</driverClassName>
   <connectURL>jdbc:postgresql://postgres:5432/postgres</connectURL>
   <userName>postgres</userName>
-  <password>crypt2:R4KGxyXsaU2uuwF/JFJTbPEGbpbXEvdin0F/4vczRUE=</password>
+  <password>plain:postgres</password>
   <creatingTables>true</creatingTables>
   <adminRoleName>ADMIN</adminRoleName>
   <groupAdminRoleName>GROUP_ADMIN</groupAdminRoleName>

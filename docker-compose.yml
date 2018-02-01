@@ -131,8 +131,29 @@ services:
         condition: on-failure
         delay: 60s
  
-  # TODO : We still need to make a service to backup all our important folders
-  # backuper:
+  # TODO : add a cron job to backup database
+  
+  pgdumper:
+    image: olivierdalang/spcgeonode:pgdumper-latest
+    build: ./pgdumper/
+    volumes:
+      - pgdumps:/spcgeonode-pgdumps/ 
+
+  syncthing:
+    image: olivierdalang/spcgeonode:syncthing-latest
+    build: ./syncthing/
+    environment:
+      - REMOTE_SYNCTHING_MACHINE_ID=${REMOTE_SYNCTHING_MACHINE_ID}
+    secrets:
+      - admin_username
+      - admin_password
+    ports:
+      - "8384:8384" # TODO : put this behind nginx too ?
+      - "22000:22000"
+    volumes:
+      - pgdumps:/spcgeonode-pgdumps/
+      - media:/spcgeonode-media/
+      - geodatadir:/spcgeonode-geodatadir/
 
 volumes:
   static:
@@ -140,6 +161,7 @@ volumes:
   database:
   geodatadir:
   certbot:
+  pgdumps:
 
 secrets:
   admin_username:
