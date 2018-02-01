@@ -24,6 +24,7 @@
 
 ## TODO : Roadmap
 
+- see if syncthing is really a good solution, maybe checkout duplicity, BorgBackup, ... 
 - check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
 - tweak nginx settings (gzip output, cache, etc...)
 - optimise dockerfiles
