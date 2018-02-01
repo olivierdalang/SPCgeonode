@@ -1,0 +1,9 @@
+# ┌───────────── minute (0 - 59)
+# │     ┌───────────── hour (0 - 23)
+# │     │     ┌───────────── day of month (1 - 31)
+# │     │     │     ┌───────────── month (1 - 12)
+# │     │     │     │     ┌───────────── day of week (0 - 6) (Sunday to Saturday; 7 is also Sunday on some systems)
+# │     │     │     │     │
+
+# TODO : do this once a day not every  minute
+  *     *     *     *     *     date && printf "\nRunning sync from cron job\n" && exec /root/sync.sh

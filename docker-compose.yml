@@ -155,6 +155,20 @@ services:
       - media:/spcgeonode-media/
       - geodatadir:/spcgeonode-geodatadir/
 
+  rclone:
+    image: olivierdalang/spcgeonode:rclone-latest
+    build: ./rclone/
+    environment:
+      - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
+      - AWS_BUCKET_REGION=${AWS_BUCKET_REGION}
+    secrets:
+      - aws_access_key
+      - aws_secret_key
+    volumes:
+      - pgdumps:/spcgeonode-pgdumps/
+      - media:/spcgeonode-media/
+      - geodatadir:/spcgeonode-geodatadir/
+
 volumes:
   static:
   media:
@@ -167,4 +181,8 @@ secrets:
   admin_username:
     external: true
   admin_password:
+    external: true
+  aws_access_key:
+    external: true
+  aws_secret_key:
     external: true

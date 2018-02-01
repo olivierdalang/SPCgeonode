@@ -53,10 +53,23 @@ services:
       - ./_volume_media:/spcgeonode-media/
       - ./_volume_geodatadir:/spcgeonode-geodatadir/
 
+  rclone:
+    image: olivierdalang/spcgeonode:rclone-dev
+    volumes:
+      - ./_volume_pgdumps:/spcgeonode-pgdumps/
+      - ./_volume_media:/spcgeonode-media/
+      - ./_volume_geodatadir:/spcgeonode-geodatadir/
+
 secrets:
   admin_username:
     file: _devsecrets/admin_username
     external: false
   admin_password:
     file: _devsecrets/admin_password
+    external: false
+  aws_access_key:
+    file: _devsecrets/aws_access_key
+    external: false
+  aws_secret_key:
+    file: _devsecrets/aws_secret_key
     external: false

@@ -35,22 +35,53 @@ catalog:
       label: "Syncthing device ID"
       description: "Backups are made using Syncthings. Install Syncthing on another device, and enter that device's Syncthing ID (in the form 0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000) here to automatically set up backups. Make sure to configure the folders to keep versions."
       required: false
+    - variable: ENABLE_RCLONE
+      label: "Enable backup to Amazon S3 using RClone"
+      required: true
+      default: true
+      type: "boolean"
+    - variable: AWS_BUCKET_NAME
+      label: "Amazon S3 Bucket Name"
+      description: "Name of the Amazon S3 Bucket where backups will happen."
+      required: true
       type: "string"
+    - variable: AWS_BUCKET_REGION
+      label: "Amazon S3 Bucket Name"
+      description: "Region of the Amazon S3 Bucket where backups will happen."
+      required: true
+      type: enum
+      options:
+        - us-east-2
+        - us-east-1
+        - us-west-1
+        - us-west-2
+        - ap-south-1
+        - ap-northeast-2
+        - ap-southeast-1
+        - ap-southeast-2
+        - ap-northeast-1
+        - ca-central-1
+        - cn-north-1
+        - eu-central-1
+        - eu-west-1
+        - eu-west-2
+        - eu-west-3
+        - sa-east-1
     - variable: _CHECK_ADDED_SECRET_SERVICE
       label: "Reminder : did you add the Rancher Secrets service from the catalog ?"
       description: "For this stack to work, you need to add the Rancher Secrets service from the catalog. See http://rancher.com/docs/rancher/v1.4/en/cattle/secrets/#enabling-secrets-in-containers for more informations."
       required: true
       default: null
       type: "boolean"
-    - variable: _CHECK_ADDED_SECRET_ADMIN_USERNAME
-      label: "Reminder : did you create the ADMIN_USERNAME secret ?"
-      description: "For this stack to work, you need to create an ADMIN_USERNAME secret. This will be the Geonode and Geoserver administrator username"
+    - variable: _CHECK_ADDED_SECRETS_ADMIN
+      label: "Did you create the "admin_username" and "admin_password" secrets ?"
+      description: "These will define the Geonode, Geoserver and Syncthing administrator logins"
       required: true
       default: null
       type: "boolean"
-    - variable: _CHECK_ADDED_SECRET_ADMIN_PASSWORD
-      label: "Reminder : did you create the ADMIN_PASSWORD secret ?"
-      description: "For this stack to work, you need to create an ADMIN_PASSWORD secret. This will be the Geonode and Geoserver administrator password"
+    - variable: _CHECK_ADDED_SECRETS_S3
+      label: "Did you create the "aws_access_key" and "aws_secret_key" secrets ?"
+      description: "These are used by the rClone backup service"
       required: true
       default: null
       type: "boolean"
@@ -89,4 +120,7 @@ services:
   syncthing:
     scale: 1
     start_on_create: true
+  rclone:
+    scale: 1
+    start_on_create: ${ENABLE_RCLONE}
   
