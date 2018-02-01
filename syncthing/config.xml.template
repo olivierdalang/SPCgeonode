@@ -1,5 +1,5 @@
 <configuration version="26">
-    <folder id="kdwwt-zxebf" label="spcgeonode-geodatadir" path="/spcgeonode-geodatadir" type="readonly" rescanIntervalS="60" fsWatcherEnabled="false" fsWatcherDelayS="10" ignorePerms="false" autoNormalize="true">
+    <folder id="kdwwt-zxebf" label="spcgeonode-geodatadir/workspaces" path="/spcgeonode-geodatadir/workspaces" type="readonly" rescanIntervalS="60" fsWatcherEnabled="false" fsWatcherDelayS="10" ignorePerms="false" autoNormalize="true">
         <device id="$REMOTE_SYNCTHING_MACHINE_ID" introducedBy=""></device>
     </folder>
     <folder id="adyst-zxabe" label="spcgeonode-media" path="/spcgeonode-media" type="readonly" rescanIntervalS="60" fsWatcherEnabled="false" fsWatcherDelayS="10" ignorePerms="false" autoNormalize="true">
