@@ -29,8 +29,7 @@ else
     fi
 
     printf '\n\nWe remove the plain text password\n'
-    # TODO CRITICAL : remove this
-    # rm -rf /spcgeonode-geodatadir/security/masterpw.info
+    rm -rf /spcgeonode-geodatadir/security/masterpw.info
 
     printf '\n\nWe replace folders from our config\n'
     rm -rf /spcgeonode-geodatadir/security/auth
@@ -40,7 +39,7 @@ else
     rm -rf /spcgeonode-geodatadir/security/config.xml
     rm -rf /spcgeonode-geodatadir/workspaces/
 
-    cp -Rf /geodatadir-init/. /spcgeonode-geodatadir/
+    cp -Rf /geodatadir-overrides/. /spcgeonode-geodatadir/
 
     # WE DON'T USE THIS. THIS WOULD BE NEEDED TO UPDATE THE ROOT PASSWORD IF WE PROVIDE AN EXISTING DATA DIR
     # BUT IT DOESN'T WORK COMPLETELY (CAN'T LOGIN ANYMORE). I THINK IT'S BECAUSE EACH PASSWORD IN THE KEYSTORE
