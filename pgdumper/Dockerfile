@@ -1,14 +1,11 @@
-# TODO : implement a dumper that does a postgres dump on a regular basis
-
 FROM python:2.7.13-alpine3.6
  
-# 1-2. Install system dependencies
-# RUN apk add --no-cache openssl && \
-#     apk add --no-cache certbot --repository http://dl-3.alpinelinux.org/alpine/edge/testing/
-RUN apk add --no-cache postgresql
+# 1-2. Install system dependencies (we only need the pg_dump binary from postgresql, other dependencies are in postgresql-client)
+RUN apk add --no-cache postgresql-client && \
+    apk add --no-cache --virtual BUIID_DEPS postgresql && \
+    cp /usr/bin/pg_dump /bin/pg_dump && \
+    apk del BUIID_DEPS
 
-# TODO: move to top
-# RUN apk add --no-cache curl
 
 # The entrypoint creates the certificate
 ADD crontab crontab 
