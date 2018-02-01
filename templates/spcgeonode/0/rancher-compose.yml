@@ -31,10 +31,16 @@ catalog:
         - disabled
         - staging
         - production
+    - variable: ENABLE_SYNCTHING
+      label: "Enable backup using Syncthing"
+      required: true
+      default: true
+      type: "boolean"
     - variable: REMOTE_SYNCTHING_MACHINE_ID
       label: "Syncthing device ID"
       description: "Backups are made using Syncthings. Install Syncthing on another device, and enter that device's Syncthing ID (in the form 0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000) here to automatically set up backups. Make sure to configure the folders to keep versions."
       required: false
+      type: "string"
     - variable: ENABLE_RCLONE
       label: "Enable backup to Amazon S3 using RClone"
       required: true
@@ -43,12 +49,12 @@ catalog:
     - variable: AWS_BUCKET_NAME
       label: "Amazon S3 Bucket Name"
       description: "Name of the Amazon S3 Bucket where backups will happen."
-      required: true
+      required: false
       type: "string"
     - variable: AWS_BUCKET_REGION
       label: "Amazon S3 Bucket Name"
       description: "Region of the Amazon S3 Bucket where backups will happen."
-      required: true
+      required: false
       type: enum
       options:
         - us-east-2
@@ -74,13 +80,13 @@ catalog:
       default: null
       type: "boolean"
     - variable: _CHECK_ADDED_SECRETS_ADMIN
-      label: "Did you create the "admin_username" and "admin_password" secrets ?"
+      label: "Reminder : did you create the "admin_username" and "admin_password" secrets ?"
       description: "These will define the Geonode, Geoserver and Syncthing administrator logins"
       required: true
       default: null
       type: "boolean"
     - variable: _CHECK_ADDED_SECRETS_S3
-      label: "Did you create the "aws_access_key" and "aws_secret_key" secrets ?"
+      label: "Reminder : did you create the "aws_access_key" and "aws_secret_key" secrets ?"
       description: "These are used by the rClone backup service"
       required: true
       default: null
@@ -119,7 +125,7 @@ services:
     start_on_create: true
   syncthing:
     scale: 1
-    start_on_create: true
+    start_on_create: ${ENABLE_SYNCTHING}
   rclone:
     scale: 1
     start_on_create: ${ENABLE_RCLONE}
