@@ -7,7 +7,7 @@ version: '3.4'
 # Common Django template for Geonode, Celery and Celerycam services below
 x-common-django:
   &default-common-django
-  image: olivierdalang/spcgeonode:django-0.0.11
+  image: olivierdalang/spcgeonode:django-0.0.12
   build: ./django/
   environment:
     - GEOSERVER_PUBLIC_LOCATION=/geoserver/ # we use a relative URL since we want to keep current scheme/host
@@ -83,7 +83,7 @@ services:
   
   # Nginx is serving django static and media files and proxies to django and geonode
   nginx:
-    image: olivierdalang/spcgeonode:nginx-0.0.11
+    image: olivierdalang/spcgeonode:nginx-0.0.12
     build: ./nginx/
     environment:
       - WAN_HOST=${WAN_HOST}
@@ -103,7 +103,7 @@ services:
 
   # Geoserver backend
   geoserver:
-    image: olivierdalang/spcgeonode:geoserver-0.0.11
+    image: olivierdalang/spcgeonode:geoserver-0.0.12
     build: ./geoserver/
     environment:
      - GEOSERVER_HOME=/geoserver-2.12.1
@@ -120,7 +120,7 @@ services:
 
   # Gets and installs letsencrypt certificates
   letsencrypt:
-    image: olivierdalang/spcgeonode:letsencrypt-0.0.11
+    image: olivierdalang/spcgeonode:letsencrypt-0.0.12
     build: ./letsencrypt/
     environment:
       - WAN_HOST=${WAN_HOST}
@@ -136,13 +136,13 @@ services:
         delay: 60s
    
   pgdumper:
-    image: olivierdalang/spcgeonode:pgdumper-0.0.11
+    image: olivierdalang/spcgeonode:pgdumper-0.0.12
     build: ./pgdumper/
     volumes:
       - pgdumps:/spcgeonode-pgdumps/ 
 
   syncthing:
-    image: olivierdalang/spcgeonode:syncthing-0.0.11
+    image: olivierdalang/spcgeonode:syncthing-0.0.12
     build: ./syncthing/
     environment:
       - REMOTE_SYNCTHING_MACHINE_ID=${REMOTE_SYNCTHING_MACHINE_ID}
@@ -158,7 +158,7 @@ services:
       - geodatadir:/spcgeonode-geodatadir/
 
   rclone:
-    image: olivierdalang/spcgeonode:rclone-0.0.11
+    image: olivierdalang/spcgeonode:rclone-0.0.12
     build: ./rclone/
     environment:
       - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
