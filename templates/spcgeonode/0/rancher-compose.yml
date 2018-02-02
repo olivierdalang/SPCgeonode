@@ -42,7 +42,7 @@ catalog:
       required: false
       type: "string"
     - variable: AWS_BUCKET_REGION
-      label: "rClone Amazon S3 Bucket Name"
+      label: "rClone Amazon S3 Bucket Region"
       description: "Region of the Amazon S3 Bucket where rClone backups will happen."
       required: false
       type: enum
