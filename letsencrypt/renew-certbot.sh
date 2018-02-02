@@ -38,6 +38,9 @@ if [ ! $? -eq 0 ]; then
     openssl req -x509 -nodes -days 1 -newkey rsa:2048 -keyout "/spcgeonode-certbot/live/$WAN_HOST/privkey.pem" -out "/spcgeonode-certbot/live/$WAN_HOST/fullchain.pem" -subj "/CN=PLACEHOLDER"
     touch "/spcgeonode-certbot/live/$WAN_HOST/placeholder_flag"
 
+    printf "\nWaiting 30s to avoid hitting Letsencrypt rate limits if restarting too soon in case of failure\n"
+    sleep 30
+
     exit 1
 fi
 
