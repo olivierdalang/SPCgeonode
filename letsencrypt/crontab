@@ -5,7 +5,6 @@
 # │     │     │     │     ┌───────────── day of week (0 - 6) (Sunday to Saturday; 7 is also Sunday on some systems)
 # │     │     │     │     │
 
-@reboot                         date && echo "@reboot" && certbot renew
-0     0,12    *     *     *     date && echo "daily  " && certbot renew
-@reboot                         date && echo "@reboot" && openssl req -x509 -nodes -days 90 -newkey rsa:2048 -keyout /spcgeonode-certbot/autoissued/$LAN_HOST/privkey.pem -out /spcgeonode-certbot/autoissued/$LAN_HOST/fullchain.pem -subj \"/CN=$LAN_HOST\""
-0     0       1     *     *     date && echo "monthly" && openssl req -x509 -nodes -days 90 -newkey rsa:2048 -keyout /spcgeonode-certbot/autoissued/$LAN_HOST/privkey.pem -out /spcgeonode-certbot/autoissued/$LAN_HOST/fullchain.pem -subj \"/CN=$LAN_HOST\""
+  *     *     *     *     *     date && echo "test"
+  0     0,12  *     *     *     date && echo "daily  " && /renew-certbot.sh
+  0     0     1     *     *     date && echo "monthly" && /renew-local.sh

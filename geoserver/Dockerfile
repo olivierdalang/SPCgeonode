@@ -24,21 +24,24 @@ RUN echo "Download geoserver" && \
     unzip -n geoserver-2.12-SNAPSHOT-authkey-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/ && \
     rm geoserver-2.12-SNAPSHOT-authkey-plugin.zip
 
-# Unused extensions
-#     echo "Download geonode module"
-#     wget http://build.geonode.org/geoserver/latest/geonode-geoserver-ext-2.12.x-geoserver-plugin.zip
-#     echo "Download oauth2-geonode module"
-#     wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip
-
-# # Add initial geodatadir
-ADD geodatadir-overrides /geodatadir-overrides
+# Unused extensions :
+# http://build.geonode.org/geoserver/latest/geonode-geoserver-ext-2.12.x-geoserver-plugin.zip
+# http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip
 
 WORKDIR /geoserver-2.12.1/
+
+
+# Add initial geodatadir
+ADD geodatadir-overrides /geodatadir-overrides
+
 
 # Export ports
 EXPOSE 8080
 
-# Run geoserver
 ADD docker-entrypoint.sh docker-entrypoint.sh 
-ENTRYPOINT ["./docker-entrypoint.sh"]
 RUN chmod +x docker-entrypoint.sh
+ENTRYPOINT ["./docker-entrypoint.sh"]
+
+# Run geoserver
+
+CMD ["bin/startup.sh"]

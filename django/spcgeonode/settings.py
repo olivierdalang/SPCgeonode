@@ -8,12 +8,10 @@ from geonode.settings import *
 
 ROOT_URLCONF = os.getenv('ROOT_URLCONF', 'spcgeonode.urls')
 
-
 ##################################
 # Geoserver fix admin password
 ##################################
 
-# TODO : should we use root password ? (currently, this can break if we change admin password)
 OGC_SERVER['default']['USER'] = open('/run/secrets/admin_username','r').read()
 OGC_SERVER['default']['PASSWORD'] = open('/run/secrets/admin_password','r').read()
 
@@ -25,7 +23,6 @@ OGC_SERVER['default']['GEOFENCE_SECURITY_ENABLED'] = True
 ##################################
 
 # We use a relative URL because we want to keep scheme/host
-# TODO : see if this has no side effects / maybe put it in Docker env
 SITEURL = os.getenv('SITEURL', "/")
 
 # Can be removed after geonode>=2.7.x as it will be like this in main settings

@@ -32,7 +32,10 @@ RUN echo "Updating apt-get" && \
 RUN mkdir /spcgeonode
 WORKDIR /spcgeonode/
 ADD . /spcgeonode/
-
 RUN chmod +x docker-entrypoint.sh
 
+
 EXPOSE 8000
+HEALTHCHECK NONE
+ENTRYPOINT ["/spcgeonode/docker-entrypoint.sh"]
+CMD ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--socket=:8000", "--processes=5"]

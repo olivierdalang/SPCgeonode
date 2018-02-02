@@ -13,4 +13,7 @@ rclone sync -v --config /root/rclone.conf /spcgeonode-geodatadir/workspaces/ $AW
 rclone sync -v --config /root/rclone.conf --exclude "thumbs/*" --delete-excluded /spcgeonode-media/ $AWS_BUCKET_NAME:$AWS_BUCKET_NAME/media/
 rclone sync -v --config /root/rclone.conf /spcgeonode-pgdumps/ $AWS_BUCKET_NAME:$AWS_BUCKET_NAME/pgdumps/
 
+export AWS_ACCESS_KEY=""
+export AWS_SECRET_KEY=""
+
 printf "\nSync finished..."

@@ -5,7 +5,8 @@ set -e
 
 printf '\n--- START Geoserver Docker Entrypoint ---\n'
 
-# TODO : wait for django to be migrated, as with no migrations, the user tables are missing
+# TODO : see if we can have startup.sh exit on error
+# (eg. when starting before django migrations, the user tables are missing)
 
 # Run migrations
 printf '\nInitializing data dir\n'
@@ -57,8 +58,7 @@ else
 
 fi
  
-
 printf '\n--- END Geoserver Docker Entrypoint ---\n\n'
 
 # Run the CMD 
-exec "bin/startup.sh"
+exec "$@"

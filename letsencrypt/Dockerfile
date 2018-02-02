@@ -5,19 +5,20 @@ FROM python:2.7.13-alpine3.6
 RUN apk add --no-cache openssl && \
     apk add --no-cache certbot
 
+# Installing scripts
+ADD *.sh / 
+RUN chmod +x *.sh
 
 # Installing cronjobs
-ADD crontab crontab
-RUN /usr/bin/crontab crontab
-RUN rm crontab
+ADD *.sh crontab / 
+RUN /usr/bin/crontab /crontab && \
+    rm /crontab
 
-# The entrypoint creates the certificate
-ADD docker-entrypoint.sh docker-entrypoint.sh 
+# Setup the healthcheck
+HEALTHCHECK --interval=60s --timeout=30s --start-period=60s --retries=3 CMD ["./docker-healthcheck.sh"]
+
+# Setup the entrypoint
 ENTRYPOINT ["./docker-entrypoint.sh"]
-RUN chmod +x docker-entrypoint.sh
-
-# We expose port 80 to use certbox standalone
-EXPOSE 80
 
 # We run cron in foreground to update the certificates
-CMD ["/usr/sbin/crond", "-f"]
+CMD /usr/sbin/crond -f
