@@ -30,10 +30,9 @@ services:
     secrets:
       - admin_username
       - admin_password
-    entrypoint: ["/spcgeonode/docker-entrypoint.sh"]
-    command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--socket=:8000", "--processes=5"]
     labels:
       io.rancher.container.pull_image: always
+
     
   # Celery worker that executes celery tasks created by Django.
   celery:
@@ -60,6 +59,7 @@ services:
     secrets:
       - admin_username
       - admin_password
+    entrypoint: ""
     command: 'python manage.py celery worker --app=geonode.celery_app:app -B -E -l INFO'
     labels:
       io.rancher.container.pull_image: always
@@ -89,6 +89,7 @@ services:
     secrets:
       - admin_username
       - admin_password
+    entrypoint: ""
     command: 'python manage.py celerycam'
     labels:
       io.rancher.container.pull_image: always
@@ -155,6 +156,8 @@ services:
     image: olivierdalang/spcgeonode:pgdumper-latest
     volumes:
       - pgdumps:/spcgeonode-pgdumps/ 
+    labels:
+      io.rancher.container.pull_image: always
 
   syncthing:
     image: olivierdalang/spcgeonode:syncthing-latest
