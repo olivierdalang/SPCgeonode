@@ -22,8 +22,13 @@
 - we don't rely on an initial geodatadir anymore, instead we start from scratch, launch geoserver once, then do our modifications
 - added a backup service using Syncthings
 
+## 0.0.11
+
+- added a second backup service using RClone (the idea is to test both syncthings and rclone then choose one)
+
 ## TODO : Roadmap
 
+- choose between syncthings and rclone
 - check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
 - tweak nginx settings (gzip output, cache, etc...)
 - optimise dockerfiles

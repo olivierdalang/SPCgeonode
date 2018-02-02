@@ -5,20 +5,6 @@ set -e
 
 printf '\n--- START Django Docker Entrypoint ---\n\n'
 
-
-# Wait for postgres
-printf '\nWaiting for postgres...\n'
-printf "import sys,time,psycopg2\n\
-from spcgeonode.settings import DATABASE_URL\n\
-while 1:\n\
-  try:\n\
-    psycopg2.connect(DATABASE_URL)\n\
-    print('Connection to postgres successful !')\n\
-    sys.exit(0)\n\
-  except Exception as e:\n\
-    print('Could not connect to database. Retrying in 5s')\n\
-    time.sleep(5)" | python -u
-
 # Run migrations
 printf '\nRunning migrations...\n'
 python manage.py migrate --noinput
@@ -39,26 +25,21 @@ try:\n\
 except django.db.IntegrityError as e:\n\
   print('superuser exists already')" | python -u
 
+# Create an OAuth2 provider to use authorisations keys
+printf '\nCreating oauth2 provider...\n'
+printf "import os, django\n\
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spcgeonode.settings')\n\
+django.setup()\n\
+from oauth2_provider.models import Application\n\
+try:\n\
+  app = Application.objects.create(pk=1,name='GeoServer',client_type='confidential',authorization_grant_type='authorization-code')\n\
+  print('oauth2 provider successfully created')\n\
+except django.db.IntegrityError as e:\n\
+  print('oauth2 provider exists already')" | python -u
+
 # Load fixtures
 printf '\nLoading initial data...\n'
 python manage.py loaddata initial_data
-python manage.py loaddata oauth2_initial_data
-
-# Creating OAuth2 data
-# printf "print('todo')" | python -u
-
-# Load initial osm data
-# printf '\nInitialize offline osm data\n'
-# python manage.py updateofflineosm --no_overwrite --no_fail # TODO : Remove Already done by the plugin post_migrate
-
-# TODO : load also OAuth settings from http://docs.geonode.org/en/master/tutorials/admin/geoserver_geonode_security/
-
-# http://127.0.0.1/geoserver
-# http://127.0.0.1/geoserver/
-# http://geoserver:8080/geoserver
-# http://geoserver:8080/geoserver/
-
-# TODO : See if we need to run updateip here
 
 printf '\n--- END Django Docker Entrypoint ---\n\n'
 

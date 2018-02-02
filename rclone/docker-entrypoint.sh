@@ -3,8 +3,8 @@
 # Exit script in case of error
 set -e
 
-/renew-local.sh
-/renew-certbot.sh
+printf "\n\nRunning sync once to see if config works"
+exec /root/sync.sh
 
 # Run the CMD 
 exec "$@"

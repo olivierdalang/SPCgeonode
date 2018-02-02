@@ -17,18 +17,14 @@ services:
     environment:
       - "DEBUG=True"
     volumes:
-      - './django:/spcgeonode/'
+      - ./django:/spcgeonode/
       - ./_volume_static:/spcgeonode-static/
       - ./_volume_media:/spcgeonode-media/
     command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcgeonode.settings", "--socket=:8000", "--py-autoreload=2"]
   celery:
     image: olivierdalang/spcgeonode:django-dev
-    volumes:
-      - './django:/spcgeonode/'
   celerycam:
     image: olivierdalang/spcgeonode:django-dev
-    volumes:
-      - './django:/spcgeonode/'
 
   geoserver:
     image: olivierdalang/spcgeonode:geoserver-dev
@@ -53,10 +49,23 @@ services:
       - ./_volume_media:/spcgeonode-media/
       - ./_volume_geodatadir:/spcgeonode-geodatadir/
 
+  rclone:
+    image: olivierdalang/spcgeonode:rclone-dev
+    volumes:
+      - ./_volume_pgdumps:/spcgeonode-pgdumps/
+      - ./_volume_media:/spcgeonode-media/
+      - ./_volume_geodatadir:/spcgeonode-geodatadir/
+
 secrets:
   admin_username:
     file: _devsecrets/admin_username
     external: false
   admin_password:
     file: _devsecrets/admin_password
+    external: false
+  aws_access_key:
+    file: _devsecrets/aws_access_key
+    external: false
+  aws_secret_key:
+    file: _devsecrets/aws_secret_key
     external: false

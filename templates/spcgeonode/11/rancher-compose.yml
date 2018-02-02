@@ -2,8 +2,8 @@ version: '2'
 catalog:
   name: "SPC Geonode"
   description: "SPC Geonode"
-  version: "dev"
-  uuid: spc-geonode-dev
+  version: "11"
+  uuid: spc-geonode-11
   questions:
     - variable: WAN_HOST
       label: "Hostname for WAN access"
