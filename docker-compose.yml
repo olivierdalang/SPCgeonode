@@ -46,13 +46,13 @@ services:
   # Celery worker that executes celery tasks created by Django.
   celery:
     << : *default-common-django
-    entrypoint: ""
+    entrypoint: []
     command: 'python manage.py celery worker --app=geonode.celery_app:app -B -E -l INFO'
 
   # Celery camera that monitors celery tasks and populate the djcelery django admin interface
   celerycam:
     << : *default-common-django
-    entrypoint: ""
+    entrypoint: []
     command: 'python manage.py celerycam'
 
   # PostGIS database.

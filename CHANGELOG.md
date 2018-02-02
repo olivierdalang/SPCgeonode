@@ -44,3 +44,4 @@
 - see if we can use postgres for geofence too https://github.com/geoserver/geofence/wiki/GeoFence-configuration#database-configuration-1
 - fix Geoserver exceptions on first launch because of missing datadir configurations
 - see if we use all needed geoserver extensions (marlin-renderer, geonode's module)
+- see if we can have geoserver exit on error, in not at least implement proper healtcheck
