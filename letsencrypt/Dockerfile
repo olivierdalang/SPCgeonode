@@ -10,7 +10,7 @@ ADD *.sh /
 RUN chmod +x *.sh
 
 # Installing cronjobs
-ADD *.sh crontab / 
+ADD crontab / 
 RUN /usr/bin/crontab /crontab && \
     rm /crontab
 
