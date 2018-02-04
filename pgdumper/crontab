@@ -5,5 +5,4 @@
 # │     │     │     │     ┌───────────── day of week (0 - 6) (Sunday to Saturday; 7 is also Sunday on some systems)
 # │     │     │     │     │
 
-# TODO : do this once a day not every 2 minutes
-  */2     *     *     *     *     date && pg_dump -C -h postgres -U postgres postgres > /spcgeonode-pgdumps/latest.pgdump && echo "Dump successful"
+  0     0     *     *     *     date && pg_dump -C -h postgres -U postgres postgres > /spcgeonode-pgdumps/latest.pgdump && echo "Dump successful"
