@@ -16,4 +16,4 @@ rclone sync -v --config /root/rclone.conf /spcgeonode-pgdumps/ $AWS_BUCKET_NAME:
 export AWS_ACCESS_KEY=""
 export AWS_SECRET_KEY=""
 
-printf "\nSync finished..."
+printf "\nSync finished...\n"

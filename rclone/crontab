@@ -6,4 +6,4 @@
 # │     │     │     │     │
 
 # TODO : do this once a day not every  minute
-  *     *     *     *     *     date && printf "\nRunning sync from cron job\n" && exec /root/sync.sh
+  *     *     *     *     *     date && echo "Running sync from cron job" && /root/sync.sh
