@@ -47,59 +47,41 @@ Windows Powershell
 # 1. Create a swarm
 docker swarm init
 
-# 2. Set variables (Windows)
+# 2. Set variables (Windows syntax, adapt for linux)
 $env:WAN_HOST="local.example.com"
 $env:LAN_HOST="127.0.0.1"
 $env:ADMIN_USERNAME="super"
 $env:ADMIN_PASSWORD="duper"
 $env:ADMIN_EMAIL="admin@example.com"
 $env:REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
+$env:AWS_BUCKET_NAME="spcgeonode-test"
+$env:AWS_BUCKET_REGION="ap-southeast-2"
+$env:AWS_ACCESS_KEY="***"
+$env:AWS_SECRET_KEY="***"
 
-# 3. Deploy the stack
+# 3. Create the secrets
 docker secret rm admin_username
 echo "$ADMIN_USERNAME" | docker secret create admin_username -
 docker secret rm admin_password
 echo "$ADMIN_PASSWORD" | docker secret create admin_password -
+docker secret rm aws_access_key
+echo "$AWS_ACCESS_KEY" | docker secret create aws_access_key -
+docker secret rm aws_secret_key
+echo "$AWS_SECRET_KEY" | docker secret create aws_secret_key -
+
+# 4. Deploy the stack
 docker stack deploy spcgeonode_stack --compose-file docker-compose.yml
 
-# 4. Cleanup
+# 5. Cleanup (Windows syntax, adapt for linux)
 $env:WAN_HOST=""
 $env:LAN_HOST=""
 $env:ADMIN_USERNAME=""
 $env:ADMIN_PASSWORD=""
 $env:ADMIN_EMAIL=""
-$env:REMOTE_SYNCTHING_MACHINE_ID=""
-```
-
-Linux
-```
-# 1. Create a swarm
-sudo docker swarm init
-
-# 2. Set variables (Windows)
-set WAN_HOST="local.example.com"
-set LAN_HOST="127.0.0.1"
-set ADMIN_USERNAME="super"
-set ADMIN_PASSWORD="duper"
-set ADMIN_EMAIL="admin@example.com"
-set REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
-
-
-# 3. Deploy the stack (again: MAKE SURE YOU'VE JUST REBUILD THE IMAGES)
-# this creates the docker secrets
-sudo docker secret rm admin_username
-echo "$ADMIN_USERNAME" | sudo docker secret create admin_username -
-sudo docker secret rm admin_password
-echo "$ADMIN_PASSWORD" | sudo docker secret create admin_password -
-sudo docker stack deploy spcgeonode --compose-file docker-compose.yml
-
-# 4. Cleanup
-set WAN_HOST=
-set LAN_HOST=
-set ADMIN_USERNAME=
-set ADMIN_PASSWORD=
-set ADMIN_EMAIL=
-set REMOTE_SYNCTHING_MACHINE_ID=
+$env:REMOTE_SYNCTHING_MACHINE_ID=""$env:AWS_BUCKET_NAME="spcgeonode-test"
+$env:AWS_BUCKET_REGION=""
+$env:AWS_ACCESS_KEY=""
+$env:AWS_SECRET_KEY=""
 ```
 
 ### Publishing the images
