@@ -31,6 +31,7 @@ x-common-django:
   secrets:
     - admin_username
     - admin_password
+  restart: on-failure
   deploy:
     replicas: 1
     restart_policy:
@@ -60,6 +61,7 @@ services:
     image: mdillon/postgis:9.6-alpine
     volumes:
       - database:/var/lib/postgresql/data/ 
+    restart: on-failure
     deploy:
       replicas: 1
       restart_policy:
@@ -68,6 +70,7 @@ services:
   # Elasticsearch
   elasticsearch:
     image: elasticsearch:5.6-alpine
+    restart: on-failure
     deploy:
       replicas: 1
       restart_policy:
@@ -76,6 +79,7 @@ services:
   # Vanilla RabbitMQ service. This is needed by celery
   rabbitmq:
     image: rabbitmq:3.7 
+    restart: on-failure
     deploy:
       replicas: 1
       restart_policy:
@@ -96,6 +100,7 @@ services:
       - static:/spcgeonode-static/
       - media:/spcgeonode-media/
       - certbot:/spcgeonode-certbot/
+    restart: on-failure
     deploy:
       replicas: 1
       restart_policy:
@@ -113,6 +118,7 @@ services:
     secrets:
       - admin_username
       - admin_password 
+    restart: on-failure
     deploy:
       replicas: 1
       restart_policy:
@@ -129,6 +135,7 @@ services:
       - LETSENCRYPT_MODE=${LETSENCRYPT_MODE}
     volumes:
       - certbot:/spcgeonode-certbot/
+    restart: on-failure
     deploy:
       replicas: 1
       restart_policy:
@@ -140,6 +147,7 @@ services:
     build: ./pgdumper/
     volumes:
       - pgdumps:/spcgeonode-pgdumps/ 
+    restart: on-failure
 
   syncthing:
     image: olivierdalang/spcgeonode:syncthing-latest
@@ -156,6 +164,7 @@ services:
       - pgdumps:/spcgeonode-pgdumps/
       - media:/spcgeonode-media/
       - geodatadir:/spcgeonode-geodatadir/
+    restart: on-failure
 
   rclone:
     image: olivierdalang/spcgeonode:rclone-latest
@@ -170,6 +179,7 @@ services:
       - pgdumps:/spcgeonode-pgdumps/
       - media:/spcgeonode-media/
       - geodatadir:/spcgeonode-geodatadir/
+    restart: on-failure
 
 volumes:
   static:
