@@ -7,11 +7,11 @@ printf '\n--- START Django Docker Entrypoint ---\n\n'
 
 # Run migrations
 printf '\nRunning migrations...\n'
-python manage.py migrate --noinput
+python -u manage.py migrate --noinput
 
 # Collect static
 printf '\nRunning collectstatic...\n'
-python manage.py collectstatic --noinput
+python -u manage.py collectstatic --noinput
 
 # Creating superuser if it doesn't exist
 printf '\nCreating superuser...\n'
