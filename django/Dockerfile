@@ -31,8 +31,8 @@ RUN echo "Updating apt-get" && \
 # 5. Add the application
 RUN mkdir /spcgeonode
 WORKDIR /spcgeonode/
-ONBUILD ADD . /spcgeonode/
-ONBUILD RUN chmod +x docker-entrypoint.sh
+ADD . /spcgeonode/
+RUN chmod +x docker-entrypoint.sh
 
 
 EXPOSE 8000
