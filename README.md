@@ -38,51 +38,28 @@ Difference of dev setup vs prod setup:
 
 ### Production
 
-Make sure the needed images are published to docker hub or that you rebuilt the images locally.
-
-Note : to avoid hitting LetsEncrypt limits if anything fails, you should add `LETSENCRYPT_MODE=staging` to your env vars during first tests, and only remove it once you see tests certificates are properly loading. Hitting the limits is annoying as you can be blocked for a few days...
-
-Windows Powershell
 ```
-# 1. Create a swarm
-docker swarm init
-
-# 2. Set variables (Windows syntax, adapt for linux)
+# 1. Override default env variables (defaults are in .env)
 $env:WAN_HOST="local.example.com"
 $env:LAN_HOST="127.0.0.1"
-$env:ADMIN_USERNAME="super"
-$env:ADMIN_PASSWORD="duper"
 $env:ADMIN_EMAIL="admin@example.com"
+$env:LETSENCRYPT_MODE="staging"
 $env:REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
 $env:AWS_BUCKET_NAME="spcgeonode-test"
 $env:AWS_BUCKET_REGION="ap-southeast-2"
-$env:AWS_ACCESS_KEY="***"
-$env:AWS_SECRET_KEY="***"
 
-# 3. Create the secrets
-docker secret rm admin_username
-echo "$ADMIN_USERNAME" | docker secret create admin_username -
-docker secret rm admin_password
-echo "$ADMIN_PASSWORD" | docker secret create admin_password -
-docker secret rm aws_access_key
-echo "$AWS_ACCESS_KEY" | docker secret create aws_access_key -
-docker secret rm aws_secret_key
-echo "$AWS_SECRET_KEY" | docker secret create aws_secret_key -
+# 2. Create the secrets
+echo "super" > _secrets/admin_username
+echo "duper" > _secrets/admin_password
+echo "aaa" > _secrets/aws_access_key
+echo "bbb" > _secrets/aws_secret_key
 
-# 4. Deploy the stack
-docker stack deploy spcgeonode_stack --compose-file docker-compose.yml
+# 3. Run the stack
+docker-compose -f docker-compose.yml up -d --build
+...
 
-# 5. Cleanup (Windows syntax, adapt for linux)
-$env:WAN_HOST=""
-$env:LAN_HOST=""
-$env:ADMIN_USERNAME=""
-$env:ADMIN_PASSWORD=""
-$env:ADMIN_EMAIL=""
-$env:REMOTE_SYNCTHING_MACHINE_ID=""$env:AWS_BUCKET_NAME="spcgeonode-test"
-$env:AWS_BUCKET_REGION=""
-$env:AWS_ACCESS_KEY=""
-$env:AWS_SECRET_KEY=""
-```
+Note : to avoid hitting LetsEncrypt limits if anything fails, you should add `LETSENCRYPT_MODE=staging` to your env vars during first tests, and only remove it once you see tests certificates are properly loading. Hitting the limits is annoying as you can be blocked for a few days...
+
 
 ### Publishing the images
 

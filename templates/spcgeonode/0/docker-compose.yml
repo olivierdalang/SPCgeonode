@@ -1,8 +1,7 @@
 version: '2'
 
 # TODO : replace olivierdalang repository by pacificcommunity
-
-
+    
 services:
 
   # Our custom django application. It includes Geonode.
@@ -32,7 +31,7 @@ services:
       - admin_password
     labels:
       io.rancher.container.pull_image: always
-
+    restart: on-failure
     
   # Celery worker that executes celery tasks created by Django.
   celery:
@@ -59,10 +58,11 @@ services:
     secrets:
       - admin_username
       - admin_password
-    entrypoint: []
-    command: 'python manage.py celery worker --app=geonode.celery_app:app -B -E -l INFO'
     labels:
       io.rancher.container.pull_image: always
+    restart: on-failure
+    entrypoint: []
+    command: 'python manage.py celery worker --app=geonode.celery_app:app -B -E -l INFO'
 
   # Celery camera that monitors celery tasks and populate the djcelery django admin interface
   celerycam:
@@ -89,24 +89,11 @@ services:
     secrets:
       - admin_username
       - admin_password
-    entrypoint: []
-    command: 'python manage.py celerycam'
     labels:
       io.rancher.container.pull_image: always
-
-  # PostGIS database.
-  postgres:
-    image: mdillon/postgis:9.6-alpine
-    volumes:
-      - database:/var/lib/postgresql/data/ 
-
-  # Elasticsearch
-  elasticsearch:
-    image: elasticsearch:5.6-alpine
-
-  # Vanilla RabbitMQ service. This is needed by celery
-  rabbitmq:
-    image: rabbitmq:3.7 
+    restart: on-failure
+    entrypoint: []
+    command: 'python manage.py celerycam'
   
   # Nginx is serving django static and media files and proxies to django and geonode
   nginx:
@@ -114,7 +101,7 @@ services:
     environment:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
-      - RESOLVER=169.254.169.250 # RANCHER RESOLVER
+      - RESOLVER=169.254.169.250
     ports:
       - "80:80"
       - "443:443"
@@ -122,6 +109,7 @@ services:
       - static:/spcgeonode-static/
       - media:/spcgeonode-media/
       - certbot:/spcgeonode-certbot/
+    restart: on-failure
     labels:
       io.rancher.container.pull_image: always
 
@@ -136,6 +124,7 @@ services:
     secrets:
       - admin_username
       - admin_password 
+    restart: on-failure
     labels:
       io.rancher.container.pull_image: always
 
@@ -149,13 +138,15 @@ services:
       - LETSENCRYPT_MODE=${LETSENCRYPT_MODE}
     volumes:
       - certbot:/spcgeonode-certbot/
+    restart: on-failure
     labels:
       io.rancher.container.pull_image: always
-
+   
   pgdumper:
     image: olivierdalang/spcgeonode:pgdumper-latest
     volumes:
       - pgdumps:/spcgeonode-pgdumps/ 
+    restart: on-failure
     labels:
       io.rancher.container.pull_image: always
 
@@ -170,12 +161,13 @@ services:
       - "8384:8384" # TODO : put this behind nginx too ?
       - "22000:22000"
     volumes:
-      - pgdumps:/spcgeonode-pgdumps/ 
-      - media:/spcgeonode-media/ 
+      - pgdumps:/spcgeonode-pgdumps/
+      - media:/spcgeonode-media/
       - geodatadir:/spcgeonode-geodatadir/
+    restart: on-failure
     labels:
       io.rancher.container.pull_image: always
-      
+
   rclone:
     image: olivierdalang/spcgeonode:rclone-latest
     environment:
@@ -188,8 +180,26 @@ services:
       - pgdumps:/spcgeonode-pgdumps/
       - media:/spcgeonode-media/
       - geodatadir:/spcgeonode-geodatadir/
+    restart: on-failure
     labels:
       io.rancher.container.pull_image: always
+    
+  # PostGIS database.
+  postgres:
+    image: mdillon/postgis:9.6-alpine
+    volumes:
+      - database:/var/lib/postgresql/data/ 
+    restart: on-failure
+
+  # Elasticsearch
+  elasticsearch:
+    image: elasticsearch:5.6-alpine
+    restart: on-failure
+
+  # Vanilla RabbitMQ service. This is needed by celery
+  rabbitmq:
+    image: rabbitmq:3.7 
+    restart: on-failure
 
 volumes:
   static:
