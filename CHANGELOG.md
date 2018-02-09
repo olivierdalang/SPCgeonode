@@ -26,6 +26,10 @@
 
 - added a second backup service using RClone (the idea is to test both syncthings and rclone then choose one)
 
+## 0.0.15
+
+- removed rancher template from repo
+
 ## TODO : Roadmap
 
 - choose between syncthings and rclone
