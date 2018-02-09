@@ -1,0 +1,220 @@
+version: '2'
+
+# TODO : replace olivierdalang repository by pacificcommunity
+    
+services:
+
+  # Our custom django application. It includes Geonode.
+  django:
+    image: olivierdalang/spcgeonode:django-0.0.14
+    environment:
+      - GEOSERVER_PUBLIC_LOCATION=/geoserver/ # we use a relative URL since we want to keep current scheme/host
+      - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - DJANGO_SETTINGS_MODULE=spcgeonode.settings
+      - DEBUG=False
+      - REGISTRATION_OPEN=True
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
+      - BROKER_URL=amqp://guest:guest@rabbitmq:5672/
+      - STATIC_ROOT=/spcgeonode-static/
+      - MEDIA_ROOT=/spcgeonode-media/
+      - STATIC_URL=/static/
+      - MEDIA_URL=/media/
+      - GEOSERVER_LOCATION=http://nginx/geoserver/
+      - C_FORCE_ROOT=1 # TODO : understand that (is it a security concern ?)
+      - TIME_ZONE=Pacific/Fiji
+    volumes:
+      - static:/spcgeonode-static/
+      - media:/spcgeonode-media/
+    secrets:
+      - admin_username
+      - admin_password
+    labels:
+      io.rancher.container.pull_image: always
+    restart: on-failure
+    
+  # Celery worker that executes celery tasks created by Django.
+  celery:
+    image: olivierdalang/spcgeonode:django-0.0.14
+    environment:
+      - GEOSERVER_PUBLIC_LOCATION=/geoserver/ # we use a relative URL since we want to keep current scheme/host
+      - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - DJANGO_SETTINGS_MODULE=spcgeonode.settings
+      - DEBUG=False
+      - REGISTRATION_OPEN=True
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
+      - BROKER_URL=amqp://guest:guest@rabbitmq:5672/
+      - STATIC_ROOT=/spcgeonode-static/
+      - MEDIA_ROOT=/spcgeonode-media/
+      - STATIC_URL=/static/
+      - MEDIA_URL=/media/
+      - GEOSERVER_LOCATION=http://nginx/geoserver/
+      - C_FORCE_ROOT=1 # TODO : understand that (is it a security concern ?)
+      - TIME_ZONE=Pacific/Fiji
+    volumes:
+      - static:/spcgeonode-static/
+      - media:/spcgeonode-media/
+    secrets:
+      - admin_username
+      - admin_password
+    labels:
+      io.rancher.container.pull_image: always
+    restart: on-failure
+    entrypoint: []
+    command: 'python manage.py celery worker --app=geonode.celery_app:app -B -E -l INFO'
+
+  # Celery camera that monitors celery tasks and populate the djcelery django admin interface
+  celerycam:
+    image: olivierdalang/spcgeonode:django-0.0.14
+    environment:
+      - GEOSERVER_PUBLIC_LOCATION=/geoserver/ # we use a relative URL since we want to keep current scheme/host
+      - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - DJANGO_SETTINGS_MODULE=spcgeonode.settings
+      - DEBUG=False
+      - REGISTRATION_OPEN=True
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
+      - BROKER_URL=amqp://guest:guest@rabbitmq:5672/
+      - STATIC_ROOT=/spcgeonode-static/
+      - MEDIA_ROOT=/spcgeonode-media/
+      - STATIC_URL=/static/
+      - MEDIA_URL=/media/
+      - GEOSERVER_LOCATION=http://nginx/geoserver/
+      - C_FORCE_ROOT=1 # TODO : understand that (is it a security concern ?)
+      - TIME_ZONE=Pacific/Fiji
+    volumes:
+      - static:/spcgeonode-static/
+      - media:/spcgeonode-media/
+    secrets:
+      - admin_username
+      - admin_password
+    labels:
+      io.rancher.container.pull_image: always
+    restart: on-failure
+    entrypoint: []
+    command: 'python manage.py celerycam'
+  
+  # Nginx is serving django static and media files and proxies to django and geonode
+  nginx:
+    image: olivierdalang/spcgeonode:nginx-0.0.14
+    environment:
+      - WAN_HOST=${WAN_HOST}
+      - LAN_HOST=${LAN_HOST}
+      - RESOLVER=169.254.169.250
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - static:/spcgeonode-static/
+      - media:/spcgeonode-media/
+      - certbot:/spcgeonode-certbot/
+    restart: on-failure
+    labels:
+      io.rancher.container.pull_image: always
+
+  # Geoserver backend
+  geoserver:
+    image: olivierdalang/spcgeonode:geoserver-0.0.14
+    environment:
+     - GEOSERVER_HOME=/geoserver-2.12.1
+     - GEOSERVER_DATA_DIR=/spcgeonode-geodatadir
+    volumes:
+      - geodatadir:/spcgeonode-geodatadir/
+    secrets:
+      - admin_username
+      - admin_password 
+    restart: on-failure
+    labels:
+      io.rancher.container.pull_image: always
+
+  # Gets and installs letsencrypt certificates
+  letsencrypt:
+    image: olivierdalang/spcgeonode:letsencrypt-0.0.14
+    environment:
+      - WAN_HOST=${WAN_HOST}
+      - LAN_HOST=${LAN_HOST}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - LETSENCRYPT_MODE=${LETSENCRYPT_MODE}
+    volumes:
+      - certbot:/spcgeonode-certbot/
+    restart: on-failure
+    labels:
+      io.rancher.container.pull_image: always
+   
+  pgdumper:
+    image: olivierdalang/spcgeonode:pgdumper-0.0.14
+    volumes:
+      - pgdumps:/spcgeonode-pgdumps/ 
+    restart: on-failure
+    labels:
+      io.rancher.container.pull_image: always
+
+  syncthing:
+    image: olivierdalang/spcgeonode:syncthing-0.0.14
+    environment:
+      - REMOTE_SYNCTHING_MACHINE_ID=${REMOTE_SYNCTHING_MACHINE_ID}
+    secrets:
+      - admin_username
+      - admin_password
+    ports:
+      - "8384:8384" # TODO : put this behind nginx too ?
+      - "22000:22000"
+    volumes:
+      - pgdumps:/spcgeonode-pgdumps/
+      - media:/spcgeonode-media/
+      - geodatadir:/spcgeonode-geodatadir/
+    restart: on-failure
+    labels:
+      io.rancher.container.pull_image: always
+
+  rclone:
+    image: olivierdalang/spcgeonode:rclone-0.0.14
+    environment:
+      - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
+      - AWS_BUCKET_REGION=${AWS_BUCKET_REGION}
+    secrets:
+      - aws_access_key
+      - aws_secret_key
+    volumes:
+      - pgdumps:/spcgeonode-pgdumps/
+      - media:/spcgeonode-media/
+      - geodatadir:/spcgeonode-geodatadir/
+    restart: on-failure
+    labels:
+      io.rancher.container.pull_image: always
+    
+  # PostGIS database.
+  postgres:
+    image: mdillon/postgis:9.6-alpine
+    volumes:
+      - database:/var/lib/postgresql/data/ 
+    restart: on-failure
+
+  # Elasticsearch
+  elasticsearch:
+    image: elasticsearch:5.6-alpine
+    restart: on-failure
+
+  # Vanilla RabbitMQ service. This is needed by celery
+  rabbitmq:
+    image: rabbitmq:3.7 
+    restart: on-failure
+
+volumes:
+  static:
+  media:
+  database:
+  geodatadir:
+  certbot:
+  pgdumps:
+
+secrets:
+  admin_username:
+    external: true
+  admin_password:
+    external: true
+  aws_access_key:
+    external: true
+  aws_secret_key:
+    external: true
