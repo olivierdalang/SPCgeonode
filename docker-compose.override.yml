@@ -1,30 +1,33 @@
 version: '3.4'
 
+
+# Common Django template for Geonode, Celery and Celerycam services below
+# RANCHER : manually copy this to each service below
+x-common-django:
+  &default-common-django
+  image: olivierdalang/spcgeonode:django-dev
+  environment:
+    - "DEBUG=True"
+  volumes:
+    - ./django:/spcgeonode/
+    - ./_volume_static:/spcgeonode-static/
+    - ./_volume_media:/spcgeonode-media/
+
 services:
-  postgres:
-    ports:
-      - "5432:5432"
-    # volumes:
-      # - ./_volume_database:/var/lib/postgresql/data/ # doesn't work because of ownership
+  django:
+    << : *default-common-django
+    command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcgeonode.settings", "--socket=:8000", "--py-autoreload=2"]
+  celery:
+    << : *default-common-django
+  celerycam:
+    << : *default-common-django
+
   nginx:
     image: olivierdalang/spcgeonode:nginx-dev
     volumes:
       - ./_volume_static:/spcgeonode-static/
       - ./_volume_media:/spcgeonode-media/
       - ./_volume_certbot:/spcgeonode-certbot/
-  django:
-    image: olivierdalang/spcgeonode:django-dev
-    environment:
-      - "DEBUG=True"
-    volumes:
-      - ./django:/spcgeonode/
-      - ./_volume_static:/spcgeonode-static/
-      - ./_volume_media:/spcgeonode-media/
-    command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcgeonode.settings", "--socket=:8000", "--py-autoreload=2"]
-  celery:
-    image: olivierdalang/spcgeonode:django-dev
-  celerycam:
-    image: olivierdalang/spcgeonode:django-dev
 
   geoserver:
     image: olivierdalang/spcgeonode:geoserver-dev
@@ -56,16 +59,6 @@ services:
       - ./_volume_media:/spcgeonode-media/
       - ./_volume_geodatadir:/spcgeonode-geodatadir/
 
-secrets:
-  admin_username:
-    file: _devsecrets/admin_username
-    external: false
-  admin_password:
-    file: _devsecrets/admin_password
-    external: false
-  aws_access_key:
-    file: _devsecrets/aws_access_key
-    external: false
-  aws_secret_key:
-    file: _devsecrets/aws_secret_key
-    external: false
+  postgres:
+    ports:
+      - "5432:5432"

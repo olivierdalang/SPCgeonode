@@ -16,8 +16,8 @@ class GeoserverDigestPasswordHasher(BasePasswordHasher):
     iterations = 100000
     salt_size = 16
 
-    def salt(self):
-        return os.urandom(self.salt_size)
+    def salt(self):        
+        return os.urandom(self.salt_size).replace('$','_')
 
     def encode(self, password, salt, iterations=None):
         # Implementation translated from https://github.com/jboss-fuse/jasypt/blob/jasypt-1_8/jasypt/src/main/java/org/jasypt/digest/StandardByteDigester.java#L943-L1009

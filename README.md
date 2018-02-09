@@ -38,69 +38,28 @@ Difference of dev setup vs prod setup:
 
 ### Production
 
-Make sure the needed images are published to docker hub or that you rebuilt the images locally.
+```
+# 1. Override default env variables (defaults are in .env)
+$env:WAN_HOST="local.example.com"
+$env:LAN_HOST="127.0.0.1"
+$env:ADMIN_EMAIL="admin@example.com"
+$env:LETSENCRYPT_MODE="staging"
+$env:REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
+$env:AWS_BUCKET_NAME="spcgeonode-test"
+$env:AWS_BUCKET_REGION="ap-southeast-2"
+
+# 2. Create the secrets
+echo "super" > _secrets/admin_username
+echo "duper" > _secrets/admin_password
+echo "aaa" > _secrets/aws_access_key
+echo "bbb" > _secrets/aws_secret_key
+
+# 3. Run the stack
+docker-compose -f docker-compose.yml up -d --build
+...
 
 Note : to avoid hitting LetsEncrypt limits if anything fails, you should add `LETSENCRYPT_MODE=staging` to your env vars during first tests, and only remove it once you see tests certificates are properly loading. Hitting the limits is annoying as you can be blocked for a few days...
 
-Windows Powershell
-```
-# 1. Create a swarm
-docker swarm init
-
-# 2. Set variables (Windows)
-$env:WAN_HOST="local.example.com"
-$env:LAN_HOST="127.0.0.1"
-$env:ADMIN_USERNAME="super"
-$env:ADMIN_PASSWORD="duper"
-$env:ADMIN_EMAIL="admin@example.com"
-$env:REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
-
-# 3. Deploy the stack
-docker secret rm admin_username
-echo "$ADMIN_USERNAME" | docker secret create admin_username -
-docker secret rm admin_password
-echo "$ADMIN_PASSWORD" | docker secret create admin_password -
-docker stack deploy spcgeonode_stack --compose-file docker-compose.yml
-
-# 4. Cleanup
-$env:WAN_HOST=""
-$env:LAN_HOST=""
-$env:ADMIN_USERNAME=""
-$env:ADMIN_PASSWORD=""
-$env:ADMIN_EMAIL=""
-$env:REMOTE_SYNCTHING_MACHINE_ID=""
-```
-
-Linux
-```
-# 1. Create a swarm
-sudo docker swarm init
-
-# 2. Set variables (Windows)
-set WAN_HOST="local.example.com"
-set LAN_HOST="127.0.0.1"
-set ADMIN_USERNAME="super"
-set ADMIN_PASSWORD="duper"
-set ADMIN_EMAIL="admin@example.com"
-set REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
-
-
-# 3. Deploy the stack (again: MAKE SURE YOU'VE JUST REBUILD THE IMAGES)
-# this creates the docker secrets
-sudo docker secret rm admin_username
-echo "$ADMIN_USERNAME" | sudo docker secret create admin_username -
-sudo docker secret rm admin_password
-echo "$ADMIN_PASSWORD" | sudo docker secret create admin_password -
-sudo docker stack deploy spcgeonode --compose-file docker-compose.yml
-
-# 4. Cleanup
-set WAN_HOST=
-set LAN_HOST=
-set ADMIN_USERNAME=
-set ADMIN_PASSWORD=
-set ADMIN_EMAIL=
-set REMOTE_SYNCTHING_MACHINE_ID=
-```
 
 ### Publishing the images
 

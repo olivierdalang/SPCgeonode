@@ -1,13 +1,15 @@
 version: '3.4'
+# # RANCHER : use this instead
+# version: '2'
 
 # TODO : replace olivierdalang repository by pacificcommunity
 
-
-
 # Common Django template for Geonode, Celery and Celerycam services below
+# RANCHER : manually copy this to each service below
 x-common-django:
   &default-common-django
-  image: olivierdalang/spcgeonode:django-0.0.13
+  image: olivierdalang/spcgeonode:django-0.0.14
+  # RANCHER : remove this
   build: ./django/
   environment:
     - GEOSERVER_PUBLIC_LOCATION=/geoserver/ # we use a relative URL since we want to keep current scheme/host
@@ -31,12 +33,10 @@ x-common-django:
   secrets:
     - admin_username
     - admin_password
-  deploy:
-    replicas: 1
-    restart_policy:
-      condition: on-failure
+  labels:
+    io.rancher.container.pull_image: always
+  restart: on-failure
     
-
 services:
 
   # Our custom django application. It includes Geonode.
@@ -54,41 +54,18 @@ services:
     << : *default-common-django
     entrypoint: []
     command: 'python manage.py celerycam'
-
-  # PostGIS database.
-  postgres:
-    image: mdillon/postgis:9.6-alpine
-    volumes:
-      - database:/var/lib/postgresql/data/ 
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-
-  # Elasticsearch
-  elasticsearch:
-    image: elasticsearch:5.6-alpine
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-
-  # Vanilla RabbitMQ service. This is needed by celery
-  rabbitmq:
-    image: rabbitmq:3.7 
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
   
   # Nginx is serving django static and media files and proxies to django and geonode
   nginx:
-    image: olivierdalang/spcgeonode:nginx-0.0.13
+    image: olivierdalang/spcgeonode:nginx-0.0.14
+    # RANCHER : remove this
     build: ./nginx/
     environment:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
-      - RESOLVER=127.0.0.11 # SET THIS TO 169.254.169.250 FOR RANCHER
+      - RESOLVER=127.0.0.11
+      # # RANCHER : use this instead
+      # - RESOLVER=169.254.169.250
     ports:
       - "80:80"
       - "443:443"
@@ -96,14 +73,14 @@ services:
       - static:/spcgeonode-static/
       - media:/spcgeonode-media/
       - certbot:/spcgeonode-certbot/
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    restart: on-failure
+    labels:
+      io.rancher.container.pull_image: always
 
   # Geoserver backend
   geoserver:
-    image: olivierdalang/spcgeonode:geoserver-0.0.13
+    image: olivierdalang/spcgeonode:geoserver-0.0.14
+    # RANCHER : remove this
     build: ./geoserver/
     environment:
      - GEOSERVER_HOME=/geoserver-2.12.1
@@ -113,14 +90,14 @@ services:
     secrets:
       - admin_username
       - admin_password 
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    restart: on-failure
+    labels:
+      io.rancher.container.pull_image: always
 
   # Gets and installs letsencrypt certificates
   letsencrypt:
-    image: olivierdalang/spcgeonode:letsencrypt-0.0.13
+    image: olivierdalang/spcgeonode:letsencrypt-0.0.14
+    # RANCHER : remove this
     build: ./letsencrypt/
     environment:
       - WAN_HOST=${WAN_HOST}
@@ -129,20 +106,23 @@ services:
       - LETSENCRYPT_MODE=${LETSENCRYPT_MODE}
     volumes:
       - certbot:/spcgeonode-certbot/
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 60s
+    restart: on-failure
+    labels:
+      io.rancher.container.pull_image: always
    
   pgdumper:
-    image: olivierdalang/spcgeonode:pgdumper-0.0.13
+    image: olivierdalang/spcgeonode:pgdumper-0.0.14
+    # RANCHER : remove this
     build: ./pgdumper/
     volumes:
       - pgdumps:/spcgeonode-pgdumps/ 
+    restart: on-failure
+    labels:
+      io.rancher.container.pull_image: always
 
   syncthing:
-    image: olivierdalang/spcgeonode:syncthing-0.0.13
+    image: olivierdalang/spcgeonode:syncthing-0.0.14
+    # RANCHER : remove this
     build: ./syncthing/
     environment:
       - REMOTE_SYNCTHING_MACHINE_ID=${REMOTE_SYNCTHING_MACHINE_ID}
@@ -156,9 +136,13 @@ services:
       - pgdumps:/spcgeonode-pgdumps/
       - media:/spcgeonode-media/
       - geodatadir:/spcgeonode-geodatadir/
+    restart: on-failure
+    labels:
+      io.rancher.container.pull_image: always
 
   rclone:
-    image: olivierdalang/spcgeonode:rclone-0.0.13
+    image: olivierdalang/spcgeonode:rclone-0.0.14
+    # RANCHER : remove this
     build: ./rclone/
     environment:
       - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
@@ -170,6 +154,26 @@ services:
       - pgdumps:/spcgeonode-pgdumps/
       - media:/spcgeonode-media/
       - geodatadir:/spcgeonode-geodatadir/
+    restart: on-failure
+    labels:
+      io.rancher.container.pull_image: always
+    
+  # PostGIS database.
+  postgres:
+    image: mdillon/postgis:9.6-alpine
+    volumes:
+      - database:/var/lib/postgresql/data/ 
+    restart: on-failure
+
+  # Elasticsearch
+  elasticsearch:
+    image: elasticsearch:5.6-alpine
+    restart: on-failure
+
+  # Vanilla RabbitMQ service. This is needed by celery
+  rabbitmq:
+    image: rabbitmq:3.7 
+    restart: on-failure
 
 volumes:
   static:
@@ -181,10 +185,23 @@ volumes:
 
 secrets:
   admin_username:
-    external: true
+    file: _secrets/admin_username
+    external: false
   admin_password:
-    external: true
+    file: _secrets/admin_password
+    external: false
   aws_access_key:
-    external: true
+    file: _secrets/aws_access_key
+    external: false
   aws_secret_key:
-    external: true
+    file: _secrets/aws_secret_key
+    external: false
+  # # RANCHER : use this instead
+  # admin_username:
+  #   external: true
+  # admin_password:
+  #   external: true
+  # aws_access_key:
+  #   external: true
+  # aws_secret_key:
+  #   external: true
