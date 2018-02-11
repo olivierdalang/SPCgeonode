@@ -26,9 +26,22 @@
 
 - added a second backup service using RClone (the idea is to test both syncthings and rclone then choose one)
 
+## 0.0.12
+
+- ...
+
+## 0.0.13
+
+- ...
+
+## 0.0.14
+
+- ...
+
 ## 0.0.15
 
 - removed rancher template from repo
+- removed entryponts and command from django image to prevent what looks like a bug in rancher where empty entrypoint in docker-compose isn't taken into account
 
 ## TODO : Roadmap
 
