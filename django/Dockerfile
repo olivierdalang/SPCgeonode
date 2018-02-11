@@ -36,6 +36,5 @@ RUN chmod +x docker-entrypoint.sh
 
 
 EXPOSE 8000
-HEALTHCHECK NONE
-ENTRYPOINT ["/spcgeonode/docker-entrypoint.sh"]
-CMD ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--socket=:8000", "--processes=5"]
+
+# We provide no command or entrypoint as this image can be used to serve the django project or run celery tasks

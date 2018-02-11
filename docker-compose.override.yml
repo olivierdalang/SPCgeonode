@@ -41,7 +41,6 @@ services:
 
   pgdumper:
     image: olivierdalang/spcgeonode:pgdumper-dev
-    build: ./pgdumper/
     volumes:
       - ./_volume_pgdumps:/spcgeonode-pgdumps/
 

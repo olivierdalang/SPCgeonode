@@ -42,6 +42,8 @@ services:
   # Our custom django application. It includes Geonode.
   django:
     << : *default-common-django
+    entrypoint: ["/spcgeonode/docker-entrypoint.sh"]
+    command: "uwsgi --chdir=/spcgeonode --module=spcgeonode.wsgi --socket=:8000 --processes=5"
     
   # Celery worker that executes celery tasks created by Django.
   celery:

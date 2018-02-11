@@ -1,7 +1,0 @@
-
-name: SPC Geonode
-description: A production ready customizable Geonode setup.
-version: 0.0.1-rancher1
-category: Toy Apps
-maintainer: Olivier Dalang <olivierd@spc.int>
-projectURL: https://github.com/olivierdalang/SPCGeonode
