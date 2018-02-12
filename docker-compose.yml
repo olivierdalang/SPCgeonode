@@ -10,7 +10,7 @@ x-common-django:
   &default-common-django
   image: olivierdalang/spcgeonode:django-0.0.15
   # RANCHER : remove this
-  build: ./django/
+  build: .
   environment:
     - GEOSERVER_PUBLIC_LOCATION=/geoserver/ # we use a relative URL since we want to keep current scheme/host
     - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST}
@@ -61,7 +61,7 @@ services:
   nginx:
     image: olivierdalang/spcgeonode:nginx-0.0.15
     # RANCHER : remove this
-    build: ./nginx/
+    build: _service_nginx/
     environment:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
@@ -83,7 +83,7 @@ services:
   geoserver:
     image: olivierdalang/spcgeonode:geoserver-0.0.15
     # RANCHER : remove this
-    build: ./geoserver/
+    build: _service_geoserver/
     environment:
      - GEOSERVER_HOME=/geoserver-2.12.1
      - GEOSERVER_DATA_DIR=/spcgeonode-geodatadir
@@ -100,7 +100,7 @@ services:
   letsencrypt:
     image: olivierdalang/spcgeonode:letsencrypt-0.0.15
     # RANCHER : remove this
-    build: ./letsencrypt/
+    build: _service_letsencrypt/
     environment:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
@@ -115,7 +115,7 @@ services:
   pgdumper:
     image: olivierdalang/spcgeonode:pgdumper-0.0.15
     # RANCHER : remove this
-    build: ./pgdumper/
+    build: _service_pgdumper/
     volumes:
       - pgdumps:/spcgeonode-pgdumps/ 
     restart: on-failure
@@ -125,7 +125,7 @@ services:
   syncthing:
     image: olivierdalang/spcgeonode:syncthing-0.0.15
     # RANCHER : remove this
-    build: ./syncthing/
+    build: _service_syncthing/
     environment:
       - REMOTE_SYNCTHING_MACHINE_ID=${REMOTE_SYNCTHING_MACHINE_ID}
     secrets:
@@ -145,7 +145,7 @@ services:
   rclone:
     image: olivierdalang/spcgeonode:rclone-0.0.15
     # RANCHER : remove this
-    build: ./rclone/
+    build: _service_rclone/
     environment:
       - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
       - AWS_BUCKET_REGION=${AWS_BUCKET_REGION}

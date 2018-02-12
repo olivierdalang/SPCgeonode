@@ -9,7 +9,7 @@ x-common-django:
   environment:
     - "DEBUG=True"
   volumes:
-    - ./django:/spcgeonode/
+    - .:/spcgeonode/
     - ./_volume_static:/spcgeonode-static/
     - ./_volume_media:/spcgeonode-media/
 

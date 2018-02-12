@@ -43,6 +43,10 @@
 - removed rancher template from repo
 - removed entryponts and command from django image to prevent what looks like a bug in rancher where empty entrypoint in docker-compose isn't taken into account
 
+## 0.0.16
+
+- put django in main directory (so it's more clear for deploy builds)
+
 ## TODO : Roadmap
 
 - choose between syncthings and rclone
