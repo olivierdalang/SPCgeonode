@@ -5,6 +5,8 @@ set -e
 
 printf '\n--- START Django Docker Entrypoint ---\n\n'
 
+pip install -e /offlineosm-src/
+
 # Run migrations
 printf '\nRunning migrations...\n'
 python -u manage.py migrate --noinput
@@ -40,6 +42,10 @@ except django.db.IntegrityError as e:\n\
 # Load fixtures
 printf '\nLoading initial data...\n'
 python manage.py loaddata initial_data
+
+# Running update offlineosm
+printf '\nRunning updateofflineosm...\n'
+python -u manage.py updateofflineosm --no_overwrite --no_fail
 
 printf '\n--- END Django Docker Entrypoint ---\n\n'
 

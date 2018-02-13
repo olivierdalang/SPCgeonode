@@ -5,7 +5,7 @@ version: '3.4'
 # RANCHER : manually copy this to each service below
 x-common-django:
   &default-common-django
-  image: olivierdalang/spcgeonode:django-dev
+  image: olivierdalang/spcgeonode:django-prep-dev
   environment:
     - "DEBUG=True"
   volumes:

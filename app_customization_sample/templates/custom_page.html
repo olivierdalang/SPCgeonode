@@ -1,0 +1,27 @@
+{% extends "site_base.html" %}
+{% load i18n %}
+
+{% block title %} {% trans "A Custom page" %} - {{ block.super }} {% endblock %}
+
+{% block body_outer %}
+<div class="page-header">
+  <h2>{% trans "A Custom page" %}</h2>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <p class="lead">{% trans "This is an example of a custom page..." %}</p>
+
+    {% blocktrans %}
+    <p>So you can easily add new pages.</p> 
+    {% endblocktrans %}
+  </div>
+  <div class="col-md-4">
+  <ul class="list-group">
+    <li class="list-group-item"><h3>A nice sidebox</h3></li>
+    <li class="list-group-item">{% trans "An item" %}</li>
+    <li class="list-group-item">{% trans "Another item" %}</li>
+    <li class="list-group-item">{% trans "Yet another item" %}</li>
+  </ul>
+</div>
+</div>
+{% endblock %}

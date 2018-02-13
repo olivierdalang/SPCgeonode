@@ -1,0 +1,10 @@
+{% overextends 'base.html' %}
+{% load i18n %}
+
+{% block extra_tab %}
+aaa
+<li>
+  <a href="{% url "custom_page" %}" role="button">{% trans "My Custom Page" %}</a>
+</li>
+
+{% endblock extra_tab %}

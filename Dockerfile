@@ -2,35 +2,18 @@
 # But it seems it's not possible for now because alpine only has geos 3.6 which is not supported by django 1.8
 # (probably because of https://code.djangoproject.com/ticket/28441)
 
-FROM python:2.7.14-slim-stretch
+FROM olivierdalang/spcgeonode:django-0.0.16
 
-# 2-3. Install dependencies
+RUN apt-get update
+RUN apt-get install -y git
+
 ADD ./requirements.txt /requirements.txt
-RUN echo "Updating apt-get" && \
-    apt-get update && \
-    echo "Installing build dependencies" && \
-    apt-get install -y gcc make libc-dev musl-dev libpcre3 libpcre3-dev g++ && \
-    echo "Installing Pillow dependencies" && \
-    # RUN apt-get install -y NOTHING ?? It was probably added in other packages... ALPINE needed jpeg-dev zlib-dev && \
-    echo "Installing GDAL dependencies" && \
-    apt-get install -y libgeos-dev libgdal-dev && \
-    echo "Installing Psycopg2 dependencies" && \
-    # RUN apt-get install -y NOTHING ?? It was probably added in other packages... ALPINE needed postgresql-dev && \
-    echo "Installing other dependencies" && \
-    # RUN apt-get install -y NOTHING ?? It was probably added in other packages... ALPINE needed libxml2-dev libxslt-dev && \
-    echo "Python server" && \
-    pip install uwsgi && \
-    echo "Geonode python dependencies" && \
-    LIBRARY_PATH=/lib:/usr/lib CPLUS_INCLUDE_PATH=/usr/include/gdal C_INCLUDE_PATH=/usr/include/gdal pip install -r /requirements.txt && \
-    echo "Removing build dependencies and cleaning up" && \
-    # TODO : cleanup apt-get with something like apt-get -y --purge autoremove gcc make libc-dev musl-dev libpcre3 libpcre3-dev g++ && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf ~/.cache/pip && \
-    rm /requirements.txt
+RUN pip install -r /requirements.txt
+RUN rm /requirements.txt
 
 # 5. Add the application
-RUN mkdir /spcgeonode
-WORKDIR /spcgeonode/
+# RUN mkdir /spcgeonode
+# WORKDIR /spcgeonode/
 ADD . /spcgeonode/
 RUN chmod +x docker-entrypoint.sh
 

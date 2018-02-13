@@ -1,8 +1,6 @@
 # SPCgeonode
 
-SPCgeonode is a skeletton for Geonode deployement at SPC. It makes it easy to deploy a customized version of Geonode.
-
-The setup aims to be usable for production.
+This is a customed deployement of Geonode using SPCGeonode.
 
 ## Prerequisites
 
