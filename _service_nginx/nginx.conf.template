@@ -14,8 +14,8 @@ http{
         listen              443 ssl;
         server_name         $WAN_HOST; # TODO : configurize HOSTNAME
 
-        ssl_certificate     /spcgeonode-certbot/live/$WAN_HOST/fullchain.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
-        ssl_certificate_key /spcgeonode-certbot/live/$WAN_HOST/privkey.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
+        ssl_certificate     /certificate_symlink/fullchain.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
+        ssl_certificate_key /certificate_symlink/privkey.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
 
         include spcgeonode.conf;
     }
@@ -28,16 +28,6 @@ http{
 
         include spcgeonode.conf;
     }
-    # https - listens on all other names - for example for LAN - we use autoissued cert
-    # server {
-    #     listen              443 ssl default_server;
-    #     # server_name         $LAN_HOST; # TODO : configurize LAN HOSTNAME
-        
-    #     ssl_certificate     /etc/letsencrypt/autoissued/$LAN_HOST/fullchain.pem;
-    #     ssl_certificate_key /etc/letsencrypt/autoissued/$LAN_HOST/privkey.pem;
-
-    #     include spcgeonode.conf;
-    # }
 
 
     # http - listen on all servers - we redirect to https

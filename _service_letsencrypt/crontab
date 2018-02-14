@@ -5,6 +5,5 @@
 # │     │     │     │     ┌───────────── day of week (0 - 6) (Sunday to Saturday; 7 is also Sunday on some systems)
 # │     │     │     │     │
 
-  *     *     *     *     *     date && echo "test"
-  0     0,12  *     *     *     date && echo "daily  " && /renew-certbot.sh
-  0     0     1     *     *     date && echo "monthly" && /renew-local.sh
+  */5   *     *     *     *     date && echo "cronjob works"
+  0     0,12  *     *     *     date && echo "daily  " && /docker-entrypoint

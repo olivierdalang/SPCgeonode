@@ -27,7 +27,7 @@ services:
     volumes:
       - ./_volume_static:/spcgeonode-static/
       - ./_volume_media:/spcgeonode-media/
-      - ./_volume_certbot:/spcgeonode-certbot/
+      - ./_volume_certificates:/spcgeonode-certificates/
 
   geoserver:
     image: olivierdalang/spcgeonode:geoserver-dev
@@ -37,7 +37,7 @@ services:
   letsencrypt:
     image: olivierdalang/spcgeonode:letsencrypt-dev
     volumes:
-      - ./_volume_certbot:/spcgeonode-certbot/
+      - ./_volume_certificates:/spcgeonode-certificates/
 
   pgdumper:
     image: olivierdalang/spcgeonode:pgdumper-dev

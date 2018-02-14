@@ -7,8 +7,20 @@
 
 while true
 do
-        inotifywait -e create -e modify -e delete -e move -r /spcgeonode-certbot
-        echo "Changes noticed in /spcgeonode-certbot"
+        inotifywait -e create -e modify -e delete -e move -r --exclude "\\.certbot\\.lock|\\.well-known" /spcgeonode-certificates/
+        echo "Changes noticed in /spcgeonode-certificates"
+
+        echo "Waiting 5s for additionnal changes"
+        sleep 5
+
+        if [ -f "/spcgeonode-certificate/live/$WAN_HOST/fullchain.pem" ] && [ -f "/spcgeonode-certificate/live/$WAN_HOST/privkey.pem" ]; then
+                echo "Certbot certificate exists, we symlink to the live cert"
+                ln -sf "/spcgeonode-certbot/live/$WAN_HOST/" "/certificate_symlink"
+        else
+                echo "Certbot certificate does not exist, we symlink to autoissued"
+                ln -sf "/spcgeonode-certificates/autoissued/" "/certificate_symlink"
+        fi
+
         # Test nginx configuration
         nginx -t
         # If it passes, we reload

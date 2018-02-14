@@ -74,7 +74,7 @@ services:
     volumes:
       - static:/spcgeonode-static/
       - media:/spcgeonode-media/
-      - certbot:/spcgeonode-certbot/
+      - certificates:/spcgeonode-certificates/
     restart: on-failure
     labels:
       io.rancher.container.pull_image: always
@@ -107,7 +107,7 @@ services:
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - LETSENCRYPT_MODE=${LETSENCRYPT_MODE}
     volumes:
-      - certbot:/spcgeonode-certbot/
+      - certificates:/spcgeonode-certificates/
     restart: on-failure
     labels:
       io.rancher.container.pull_image: always
@@ -182,7 +182,7 @@ volumes:
   media:
   database:
   geodatadir:
-  certbot:
+  certificates:
   pgdumps:
 
 secrets:

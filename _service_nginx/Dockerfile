@@ -1,6 +1,6 @@
 FROM nginx:1.13.7-alpine
 
-RUN apk add --no-cache inotify-tools
+RUN apk add --no-cache openssl inotify-tools
 
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
 COPY spcgeonode.conf /etc/nginx/spcgeonode.conf

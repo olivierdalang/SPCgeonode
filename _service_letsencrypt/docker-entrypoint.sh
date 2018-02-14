@@ -1,10 +1,31 @@
 #!/bin/sh
 
-# Exit script in case of error
-set -e
+# Do not exit script in case of error
+set +e
 
-/renew-local.sh
-/renew-certbot.sh
+# We run the command
+if [ "$LETSENCRYPT_MODE" == "staging" ]; then
+    printf "\nTrying to get STAGING certificate\n"
+    certbot --config-dir /spcgeonode-certificates/ certonly --webroot -w /spcgeonode-certificates/ -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive --staging
+elif [ "$LETSENCRYPT_MODE" == "production" ]; then
+    printf "\nTrying to get PRODUCTION certificate\n"
+    certbot --config-dir /spcgeonode-certificates/ certonly --webroot -w /spcgeonode-certificates/ -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive
+else
+    printf "\nNot trying to get certificate (simulating failure, because LETSENCRYPT_MODE variable was neither staging nor production\n"
+    /bin/false
+fi
 
-# Run the CMD 
-exec "$@"
+# If the certbot comand failed, we will create a placeholder certificate
+if [ ! $? -eq 0 ]; then
+    # Exit script in case of error
+    set -e
+
+    printf "\nFailed to get the certificates !\n"
+
+    printf "\nWaiting 30s to avoid hitting Letsencrypt rate limits before it's even possible to react\n"
+    sleep 30
+
+    exit 1
+fi
+
+printf "\nCertificate have been created/renewed successfully\n"    
