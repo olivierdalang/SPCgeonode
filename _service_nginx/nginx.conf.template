@@ -12,10 +12,10 @@ http{
     # https - listens on specific name - this uses letsencrypt cert
     server {
         listen              443 ssl;
-        server_name         $WAN_HOST; # TODO : configurize HOSTNAME
+        server_name         $WAN_HOST;
 
-        ssl_certificate     /certificate_symlink/fullchain.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
-        ssl_certificate_key /certificate_symlink/privkey.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
+        ssl_certificate     /certificate_symlink/fullchain.pem;
+        ssl_certificate_key /certificate_symlink/privkey.pem;
 
         include spcgeonode.conf;
     }
@@ -24,7 +24,7 @@ http{
     # TODO : do not use unencrypted connection even on LAN, but is it possible to have browser not complaining about unknown authority ?
     server {
         listen              80;
-        server_name         $LAN_HOST nginx; # we add nginx as this is the host for internal API requests # TODO : configurize LAN HOSTNAME
+        server_name         $LAN_HOST nginx; # we add nginx as this is the host for internal API requests
 
         include spcgeonode.conf;
     }
@@ -43,8 +43,8 @@ http{
 
         # Redirect to https
         location / {
-            # return 301 https://$WAN_HOST$request_uri; # TODO : configurize HOSTNAME
-            return 302 https://$WAN_HOST$request_uri; # TODO : configurize HOSTNAME # TODO : remove this, we should use 301 (but not practical for debug)
+            # return 301 https://$WAN_HOST$request_uri;
+            return 302 https://$WAN_HOST$request_uri; # TODO : remove this, we should use 301 (but not practical for debug)
         }
     }
 
