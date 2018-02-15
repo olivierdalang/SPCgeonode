@@ -174,7 +174,7 @@ services:
 
   # Vanilla RabbitMQ service. This is needed by celery
   rabbitmq:
-    image: rabbitmq:3.7 
+    image: rabbitmq:3.7-alpine 
     restart: on-failure
 
 volumes:
