@@ -28,4 +28,7 @@ if [ ! $? -eq 0 ]; then
     exit 1
 fi
 
-printf "\nCertificate have been created/renewed successfully\n"    
+printf "\nCertificate have been created/renewed successfully\n"
+
+# Run the CMD 
+exec "$@"
