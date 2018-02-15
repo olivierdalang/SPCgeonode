@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# This will watch the /spcgeonode-certbot folder and run nginx -s reload whenever there are some changes.
+# This will watch the /spcgeonode-certificates folder and run nginx -s reload whenever there are some changes.
 # We use this to reload nginx config when certificates changed.
 
 # inspired/copied from https://github.com/kubernetes/kubernetes/blob/master/examples/https-nginx/auto-reload-nginx.sh
@@ -15,7 +15,7 @@ do
 
         if [ -f "/spcgeonode-certificate/live/$WAN_HOST/fullchain.pem" ] && [ -f "/spcgeonode-certificate/live/$WAN_HOST/privkey.pem" ]; then
                 echo "Certbot certificate exists, we symlink to the live cert"
-                ln -sf "/spcgeonode-certbot/live/$WAN_HOST/" "/certificate_symlink"
+                ln -sf "/spcgeonode-certificates/live/$WAN_HOST/" "/certificate_symlink"
         else
                 echo "Certbot certificate does not exist, we symlink to autoissued"
                 ln -sf "/spcgeonode-certificates/autoissued/" "/certificate_symlink"

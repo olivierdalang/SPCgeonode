@@ -37,7 +37,7 @@ http{
         
         # Let's encrypt challenge
         location /.well-known {
-            alias /spcgeonode-certbot/.well-known;
+            alias /spcgeonode-certificates/.well-known;
             include  /etc/nginx/mime.types;
         }
 
