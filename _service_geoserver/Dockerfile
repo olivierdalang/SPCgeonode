@@ -1,7 +1,7 @@
 FROM java:8-jre-alpine
 
 # Install dependencies
-RUN apk add --no-cache ca-certificates openssl
+RUN apk add --no-cache ca-certificates openssl curl
 RUN update-ca-certificates
 
 WORKDIR /
@@ -30,18 +30,19 @@ RUN echo "Download geoserver" && \
 
 WORKDIR /geoserver-2.12.1/
 
-
-# Add initial geodatadir
+# Add geodatadir override data (this will be copied over to the actual datadir in entrypoint)
 ADD geodatadir-overrides /geodatadir-overrides
 
+# Add the entrypoint
+ADD docker-entrypoint.sh /docker-entrypoint.sh 
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Add the healthcheck
+HEALTHCHECK --interval=60s --timeout=10s --start-period=180s --retries=3 CMD ["curl", "--silent", "--write-out", "'HTTP CODE : %{http_code}\n'", "--output", "/dev/null", "http://127.0.0.1:8080/geoserver/web/"]
 
 # Export ports
 EXPOSE 8080
 
-ADD docker-entrypoint.sh docker-entrypoint.sh 
-RUN chmod +x docker-entrypoint.sh
-ENTRYPOINT ["./docker-entrypoint.sh"]
-
 # Run geoserver
-
 CMD ["bin/startup.sh"]
