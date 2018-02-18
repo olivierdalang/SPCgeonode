@@ -13,6 +13,7 @@ do
         echo "Waiting 5s for additionnal changes"
         sleep 5
 
+        echo "Creating symbolic link for WAN host"
         if [ -f "/spcgeonode-certificate/live/$WAN_HOST/fullchain.pem" ] && [ -f "/spcgeonode-certificate/live/$WAN_HOST/privkey.pem" ]; then
                 echo "Certbot certificate exists, we symlink to the live cert"
                 ln -sf "/spcgeonode-certificates/live/$WAN_HOST/" "/certificate_symlink"

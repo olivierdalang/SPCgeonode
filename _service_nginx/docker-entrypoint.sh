@@ -8,7 +8,13 @@ mkdir -p "/spcgeonode-certificates/autoissued/"
 openssl req -x509 -nodes -days 1825 -newkey rsa:2048 -keyout "/spcgeonode-certificates/autoissued/privkey.pem" -out "/spcgeonode-certificates/autoissued/fullchain.pem" -subj "/CN=$LAN_HOST" 
 
 printf "\n\nCreating symbolic link for WAN host"
-ln -sf "/spcgeonode-certificates/autoissued/" "/certificate_symlink"
+if [ -f "/spcgeonode-certificate/live/$WAN_HOST/fullchain.pem" ] && [ -f "/spcgeonode-certificate/live/$WAN_HOST/privkey.pem" ]; then
+        echo "Certbot certificate exists, we symlink to the live cert"
+        ln -sf "/spcgeonode-certificates/live/$WAN_HOST/" "/certificate_symlink"
+else
+        echo "Certbot certificate does not exist, we symlink to autoissued"
+        ln -sf "/spcgeonode-certificates/autoissued/" "/certificate_symlink"
+fi
 
 printf "\n\nReplacing environement variables"
 envsubst '\$LAN_HOST \$WAN_HOST \$RESOLVER' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
