@@ -12,10 +12,10 @@ http{
     # https - listens on specific name - this uses letsencrypt cert
     server {
         listen              443 ssl;
-        server_name         $WAN_HOST; # TODO : configurize HOSTNAME
+        server_name         $WAN_HOST;
 
-        ssl_certificate     /spcgeonode-certbot/live/$WAN_HOST/fullchain.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
-        ssl_certificate_key /spcgeonode-certbot/live/$WAN_HOST/privkey.pem; # TODO : fix with actual outputs # TODO : configurize HOSTNAME
+        ssl_certificate     /certificate_symlink/fullchain.pem;
+        ssl_certificate_key /certificate_symlink/privkey.pem;
 
         include spcgeonode.conf;
     }
@@ -24,20 +24,10 @@ http{
     # TODO : do not use unencrypted connection even on LAN, but is it possible to have browser not complaining about unknown authority ?
     server {
         listen              80;
-        server_name         $LAN_HOST nginx; # we add nginx as this is the host for internal API requests # TODO : configurize LAN HOSTNAME
+        server_name         $LAN_HOST nginx; # we add nginx as this is the host for internal API requests
 
         include spcgeonode.conf;
     }
-    # https - listens on all other names - for example for LAN - we use autoissued cert
-    # server {
-    #     listen              443 ssl default_server;
-    #     # server_name         $LAN_HOST; # TODO : configurize LAN HOSTNAME
-        
-    #     ssl_certificate     /etc/letsencrypt/autoissued/$LAN_HOST/fullchain.pem;
-    #     ssl_certificate_key /etc/letsencrypt/autoissued/$LAN_HOST/privkey.pem;
-
-    #     include spcgeonode.conf;
-    # }
 
 
     # http - listen on all servers - we redirect to https
@@ -47,14 +37,14 @@ http{
         
         # Let's encrypt challenge
         location /.well-known {
-            alias /spcgeonode-certbot/.well-known;
+            alias /spcgeonode-certificates/.well-known;
             include  /etc/nginx/mime.types;
         }
 
         # Redirect to https
         location / {
-            # return 301 https://$WAN_HOST$request_uri; # TODO : configurize HOSTNAME
-            return 302 https://$WAN_HOST$request_uri; # TODO : configurize HOSTNAME # TODO : remove this, we should use 301 (but not practical for debug)
+            # return 301 https://$WAN_HOST$request_uri;
+            return 302 https://$WAN_HOST$request_uri; # TODO : remove this, we should use 301 (but not practical for debug)
         }
     }
 

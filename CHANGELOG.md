@@ -47,6 +47,10 @@
 
 - put django in main directory (so it's more clear for deploy builds)
 
+## 0.0.17
+
+- improve nginx<->letsencrypt (nginx can work without letsencrypt service)
+
 ## TODO : Roadmap
 
 - choose between syncthings and rclone
@@ -55,7 +59,6 @@
 - optimise dockerfiles
 - make use of entrypoint/cmd more consistent (is it in the dockerfile ? or in the docker-compose?)
 - contribute back to geonode-project
-- move rancher catalog out of this repo
 - allow empty WAN/LAN_HOST
 - think about upgrade (e.g. changing variables such as admin)
 - add HEALTHCHECKS to Dockerfiles where applicable
