@@ -50,10 +50,10 @@ export AWS_BUCKET_REGION="ap-southeast-2"
 
 # 2. Create the secrets
 mkdir _secrets
-echo "super" > _secrets/admin_username
-echo "duper" > _secrets/admin_password
-echo "aaa" > _secrets/aws_access_key
-echo "bbb" > _secrets/aws_secret_key
+printf "super" > _secrets/admin_username
+printf "duper" > _secrets/admin_password
+printf "aaa" > _secrets/aws_access_key
+printf "bbb" > _secrets/aws_secret_key
 
 # 3. Run the stack
 docker-compose -f docker-compose.yml up -d --build
