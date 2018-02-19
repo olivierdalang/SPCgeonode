@@ -40,15 +40,16 @@ Difference of dev setup vs prod setup:
 
 ```
 # 1. Override default env variables (defaults are in .env)
-$env:WAN_HOST="local.example.com"
-$env:LAN_HOST="127.0.0.1"
-$env:ADMIN_EMAIL="admin@example.com"
-$env:LETSENCRYPT_MODE="staging"
-$env:REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
-$env:AWS_BUCKET_NAME="spcgeonode-test"
-$env:AWS_BUCKET_REGION="ap-southeast-2"
+export WAN_HOST="local.example.com"
+export LAN_HOST="127.0.0.1"
+export ADMIN_EMAIL="admin@example.com"
+export LETSENCRYPT_MODE="staging"
+export REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
+export AWS_BUCKET_NAME="spcgeonode-test"
+export AWS_BUCKET_REGION="ap-southeast-2"
 
 # 2. Create the secrets
+mkdir _secrets
 echo "super" > _secrets/admin_username
 echo "duper" > _secrets/admin_password
 echo "aaa" > _secrets/aws_access_key
