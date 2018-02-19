@@ -8,12 +8,14 @@ mkdir -p "/spcgeonode-certificates/autoissued/"
 openssl req -x509 -nodes -days 1825 -newkey rsa:2048 -keyout "/spcgeonode-certificates/autoissued/privkey.pem" -out "/spcgeonode-certificates/autoissued/fullchain.pem" -subj "/CN=$LAN_HOST" 
 
 echo "Creating symbolic link for WAN host"
-if [ -f "/spcgeonode-certificates/live/$WAN_HOST/fullchain.pem" ] && [ -f "/spcgeonode-certificates/live/$WAN_HOST/privkey.pem" ]; then
+# for some reason, the ln -f flag doesn't work below...
+rm -f /certificate_symlink
+if [ -f "/spcgeonode-certificates/$LETSENCRYPT_MODE/live/$WAN_HOST/fullchain.pem" ] && [ -f "/spcgeonode-certificates/$LETSENCRYPT_MODE/live/$WAN_HOST/privkey.pem" ]; then
         echo "Certbot certificate exists, we symlink to the live cert"
-        ln -sf "/spcgeonode-certificates/live/$WAN_HOST/" "/certificate_symlink"
+        ln -sf "/spcgeonode-certificates/$LETSENCRYPT_MODE/live/$WAN_HOST" /certificate_symlink
 else
         echo "Certbot certificate does not exist, we symlink to autoissued"
-        ln -sf "/spcgeonode-certificates/autoissued/" "/certificate_symlink"
+        ln -sf "/spcgeonode-certificates/autoissued" /certificate_symlink
 fi
 
 printf "\n\nReplacing environement variables"

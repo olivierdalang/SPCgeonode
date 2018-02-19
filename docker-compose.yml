@@ -65,6 +65,7 @@ services:
     environment:
       - WAN_HOST=${WAN_HOST}
       - LAN_HOST=${LAN_HOST}
+      - LETSENCRYPT_MODE=${LETSENCRYPT_MODE}
       - RESOLVER=127.0.0.11
       # # RANCHER : use this instead
       # - RESOLVER=169.254.169.250
