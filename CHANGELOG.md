@@ -54,6 +54,7 @@
 ## 0.0.18
 
 - geoserver master password reset is cleaner (programmatically reset the password from initial datadir before first launch)
+- support empty HTTP_HOST or HTTPS_HOST
 
 ## TODO : Roadmap
 
@@ -63,7 +64,6 @@
 - optimise dockerfiles
 - make use of entrypoint/cmd more consistent (is it in the dockerfile ? or in the docker-compose?)
 - contribute back to geonode-project
-- allow empty HTTPS/HTTP_HOST
 - think about upgrade (e.g. changing variables such as admin)
 - add HEALTHCHECKS to Dockerfiles where applicable
 - migrate to spc repositories
