@@ -16,9 +16,9 @@ do
         echo "Creating symbolic link for WAN host"
         # for some reason, the ln -f flag doesn't work below...
         rm -f /certificate_symlink
-        if [ -f "/spcgeonode-certificates/$LETSENCRYPT_MODE/live/$WAN_HOST/fullchain.pem" ] && [ -f "/spcgeonode-certificates/$LETSENCRYPT_MODE/live/$WAN_HOST/privkey.pem" ]; then
+        if [ -f "/spcgeonode-certificates/$LETSENCRYPT_MODE/live/$HTTPS_HOST/fullchain.pem" ] && [ -f "/spcgeonode-certificates/$LETSENCRYPT_MODE/live/$HTTPS_HOST/privkey.pem" ]; then
                 echo "Certbot certificate exists, we symlink to the live cert"
-                ln -sf "/spcgeonode-certificates/$LETSENCRYPT_MODE/live/$WAN_HOST" /certificate_symlink
+                ln -sf "/spcgeonode-certificates/$LETSENCRYPT_MODE/live/$HTTPS_HOST" /certificate_symlink
         else
                 echo "Certbot certificate does not exist, we symlink to autoissued"
                 ln -sf "/spcgeonode-certificates/autoissued" /certificate_symlink

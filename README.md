@@ -33,15 +33,15 @@ Difference of dev setup vs prod setup:
 - run celery using djcelery (so that output goes to admin) 
 - use docker dev tags instead of latest
 - use defaults secrets from _dev-secrets `admin_username=super` and `admin_password=duper`
-- use defaut .env variables which set `LAN_HOST=127.0.0.1`, `WAN_HOST=local.example.com`, `ADMIN_EMAIL=admin@example.com` and `LETSENCRYPT_MODE=disabled` (set `local.example.com` to `127.0.0.1` in your hosts file for better local testing)
+- use defaut .env variables which set `HTTP_HOST=127.0.0.1`, `HTTPS_HOST=local.example.com`, `ADMIN_EMAIL=admin@example.com` and `LETSENCRYPT_MODE=disabled` (set `local.example.com` to `127.0.0.1` in your hosts file for better local testing)
 
 
 ### Production
 
 ```
 # 1. Override default env variables (defaults are in .env)
-export WAN_HOST="local.example.com"
-export LAN_HOST="127.0.0.1"
+export HTTPS_HOST="local.example.com"
+export HTTP_HOST="127.0.0.1"
 export ADMIN_EMAIL="admin@example.com"
 export LETSENCRYPT_MODE="staging"
 export REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"

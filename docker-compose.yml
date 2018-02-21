@@ -13,7 +13,7 @@ x-common-django:
   build: .
   environment:
     - GEOSERVER_PUBLIC_LOCATION=/geoserver/ # we use a relative URL since we want to keep current scheme/host
-    - ALLOWED_HOSTS=${WAN_HOST},${LAN_HOST}
+    - ALLOWED_HOSTS=${HTTPS_HOST},${HTTP_HOST}
     - ADMIN_EMAIL=${ADMIN_EMAIL}
     - DJANGO_SETTINGS_MODULE=spcgeonode.settings
     - DEBUG=False
@@ -63,8 +63,8 @@ services:
     # RANCHER : remove this
     build: _service_nginx/
     environment:
-      - WAN_HOST=${WAN_HOST}
-      - LAN_HOST=${LAN_HOST}
+      - HTTPS_HOST=${HTTPS_HOST}
+      - HTTP_HOST=${HTTP_HOST}
       - LETSENCRYPT_MODE=${LETSENCRYPT_MODE}
       - RESOLVER=127.0.0.11
       # # RANCHER : use this instead
@@ -103,8 +103,8 @@ services:
     # RANCHER : remove this
     build: _service_letsencrypt/
     environment:
-      - WAN_HOST=${WAN_HOST}
-      - LAN_HOST=${LAN_HOST}
+      - HTTPS_HOST=${HTTPS_HOST}
+      - HTTP_HOST=${HTTP_HOST}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - LETSENCRYPT_MODE=${LETSENCRYPT_MODE}
     volumes:
