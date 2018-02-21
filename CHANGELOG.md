@@ -53,6 +53,7 @@
 
 ## TODO : Roadmap
 
+- geoserver initialization is very hacky... maybe we could find a better way to do this ?
 - choose between syncthings and rclone
 - check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
 - tweak nginx settings (gzip output, cache, etc...)
