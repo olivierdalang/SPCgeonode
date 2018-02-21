@@ -51,9 +51,12 @@
 
 - improve nginx<->letsencrypt (nginx can work without letsencrypt service)
 
+## 0.0.18
+
+- geoserver master password reset is cleaner (programmatically reset the password from initial datadir before first launch)
+
 ## TODO : Roadmap
 
-- geoserver initialization is very hacky... maybe we could find a better way to do this ?
 - choose between syncthings and rclone
 - check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
 - tweak nginx settings (gzip output, cache, etc...)

@@ -39,7 +39,7 @@ RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 # Add the healthcheck
-HEALTHCHECK --interval=60s --timeout=10s --start-period=180s --retries=3 CMD ["curl", "--silent", "--write-out", "'HTTP CODE : %{http_code}\n'", "--output", "/dev/null", "http://127.0.0.1:8080/geoserver/web/"]
+HEALTHCHECK --interval=60s --timeout=10s --start-period=60s --retries=3 CMD ["curl", "--silent", "--write-out", "'HTTP CODE : %{http_code}\n'", "--output", "/dev/null", "http://127.0.0.1:8080/geoserver/web/"]
 
 # Export ports
 EXPOSE 8080
