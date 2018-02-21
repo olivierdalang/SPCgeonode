@@ -4,6 +4,7 @@ SPCgeonode is a skeletton for Geonode deployement at SPC. It makes it easy to de
 
 The setup aims to be usable for production.
 
+
 ## Prerequisites
 
 Make sure you have a version of Docker (tested with 17.12) and docker-compose.
@@ -17,36 +18,30 @@ On **Windows**: https://store.docker.com/editions/community/docker-ce-desktop-wi
 
 ### Developpement
 
+To start the whole stack
 ```
-docker-compose up -d --build
+docker-compose up --build
 ```
 
-Difference of dev setup vs prod setup:
+Or if you want only the main services (enough to develop and a bit lighter):
+```
+docker-compose up --build django geoserver nginx postgres celery
+```
 
-- mount django source as volume and set uwsgi to live reload
-- mount django static and media in the volumes folder
-- mount geoserver's data volume in the volumes folder
-- mount letsencyrpt volumes in the volumes folder
-- set django debug=True
-- expose postgres port 5432
-- activates nginx debug mode
-- run celery using djcelery (so that output goes to admin) 
-- use docker dev tags instead of latest
-- use defaults secrets from _dev-secrets `admin_username=super` and `admin_password=duper`
-- use defaut .env variables which set `HTTP_HOST=127.0.0.1`, `HTTPS_HOST=local.example.com`, `ADMIN_EMAIL=admin@example.com` and `LETSENCRYPT_MODE=disabled` (set `local.example.com` to `127.0.0.1` in your hosts file for better local testing)
+Note : as docker-compose is not a real containers orchestrator, it may be necessary to manually restart geoserver after first startup since healthchecks are ignored (just run the same command again).
 
 
 ### Production
 
 ```
 # 1. Override default env variables (defaults are in .env)
-export HTTPS_HOST="local.example.com"
-export HTTP_HOST="127.0.0.1"
-export ADMIN_EMAIL="admin@example.com"
-export LETSENCRYPT_MODE="staging"
-export REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
-export AWS_BUCKET_NAME="spcgeonode-test"
-export AWS_BUCKET_REGION="ap-southeast-2"
+HTTPS_HOST="local.example.com"
+HTTP_HOST="127.0.0.1"
+ADMIN_EMAIL="admin@example.com"
+LETSENCRYPT_MODE="staging"
+REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
+AWS_BUCKET_NAME="spcgeonode-test"
+AWS_BUCKET_REGION="ap-southeast-2"
 
 # 2. Create the secrets
 mkdir _secrets
@@ -57,14 +52,26 @@ printf "bbb" > _secrets/aws_secret_key
 
 # 3. Run the stack
 docker-compose -f docker-compose.yml up -d --build
-...
+```
 
-Note : to avoid hitting LetsEncrypt limits if anything fails, you should add `LETSENCRYPT_MODE=staging` to your env vars during first tests, and only remove it once you see tests certificates are properly loading. Hitting the limits is annoying as you can be blocked for a few days...
+Note : to avoid hitting LetsEncrypt limits if anything fails, you should add `LETSENCRYPT_MODE=production` only when you see tests certificates are properly loading. Hitting the limits is annoying as you can be blocked for a few days...
 
+Note : as docker-compose is not a real containers orchestrator, it may be necessary to restart (just run the same command again) some containers manually after some time at first startup, since healthchecks are not used.
+
+### Developpement vs Production
+
+Difference of dev setup vs prod setup:
+
+- Django source is mounted on the host and uwsgi does live reload (so that edits to the python code is reloaded live)
+- Django static and media folder, Geoserver's data folder and Certificates folder are mounted on the host (just to easily see what's happening)
+- Django debug is set to True
+- Postgres's port 5432 is exposed (to allow debugging using pgadmin)
+- Nginx debug mode is acticated (not really sure what this changes)
+- Docker tags are set to dev instead of latest
 
 ### Publishing the images
 
-Pushes to github trigger automatic builds on docker hub (for master branch -> dev and for x.x.x tags -> x.x.x).
+Pushes to github trigger automatic builds on docker hub for tags looking like x.x.x
 
 If you need to publish the images manually, just rebuilt the containers (`docker-compose -f docker-compose.yml build`), then use :
 
@@ -75,29 +82,8 @@ docker-compose -f docker-compose.yml push
 
 ### Rancher
 
-This setup can almost be used as is by Rancher. Some minor adaptations must be made to docker-compose though : 
+This setup can almost be used as is by Rancher. Some minor adaptations must be made to docker-compose. The adaptations are marked as comments in the docker-compose file.
 
-- version "3.x" => "2"
-- yaml anchors are not supported : manually replace each `<< : *default-common-django` occurence by the `&default-common-django` block
-- deploy block are not supported
-- if unversionned tags (e.g. latest) add `labels: io.rancher.container.pull_image: always` to all images that may change so that they are pulled again from the repository
-
-
-## How it works
-
-### Geonode/Django
-
-Geonode is installed as a "geonode django project" (under `django`). This allows easy customization/extension as it is a regular django application.
-
-The django project is initialised (install requirements, migrate, collectstatic and fixtures) at launch, and then served using uwsgi.
-
-### Nginx
-
-Nginx proxies to uwsgi (django) and geoserver. It also directly serves django static and media files.
-
-### Geoserver / Django
-
-Geoserver and Django share the same users (using postgres tables).
 
 ## Compared to similar tools
 
