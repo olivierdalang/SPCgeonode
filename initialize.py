@@ -49,7 +49,7 @@ try:
     )
     print('superuser successfully created')    
     print('disabling old superusers if any')
-    Profile.objects.filter(is_superuser=True).exclude(pk=superuser.pk).update(is_enabled=False)
+    Profile.objects.filter(is_superuser=True).exclude(pk=superuser.pk).update(is_active=False)
 except django.db.IntegrityError as e:
     print('superuser exists already')
 
