@@ -55,6 +55,7 @@
 
 - geoserver master password reset is cleaner (programmatically reset the password from initial datadir before first launch)
 - support empty HTTP_HOST or HTTPS_HOST
+- geosever 2.12.1 => 2.12.2
 
 ## TODO : Roadmap
 

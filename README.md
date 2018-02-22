@@ -25,10 +25,10 @@ docker-compose up --build
 
 Or if you want only the main services (enough to develop and a bit lighter):
 ```
-docker-compose up --build django geoserver nginx postgres celery
+docker-compose up --build django geoserver nginx postgres
 ```
 
-Note : as docker-compose is not a real containers orchestrator, it may be necessary to manually restart geoserver after first startup since healthchecks are ignored (just run the same command again).
+Note : as docker-compose is not a real containers orchestrator, it may be necessary to manually restart geoserver after first startup since healthchecks are ignored.
 
 
 ### Production
