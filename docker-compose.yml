@@ -86,7 +86,7 @@ services:
     # RANCHER : remove this
     build: _service_geoserver/
     environment:
-     - GEOSERVER_HOME=/geoserver-2.12.1
+     - GEOSERVER_HOME=/geoserver-2.12.2
      - GEOSERVER_DATA_DIR=/spcgeonode-geodatadir
     volumes:
       - geodatadir:/spcgeonode-geodatadir/

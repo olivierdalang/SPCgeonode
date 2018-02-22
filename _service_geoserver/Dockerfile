@@ -7,28 +7,26 @@ RUN update-ca-certificates
 WORKDIR /
 
 # Download Geoserver and related modules
+# TODO : get a copy of SNAPSHOT releases as they will change over time
 RUN echo "Download geoserver" && \
-    wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.1/geoserver-2.12.1-bin.zip && \
-    unzip geoserver-2.12.1-bin.zip && \
-    rm geoserver-2.12.1-bin.zip && \
+    wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.2/geoserver-2.12.2-bin.zip && \
+    unzip geoserver-2.12.2-bin.zip && \
+    rm geoserver-2.12.2-bin.zip && \
     echo "Download printing module" && \
-    wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.1/extensions/geoserver-2.12.1-printing-plugin.zip && \
-    unzip geoserver-2.12.1-printing-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/ && \
-    rm geoserver-2.12.1-printing-plugin.zip && \
+    wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.2/extensions/geoserver-2.12.2-printing-plugin.zip && \
+    unzip -n geoserver-2.12.2-printing-plugin.zip -d /geoserver-2.12.2/webapps/geoserver/WEB-INF/lib/ && \
+    rm geoserver-2.12.2-printing-plugin.zip  && \
     echo "Download geofence module" && \
-    wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip && \
-    unzip -n geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/ && \
+    wget https://build.geoserver.org/geoserver/2.12.x/community-latest/geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip && \
+    unzip -n geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip -d /geoserver-2.12.2/webapps/geoserver/WEB-INF/lib/ && \
     rm geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip && \
     echo "Download authkey module" && \
-    wget http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-authkey-plugin.zip && \
-    unzip -n geoserver-2.12-SNAPSHOT-authkey-plugin.zip -d /geoserver-2.12.1/webapps/geoserver/WEB-INF/lib/ && \
+    wget https://build.geoserver.org/geoserver/2.12.x/community-latest/geoserver-2.12-SNAPSHOT-authkey-plugin.zip && \
+    unzip -n geoserver-2.12-SNAPSHOT-authkey-plugin.zip -d /geoserver-2.12.2/webapps/geoserver/WEB-INF/lib/ && \
     rm geoserver-2.12-SNAPSHOT-authkey-plugin.zip
 
-# Unused extensions :
-# http://build.geonode.org/geoserver/latest/geonode-geoserver-ext-2.12.x-geoserver-plugin.zip
-# http://ares.boundlessgeo.com/geoserver/2.12.x/community-2017-11-24/geoserver-2.12-SNAPSHOT-sec-oauth2-geonode-plugin.zip
 
-WORKDIR /geoserver-2.12.1/
+WORKDIR /geoserver-2.12.2/
 
 # Add geodatadir override data (this will be copied over to the actual datadir in entrypoint)
 ADD geodatadir-overrides /geodatadir-overrides
