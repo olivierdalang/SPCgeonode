@@ -52,6 +52,15 @@ else
     rm /spcgeonode-geodatadir/security/spcgeonode_masterpwd_needs_reset_flag
 fi
  
+echo "Waiting for geonode to be initialized"
+until psql -h postgres -U postgres -d postgres -c 'SELECT 1 FROM public.groups_groupprofile LIMIT 1;' > /dev/null; do
+  echo "Postgres unavailable or groups_groupprofile table does not exist."
+  echo "Make sure Postgres is started and Geonode finished initalization."
+  echo "Retrying in 10 seconds"
+  sleep 10
+done
+
+ 
 echo '--- END Geoserver Docker Entrypoint ---'
 
 # Run the CMD 

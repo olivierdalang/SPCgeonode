@@ -56,8 +56,6 @@ docker-compose -f docker-compose.yml up -d --build
 
 Note : to avoid hitting LetsEncrypt limits if anything fails, you should add `LETSENCRYPT_MODE=production` only when you see tests certificates are properly loading. Hitting the limits is annoying as you can be blocked for a few days...
 
-Note : as docker-compose is not a real containers orchestrator, it may be necessary to restart (just run the same command again) some containers manually after some time at first startup, since healthchecks are not used.
-
 ### Developpement vs Production
 
 Difference of dev setup vs prod setup:
