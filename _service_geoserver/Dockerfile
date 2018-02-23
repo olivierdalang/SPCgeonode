@@ -47,5 +47,9 @@ HEALTHCHECK --interval=60s --timeout=10s --start-period=60s --retries=3 CMD ["cu
 # Export ports
 EXPOSE 8080
 
+# Set environnment variables
+ENV GEOSERVER_HOME=/geoserver-2.12.2
+ENV GEOSERVER_DATA_DIR=/spcgeonode-geodatadir
+
 # Run geoserver
 CMD ["bin/startup.sh"]
