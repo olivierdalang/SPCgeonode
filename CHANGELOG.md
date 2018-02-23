@@ -57,21 +57,18 @@
 - support empty HTTP_HOST or HTTPS_HOST
 - geosever 2.12.1 => 2.12.2
 - cleaned up env vars
+- upgrade should work
 
 ## TODO : Roadmap
 
 - choose between syncthings and rclone
 - check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
 - tweak nginx settings (gzip output, cache, etc...)
-- optimise dockerfiles
-- make use of entrypoint/cmd more consistent (is it in the dockerfile ? or in the docker-compose?)
+- use alpine for django as well
 - contribute back to geonode-project
-- think about upgrade (e.g. changing variables such as admin)
 - add HEALTHCHECKS to Dockerfiles where applicable
 - migrate to spc repositories
-- use Geoserver 2.13 instead of 2.12
-- use Geonode 2.8 (? is it the latest) instead of 2.6
-- see if we can use postgres for geofence too https://github.com/geoserver/geofence/wiki/GeoFence-configuration#database-configuration-1
+- push to Geonode 2.8 instead of 2.6
 - fix Geoserver exceptions on first launch because of missing datadir configurations
 - see if we use all needed geoserver extensions (marlin-renderer, geonode's module)
 - see if we can have geoserver exit on error, in not at least implement proper healtcheck
