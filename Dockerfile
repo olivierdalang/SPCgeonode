@@ -34,7 +34,21 @@ WORKDIR /spcgeonode/
 ADD . /spcgeonode/
 RUN chmod +x docker-entrypoint.sh
 
-
+# Export ports
 EXPOSE 8000
+
+# Set environnment variables
+ENV SITEURL=/
+ENV GEOSERVER_PUBLIC_LOCATION=/geoserver/
+ENV DJANGO_SETTINGS_MODULE=spcgeonode.settings
+ENV DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
+ENV BROKER_URL=amqp://guest:guest@rabbitmq:5672/
+ENV STATIC_ROOT=/spcgeonode-static/
+ENV MEDIA_ROOT=/spcgeonode-media/
+ENV STATIC_URL=/static/
+ENV MEDIA_URL=/media/
+ENV GEOSERVER_LOCATION=http://nginx/geoserver/
+# TODO : we should probably remove this and set Celery to use JSON serialization instead of pickle
+ENV C_FORCE_ROOT=True
 
 # We provide no command or entrypoint as this image can be used to serve the django project or run celery tasks

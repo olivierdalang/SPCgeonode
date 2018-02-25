@@ -12,10 +12,10 @@ set +e
 # We run the command
 if [ "$LETSENCRYPT_MODE" == "staging" ]; then
     printf "\nTrying to get STAGING certificate\n"
-    certbot --config-dir "/spcgeonode-certificates/$LETSENCRYPT_MODE" certonly --webroot -w "/spcgeonode-certificates" -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive --staging
+    certbot --config-dir "/spcgeonode-certificates/$LETSENCRYPT_MODE" certonly --webroot -w "/spcgeonode-certificates" -d "$HTTPS_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive --staging
 elif [ "$LETSENCRYPT_MODE" == "production" ]; then
     printf "\nTrying to get PRODUCTION certificate\n"
-    certbot --config-dir "/spcgeonode-certificates/$LETSENCRYPT_MODE" certonly --webroot -w "/spcgeonode-certificates" -d "$WAN_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive
+    certbot --config-dir "/spcgeonode-certificates/$LETSENCRYPT_MODE" certonly --webroot -w "/spcgeonode-certificates" -d "$HTTPS_HOST" -m "$ADMIN_EMAIL" --agree-tos --non-interactive
 else
     printf "\nNot trying to get certificate (simulating failure, because LETSENCRYPT_MODE variable was neither staging nor production\n"
     /bin/false

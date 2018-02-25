@@ -1,7 +1,6 @@
-FROM python:2.7.13-alpine3.6
+FROM alpine:3.6
 
 # 1-2. Install system dependencies
-# TODO : certboot seems to reinstall python (2.7.13-r1) instead of using installed 2.7.13, see if we can fix this
 RUN apk add --no-cache certbot
 
 # Installing scripts

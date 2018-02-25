@@ -22,9 +22,6 @@ OGC_SERVER['default']['GEOFENCE_SECURITY_ENABLED'] = True
 # Misc / debug / hack
 ##################################
 
-# We use a relative URL because we want to keep scheme/host
-SITEURL = os.getenv('SITEURL', "/")
-
 # Can be removed after geonode>=2.7.x as it will be like this in main settings
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
