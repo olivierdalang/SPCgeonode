@@ -31,7 +31,7 @@ docker-compose up --build django geoserver nginx postgres
 Note : as docker-compose is not a real containers orchestrator, it may be necessary to manually restart geoserver after first startup since healthchecks are ignored.
 
 
-### Production
+### Production (using composer)
 
 ```
 # 1. Override default env variables (defaults are in .env)
@@ -56,6 +56,12 @@ docker-compose -f docker-compose.yml up -d --build
 
 Note : to avoid hitting LetsEncrypt limits if anything fails, you should add `LETSENCRYPT_MODE=production` only when you see tests certificates are properly loading. Hitting the limits is annoying as you can be blocked for a few days...
 
+### Production (using Rancher)
+
+See https://github.com/PacificCommunity/rancher-catalogue to install using Rancher.
+
+This uses almost exactly the same docker-compose file. The adaptations are marked as comments in the docker-compose file.
+
 ### Developpement vs Production
 
 Difference of dev setup vs prod setup:
@@ -77,10 +83,6 @@ If you need to publish the images manually, just rebuilt the containers (`docker
 docker login
 docker-compose -f docker-compose.yml push
 ```
-
-### Rancher
-
-This setup can almost be used as is by Rancher. Some minor adaptations must be made to docker-compose. The adaptations are marked as comments in the docker-compose file.
 
 
 ## Compared to similar tools

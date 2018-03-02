@@ -3,7 +3,6 @@ version: '3.4'
 # version: '2'
 
 # TODO : replace olivierdalang repository by pacificcommunity
-# TODO : put environment variables that are not supposed to be changed in the dockerfiles
 
 # Common Django template for Geonode, Celery and Celerycam services below
 # RANCHER : manually copy this to each service below
