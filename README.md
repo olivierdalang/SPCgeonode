@@ -80,6 +80,7 @@ Pushes to github trigger automatic builds on docker hub for tags looking like x.
 If you need to publish the images manually, just rebuilt the containers (`docker-compose -f docker-compose.yml build`), then use :
 
 ```
+docker-compose -f docker-compose.yml build
 docker login
 docker-compose -f docker-compose.yml push
 ```
