@@ -19,9 +19,9 @@ RUN echo "Updating apt-get" && \
     echo "Installing other dependencies" && \
     # RUN apt-get install -y NOTHING ?? It was probably added in other packages... ALPINE needed libxml2-dev libxslt-dev && \
     echo "Python server" && \
-    pip install uwsgi && \
+    pip install uwsgi --trusted-host pypi.python.org && \
     echo "Geonode python dependencies" && \
-    LIBRARY_PATH=/lib:/usr/lib CPLUS_INCLUDE_PATH=/usr/include/gdal C_INCLUDE_PATH=/usr/include/gdal pip install -r /requirements.txt && \
+    LIBRARY_PATH=/lib:/usr/lib CPLUS_INCLUDE_PATH=/usr/include/gdal C_INCLUDE_PATH=/usr/include/gdal pip install --trusted-host pypi.python.org -r /requirements.txt && \
     echo "Removing build dependencies and cleaning up" && \
     # TODO : cleanup apt-get with something like apt-get -y --purge autoremove gcc make libc-dev musl-dev libpcre3 libpcre3-dev g++ && \
     rm -rf /var/lib/apt/lists/* && \
