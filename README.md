@@ -35,13 +35,13 @@ Note : as docker-compose is not a real containers orchestrator, it may be necess
 
 ```
 # 1. Override default env variables (defaults are in .env)
-HTTPS_HOST="local.example.com"
-HTTP_HOST="127.0.0.1"
-ADMIN_EMAIL="admin@example.com"
-LETSENCRYPT_MODE="staging"
-REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
-AWS_BUCKET_NAME="spcgeonode-test"
-AWS_BUCKET_REGION="ap-southeast-2"
+export HTTPS_HOST="local.example.com"
+export HTTP_HOST="127.0.0.1"
+export ADMIN_EMAIL="admin@example.com"
+export LETSENCRYPT_MODE="staging"
+export REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
+export AWS_BUCKET_NAME="spcgeonode-test"
+export AWS_BUCKET_REGION="ap-southeast-2"
 
 # 2. Create the secrets
 mkdir _secrets
