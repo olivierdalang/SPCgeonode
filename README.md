@@ -8,40 +8,91 @@ The setup aims to be usable for production.
 ## Prerequisites
 
 Make sure you have a version of Docker (tested with 17.12) and docker-compose.
+Checkout/download the source.
 
-On **Linux** : https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-from-a-package and https://docs.docker.com/compose/install/#install-compose
+### Linux
 
-On **Windows**: https://store.docker.com/editions/community/docker-ce-desktop-windows
+1. Install docker and docker-compose
 
+Following these instructions https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-from-a-package (adapt according to instructions) :
+
+```
+wget https://download.docker.com/linux/ubuntu/dists/xenial/pool/stable/amd64/docker-ce_17.12.1~ce-0~ubuntu_amd64.deb
+sudo dpkg -i docker-ce_17.12.1~ce-0~ubuntu_amd64.deb
+sudo apt-get update
+sudo apt-get -f install
+
+# post-install
+sudo groupadd docker
+sudo usermod -aG docker $USER
+```
+
+2. Install docker-compose
+
+Following these instructions https://docs.docker.com/compose/install/#install-compose (adapt according to instructions) :
+
+```
+# Install Docker-compose
+sudo curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+3. Checkout the source
+
+```
+sudo apt-get install git
+git clone https://github.com/olivierdalang/SPCgeonode.git
+```
+
+4. Move into the folder
+
+```
+cd SPCgeonode
+```
+
+### Windows
+
+1. Install Docker and Docker-compose
+
+Follow instructions on: https://store.docker.com/editions/community/docker-ce-desktop-windows
+
+2. Checkout the source
+
+Download https://github.com/olivierdalang/SPCgeonode/archive/master.zip, unzip it.
+
+3. Move into the folder
+
+```
+cd SPCgeonode
+```
 
 ## Usage
 
-### Developpement
+### Development
 
 To start the whole stack
 ```
-docker-compose up --build
+docker-compose up --build -d
 ```
 
 Or if you want only the main services (enough to develop and a bit lighter):
 ```
-docker-compose up --build django geoserver nginx postgres
+docker-compose up --build -d django geoserver nginx postgres
 ```
-
-Note : as docker-compose is not a real containers orchestrator, it may be necessary to manually restart geoserver after first startup since healthchecks are ignored.
 
 
 ### Production (using composer)
 
 ```
 # 1. Override default env variables (defaults are in .env)
-HTTPS_HOST="local.example.com"
-HTTP_HOST="127.0.0.1"
-ADMIN_EMAIL="admin@example.com"
-LETSENCRYPT_MODE="staging"
-REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
-AWS_BUCKET_NAME="spcgeonode-test"
-AWS_BUCKET_REGION="ap-southeast-2"
+export HTTPS_HOST="local.example.com"
+export HTTP_HOST="127.0.0.1"
+export ADMIN_EMAIL="admin@example.com"
+export LETSENCRYPT_MODE="staging"
+export REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
+export AWS_BUCKET_NAME="spcgeonode-test"
+export AWS_BUCKET_REGION="ap-southeast-2"
+export REGISTRATION_OPEN="True"
 
 # 2. Create the secrets
 mkdir _secrets
@@ -80,6 +131,7 @@ Pushes to github trigger automatic builds on docker hub for tags looking like x.
 If you need to publish the images manually, just rebuilt the containers (`docker-compose -f docker-compose.yml build`), then use :
 
 ```
+docker-compose -f docker-compose.yml build
 docker login
 docker-compose -f docker-compose.yml push
 ```

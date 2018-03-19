@@ -6,7 +6,7 @@ FROM python:2.7.13-alpine3.6
 # Maybe apache-utils ? see https://unix.stackexchange.com/a/419855 
 RUN apk add --no-cache openssl gettext libffi && \
     apk add --no-cache --virtual BUILD-DEPS gcc linux-headers build-base libffi-dev && \
-    pip install bcrypt && \
+    pip install --trusted-host pypi.python.org bcrypt && \
     apk del BUILD-DEPS
 
 # 3. Install Syncthing

@@ -5,4 +5,4 @@
 # │     │     │     │     ┌───────────── day of week (0 - 6) (Sunday to Saturday; 7 is also Sunday on some systems)
 # │     │     │     │     │
 
-  0     0,12  *     *     *     date && echo "daily  " && /docker-entrypoint
+  0     0,12  *     *     *     date && echo "daily  " && /docker-entrypoint.sh
