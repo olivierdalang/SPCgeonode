@@ -106,11 +106,11 @@ Difference of dev setup vs prod setup:
 
 Pushes to github trigger automatic builds on docker hub for tags looking like x.x.x
 
-If you need to publish the images manually, just rebuilt the containers (`docker-compose -f docker-compose.yml build`), then use :
+Sometimes, the automatic builds fail with no apparent reason. If so, you can publish the images manually with :
 
 ```
-docker-compose -f docker-compose.yml build
 docker login
+docker-compose -f docker-compose.yml build
 docker-compose -f docker-compose.yml push
 ```
 
