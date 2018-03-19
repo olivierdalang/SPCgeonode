@@ -12,59 +12,35 @@ Checkout/download the source.
 
 ### Linux
 
-1. Install docker and docker-compose
-
-Following these instructions https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-from-a-package (adapt according to instructions) :
+Following these instructions https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-from-a-package and https://docs.docker.com/compose/install/#install-compose (adapt according to instructions) :
 
 ```
+# Install Docker
 wget https://download.docker.com/linux/ubuntu/dists/xenial/pool/stable/amd64/docker-ce_17.12.1~ce-0~ubuntu_amd64.deb
 sudo dpkg -i docker-ce_17.12.1~ce-0~ubuntu_amd64.deb
 sudo apt-get update
 sudo apt-get -f install
 
-# post-install
+# Post-install Docker
 sudo groupadd docker
 sudo usermod -aG docker $USER
-```
 
-2. Install docker-compose
-
-Following these instructions https://docs.docker.com/compose/install/#install-compose (adapt according to instructions) :
-
-```
 # Install Docker-compose
 sudo curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
-```
 
-3. Checkout the source
-
-```
-sudo apt-get install git
-git clone https://github.com/olivierdalang/SPCgeonode.git
-```
-
-4. Move into the folder
-
-```
-cd SPCgeonode
+# Checkout the source
+git clone -b release https://github.com/olivierdalang/SPCgeonode.git
+cd SPCGeonode
 ```
 
 ### Windows
 
-1. Install Docker and Docker-compose
+Install Docker by following instructions on: https://store.docker.com/editions/community/docker-ce-desktop-windows
 
-Follow instructions on: https://store.docker.com/editions/community/docker-ce-desktop-windows
+Download the source from https://github.com/olivierdalang/SPCgeonode/archive/release.zip, unzip it.
 
-2. Checkout the source
-
-Download https://github.com/olivierdalang/SPCgeonode/archive/master.zip, unzip it.
-
-3. Move into the folder
-
-```
-cd SPCgeonode
-```
+Open command prompt and move into the folder using `cd C:\path\to\unzipped\folder`.
 
 ## Usage
 
@@ -82,6 +58,8 @@ docker-compose up --build -d django geoserver nginx postgres
 
 
 ### Production (using composer)
+
+Note : these instructions are for Linux and must be adapted if installing on Windows.
 
 ```
 # 1. Override default env variables (defaults are in .env)
