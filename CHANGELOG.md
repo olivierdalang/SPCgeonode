@@ -59,6 +59,10 @@
 - cleaned up env vars
 - upgrade should work
 
+## 0.0.21
+
+- use custom build of geonode (with some fixes not upstreamed yet)
+
 ## TODO : Roadmap
 
 - choose between syncthings and rclone
