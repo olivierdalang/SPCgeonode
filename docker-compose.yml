@@ -13,6 +13,8 @@ x-common-django:
   build: .
   environment:
     - ALLOWED_HOSTS=${HTTPS_HOST},${HTTP_HOST}
+    - HTTPS_HOST=${HTTPS_HOST}
+    - HTTP_HOST=${HTTP_HOST}
     - ADMIN_EMAIL=${ADMIN_EMAIL}
     - DEBUG=False
     - REGISTRATION_OPEN=${REGISTRATION_OPEN}

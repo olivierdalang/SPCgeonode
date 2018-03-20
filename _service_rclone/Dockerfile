@@ -7,7 +7,7 @@ FROM alpine:3.6
 RUN apk add --no-cache openssl
 
 # 3. Install Rclone
-RUN wget https://downloads.rclone.org/rclone-v1.39-linux-amd64.zip && \
+RUN wget https://downloads.rclone.org/v1.39/rclone-v1.39-linux-amd64.zip && \
     unzip /rclone-v1.39-linux-amd64.zip && \
     rm /rclone-v1.39-linux-amd64.zip && \
     mv /rclone-v1.39-linux-amd64/rclone /usr/bin

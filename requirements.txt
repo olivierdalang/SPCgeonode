@@ -1,4 +1,5 @@
-geonode==2.6.3
+# geonode==2.6.3 # TODO : upstream fixes instead of using custom branch
+https://github.com/PacificCommunity/geonode/archive/spcgeonode.zip
 
 # Overrides because of loose Geonode dependencies
 GDAL~=2.0.1 # Simply missing from Geonode

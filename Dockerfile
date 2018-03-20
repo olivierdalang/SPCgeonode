@@ -38,7 +38,6 @@ RUN chmod +x docker-entrypoint.sh
 EXPOSE 8000
 
 # Set environnment variables
-ENV SITEURL=/
 ENV GEOSERVER_PUBLIC_LOCATION=/geoserver/
 ENV DJANGO_SETTINGS_MODULE=spcgeonode.settings
 ENV DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres

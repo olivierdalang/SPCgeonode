@@ -59,6 +59,10 @@
 - cleaned up env vars
 - upgrade should work
 
+## 0.0.21
+
+- use custom build of geonode (with some fixes not upstreamed yet)
+
 ## TODO : Roadmap
 
 - choose between syncthings and rclone
@@ -73,3 +77,4 @@
 - see if we use all needed geoserver extensions (marlin-renderer, geonode's module)
 - see if we can have geoserver exit on error, in not at least implement proper healtcheck
 - CRITICAL : see if Geoserver authkey tokens expire (even when the key is deleted from the database, it's still possible to use it until manually clicking "sync user/group service". It looks like it's some cache, but I don't know if it expires. Maybe we need to use webservice instead of user property...)
+- make "set thumbnail" work again. this involves installing geoserver-geonode-ext. see https://github.com/GeoNode/geoserver-geonode-ext/issues/60 and https://lists.osgeo.org/pipermail/geonode-users/2018-March/004190.html before working on this

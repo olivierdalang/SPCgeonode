@@ -86,6 +86,19 @@ See https://github.com/PacificCommunity/rancher-catalogue to install using Ranch
 
 This uses almost exactly the same docker-compose file. The adaptations are marked as comments in the docker-compose file.
 
+### Upgrade
+
+If at some point you want to update the SPCgeonode setup :
+```
+# Get the update setup
+git stash
+git pull
+git stash apply
+
+# Upgrade the stack
+docker-compose -f docker-compose.yml up -d --build
+```
+
 ### Developpement vs Production
 
 Difference of dev setup vs prod setup:
