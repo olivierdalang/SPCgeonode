@@ -12,59 +12,35 @@ Checkout/download the source.
 
 ### Linux
 
-1. Install docker and docker-compose
-
-Following these instructions https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-from-a-package (adapt according to instructions) :
+Following these instructions https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-from-a-package and https://docs.docker.com/compose/install/#install-compose (adapt according to instructions) :
 
 ```
+# Install Docker
 wget https://download.docker.com/linux/ubuntu/dists/xenial/pool/stable/amd64/docker-ce_17.12.1~ce-0~ubuntu_amd64.deb
 sudo dpkg -i docker-ce_17.12.1~ce-0~ubuntu_amd64.deb
 sudo apt-get update
 sudo apt-get -f install
 
-# post-install
+# Post-install Docker
 sudo groupadd docker
 sudo usermod -aG docker $USER
-```
 
-2. Install docker-compose
-
-Following these instructions https://docs.docker.com/compose/install/#install-compose (adapt according to instructions) :
-
-```
 # Install Docker-compose
 sudo curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
-```
 
-3. Checkout the source
-
-```
-sudo apt-get install git
-git clone https://github.com/olivierdalang/SPCgeonode.git
-```
-
-4. Move into the folder
-
-```
-cd SPCgeonode
+# Checkout the source
+git clone -b release https://github.com/olivierdalang/SPCgeonode.git
+cd SPCGeonode
 ```
 
 ### Windows
 
-1. Install Docker and Docker-compose
+Install Docker by following instructions on: https://store.docker.com/editions/community/docker-ce-desktop-windows
 
-Follow instructions on: https://store.docker.com/editions/community/docker-ce-desktop-windows
+Download the source from https://github.com/olivierdalang/SPCgeonode/archive/release.zip, unzip it.
 
-2. Checkout the source
-
-Download https://github.com/olivierdalang/SPCgeonode/archive/master.zip, unzip it.
-
-3. Move into the folder
-
-```
-cd SPCgeonode
-```
+Open command prompt and move into the folder using `cd C:\path\to\unzipped\folder`.
 
 ## Usage
 
@@ -83,23 +59,20 @@ docker-compose up --build -d django geoserver nginx postgres
 
 ### Production (using composer)
 
-```
-# 1. Override default env variables (defaults are in .env)
-export HTTPS_HOST="local.example.com"
-export HTTP_HOST="127.0.0.1"
-export ADMIN_EMAIL="admin@example.com"
-export LETSENCRYPT_MODE="staging"
-export REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
-export AWS_BUCKET_NAME="spcgeonode-test"
-export AWS_BUCKET_REGION="ap-southeast-2"
-export REGISTRATION_OPEN="True"
+Note : these instructions are for Linux and must be adapted if installing on Windows.
 
-# 2. Create the secrets
-mkdir _secrets
-printf "super" > _secrets/admin_username
-printf "duper" > _secrets/admin_password
-printf "aaa" > _secrets/aws_access_key
-printf "bbb" > _secrets/aws_secret_key
+```
+# 0. Install an editor
+sudo apt-get install nano
+
+# 1. Edit configuration
+nano .env
+
+# 2. Edit the secrets (do NOT add an empty new line after content)
+nano _secrets/admin_username
+nano _secrets/admin_password
+nano _secrets/aws_access_key
+nano _secrets/aws_secret_key
 
 # 3. Run the stack
 docker-compose -f docker-compose.yml up -d --build
@@ -128,11 +101,11 @@ Difference of dev setup vs prod setup:
 
 Pushes to github trigger automatic builds on docker hub for tags looking like x.x.x
 
-If you need to publish the images manually, just rebuilt the containers (`docker-compose -f docker-compose.yml build`), then use :
+Sometimes, the automatic builds fail with no apparent reason. If so, you can publish the images manually with :
 
 ```
-docker-compose -f docker-compose.yml build
 docker login
+docker-compose -f docker-compose.yml build
 docker-compose -f docker-compose.yml push
 ```
 
