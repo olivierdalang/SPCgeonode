@@ -25,6 +25,16 @@ OGC_SERVER['default']['GEOFENCE_SECURITY_ENABLED'] = True
 # Can be removed after geonode>=2.7.x as it will be like this in main settings
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
+# We define SITE_URL to HTTPS_HOST if it is set, or else to HTTP_HOST
+if os.getenv('SITEURL'):
+    SITEURL = os.getenv('SITEURL')
+elif os.getenv('HTTPS_HOST'):
+    SITEURL = 'https://'+os.getenv('HTTPS_HOST')
+elif os.getenv('HTTP_HOST'):
+    SITEURL = 'http://'+os.getenv('HTTP_HOST')
+else:
+    raise Exception("Misconfiguration error. You need to set at least one of SITEURL, HTTPS_HOST or HTTP_HOST")
+
 # We set our custom geoserver password hashers
 PASSWORD_HASHERS = (
     'spcgeonode.hashers.GeoserverDigestPasswordHasher',
