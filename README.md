@@ -62,22 +62,17 @@ docker-compose up --build -d django geoserver nginx postgres
 Note : these instructions are for Linux and must be adapted if installing on Windows.
 
 ```
-# 1. Override default env variables (defaults are in .env)
-export HTTPS_HOST="local.example.com"
-export HTTP_HOST="127.0.0.1"
-export ADMIN_EMAIL="admin@example.com"
-export LETSENCRYPT_MODE="staging"
-export REMOTE_SYNCTHING_MACHINE_ID="0000000-0000000-0000000-0000000-0000000-0000000-0000000-0000000"
-export AWS_BUCKET_NAME="spcgeonode-test"
-export AWS_BUCKET_REGION="ap-southeast-2"
-export REGISTRATION_OPEN="True"
+# 0. Install an editor
+sudo apt-get install nano
 
-# 2. Create the secrets
-mkdir _secrets
-printf "super" > _secrets/admin_username
-printf "duper" > _secrets/admin_password
-printf "aaa" > _secrets/aws_access_key
-printf "bbb" > _secrets/aws_secret_key
+# 1. Edit configuration
+nano .env
+
+# 2. Edit the secrets (do NOT add an empty new line after content)
+nano _secrets/admin_username
+nano _secrets/admin_password
+nano _secrets/aws_access_key
+nano _secrets/aws_secret_key
 
 # 3. Run the stack
 docker-compose -f docker-compose.yml up -d --build
