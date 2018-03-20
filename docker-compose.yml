@@ -8,7 +8,7 @@ version: '3.4'
 # RANCHER : manually copy this to each service below
 x-common-django:
   &default-common-django
-  image: olivierdalang/spcgeonode:django-0.0.20
+  image: olivierdalang/spcgeonode:django-0.0.21
   # RANCHER : remove this
   build: .
   environment:
@@ -49,7 +49,7 @@ services:
   
   # Nginx is serving django static and media files and proxies to django and geonode
   nginx:
-    image: olivierdalang/spcgeonode:nginx-0.0.20
+    image: olivierdalang/spcgeonode:nginx-0.0.21
     # RANCHER : remove this
     build: _service_nginx/
     environment:
@@ -72,7 +72,7 @@ services:
 
   # Geoserver backend
   geoserver:
-    image: olivierdalang/spcgeonode:geoserver-0.0.20
+    image: olivierdalang/spcgeonode:geoserver-0.0.21
     # RANCHER : remove this
     build: _service_geoserver/
     volumes:
@@ -86,7 +86,7 @@ services:
 
   # Gets and installs letsencrypt certificates
   letsencrypt:
-    image: olivierdalang/spcgeonode:letsencrypt-0.0.20
+    image: olivierdalang/spcgeonode:letsencrypt-0.0.21
     # RANCHER : remove this
     build: _service_letsencrypt/
     environment:
@@ -101,7 +101,7 @@ services:
       io.rancher.container.pull_image: always
    
   pgdumper:
-    image: olivierdalang/spcgeonode:pgdumper-0.0.20
+    image: olivierdalang/spcgeonode:pgdumper-0.0.21
     # RANCHER : remove this
     build: _service_pgdumper/
     volumes:
@@ -111,7 +111,7 @@ services:
       io.rancher.container.pull_image: always
 
   syncthing:
-    image: olivierdalang/spcgeonode:syncthing-0.0.20
+    image: olivierdalang/spcgeonode:syncthing-0.0.21
     # RANCHER : remove this
     build: _service_syncthing/
     environment:
@@ -131,7 +131,7 @@ services:
       io.rancher.container.pull_image: always
 
   rclone:
-    image: olivierdalang/spcgeonode:rclone-0.0.20
+    image: olivierdalang/spcgeonode:rclone-0.0.21
     # RANCHER : remove this
     build: _service_rclone/
     environment:
