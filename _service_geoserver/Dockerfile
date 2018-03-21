@@ -1,7 +1,7 @@
 FROM openjdk:8-jre-alpine
 
 # Install dependencies
-RUN apk add --no-cache ca-certificates openssl curl postgresql-client
+RUN apk add --no-cache ca-certificates openssl curl postgresql-client fontconfig ttf-ubuntu-font-family
 RUN update-ca-certificates
 
 WORKDIR /
