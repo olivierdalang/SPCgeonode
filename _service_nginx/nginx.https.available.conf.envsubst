@@ -8,8 +8,8 @@ server {
     listen              443 ssl;
     server_name         $HTTPS_HOST;
 
-    ssl_certificate     ssl_certificate_symlink/fullchain.pem;
-    ssl_certificate_key ssl_certificate_symlink/privkey.pem;
+    ssl_certificate     /certificate_symlink/fullchain.pem;
+    ssl_certificate_key /certificate_symlink/privkey.pem;
 
     include spcgeonode.conf;
 }

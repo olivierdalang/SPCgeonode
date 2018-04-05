@@ -56,6 +56,7 @@ Or if you want only the main services (enough to develop and a bit lighter):
 docker-compose up --build -d django geoserver nginx postgres
 ```
 
+Once everything started, you should be able to open http://127.0.0.1 in your browser. See how to edit the configuration below if you install on another computer.
 
 ### Production (using composer)
 

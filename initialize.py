@@ -48,10 +48,11 @@ try:
         open('/run/secrets/admin_password','r').read()
     )
     print('superuser successfully created')    
-    print('disabling old superusers if any')
-    Profile.objects.filter(is_superuser=True).exclude(pk=superuser.pk).update(is_active=False)
+    # print('disabling old superusers if any')
+    # Profile.objects.filter(is_superuser=True).exclude(pk=superuser.pk).update(is_active=False)
 except django.db.IntegrityError as e:
     print('superuser exists already')
+    # TODO : update password if needed
 
 
 #########################################################

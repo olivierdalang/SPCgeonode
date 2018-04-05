@@ -17,7 +17,7 @@ RUN echo "Updating apt-get" && \
     echo "Installing Psycopg2 dependencies" && \
     # RUN apt-get install -y NOTHING ?? It was probably added in other packages... ALPINE needed postgresql-dev && \
     echo "Installing other dependencies" && \
-    # RUN apt-get install -y NOTHING ?? It was probably added in other packages... ALPINE needed libxml2-dev libxslt-dev && \
+    apt-get install -y libxml2-dev libxslt-dev && \
     echo "Python server" && \
     pip install uwsgi --trusted-host pypi.python.org && \
     echo "Geonode python dependencies" && \
