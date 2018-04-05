@@ -5,3 +5,4 @@ GDAL~=2.0.1 # Simply missing from Geonode
 six==1.10.0 # workaround for https://github.com/benjaminp/six/issues/210
 transifex-client==0.12.5 # fix because 0.13.0 requires python-slugify 1.6.4 which has a bug (shadows awesome 1.6.5)
 django-polymorphic~=0.9.2 # instead of django-polymorphic>=0.9.2 pulls 2.x that doesn't work with Django 1.8
+django-autocomplete-light==2.3.3 # because of this in 2.3.6 : ImportError: No module named urls
