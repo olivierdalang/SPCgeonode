@@ -4,8 +4,7 @@
 
 FROM python:2.7.14-slim-stretch
 
-# 2-3. Install dependencies
-ADD ./requirements.txt /requirements.txt
+# Install system dependencies
 RUN echo "Updating apt-get" && \
     apt-get update && \
     echo "Installing build dependencies" && \
@@ -18,19 +17,26 @@ RUN echo "Updating apt-get" && \
     # RUN apt-get install -y NOTHING ?? It was probably added in other packages... ALPINE needed postgresql-dev && \
     echo "Installing other dependencies" && \
     apt-get install -y libxml2-dev libxslt-dev && \
+    echo "Installing GeoIP dependencies" && \
+    apt-get install -y geoip-bin geoip-database && \
     echo "Python server" && \
-    pip install uwsgi --trusted-host pypi.python.org && \
-    echo "Geonode python dependencies" && \
-    LIBRARY_PATH=/lib:/usr/lib CPLUS_INCLUDE_PATH=/usr/include/gdal C_INCLUDE_PATH=/usr/include/gdal pip install --trusted-host pypi.python.org -r /requirements.txt && \
+    pip install uwsgi && \
     echo "Removing build dependencies and cleaning up" && \
     # TODO : cleanup apt-get with something like apt-get -y --purge autoremove gcc make libc-dev musl-dev libpcre3 libpcre3-dev g++ && \
     rm -rf /var/lib/apt/lists/* && \
-    rm -rf ~/.cache/pip && \
-    rm /requirements.txt
+    rm -rf ~/.cache/pip
+
+# Install python dependencies
+RUN echo "Geonode python dependencies"
+RUN pip install pygdal==$(gdal-config --version).*
+RUN pip install celery==4.1.0 # see https://github.com/GeoNode/geonode/pull/3714
+RUN pip install https://github.com/GeoNode/geonode/archive/4c41e0ddb80e2abc05ec61715b3a6373694c3523.zip # branch 2.7.x (future 2.8.1) 2018-05-21
 
 # 5. Add the application
 RUN mkdir /spcgeonode
 WORKDIR /spcgeonode/
+ADD requirements.txt /spcgeonode/requirements.txt
+RUN pip install -r requirements.txt
 ADD . /spcgeonode/
 RUN chmod +x docker-entrypoint.sh
 

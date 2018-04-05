@@ -1,4 +1,4 @@
-# SPCgeonode [![Build Status](https://travis-ci.org/olivierdalang/SPCgeonode.svg?branch=master)](https://travis-ci.org/olivierdalang/SPCgeonode)
+# SPCgeonode [![Build Status](https://travis-ci.org/olivierdalang/SPCgeonode.svg?branch=master-2.8)](https://travis-ci.org/olivierdalang/SPCgeonode)
 
 SPCgeonode is a skeletton for Geonode deployement at SPC. It makes it easy to deploy a customized version of Geonode.
 

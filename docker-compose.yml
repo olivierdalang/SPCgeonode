@@ -8,11 +8,10 @@ version: '3.4'
 # RANCHER : manually copy this to each service below
 x-common-django:
   &default-common-django
-  image: olivierdalang/spcgeonode:django-latest
+  image: olivierdalang/spcgeonode2.8:django-latest
   # RANCHER : remove this
   build: .
   environment:
-    - ALLOWED_HOSTS=${HTTPS_HOST},${HTTP_HOST}
     - HTTPS_HOST=${HTTPS_HOST}
     - HTTPS_PORT=${HTTPS_PORT}
     - HTTP_HOST=${HTTP_HOST}
@@ -43,17 +42,23 @@ services:
   celery:
     << : *default-common-django
     entrypoint: []
-    command: 'python manage.py celery worker --app=geonode.celery_app:app -B -E -l INFO'
+    command: 'celery worker --app=geonode.celery_app:app -l info'
+
+  # Celery beat that triggers scheduled tasks
+  celerybeat:
+    << : *default-common-django
+    entrypoint: []
+    command: 'celery beat --app=geonode.celery_app:app --pidfile="/celerybeat.pid" -l info'
 
   # Celery camera that monitors celery tasks and populate the djcelery django admin interface
   celerycam:
     << : *default-common-django
     entrypoint: []
-    command: 'python manage.py celerycam'
+    command: 'celery events --app=geonode.celery_app:app --pidfile="/celeryev.pid" --camera=django_celery_monitor.camera.Camera --frequency=2.0 -l info'
   
   # Nginx is serving django static and media files and proxies to django and geonode
   nginx:
-    image: olivierdalang/spcgeonode:nginx-latest
+    image: olivierdalang/spcgeonode2.8:nginx-latest
     # RANCHER : remove this
     build: _service_nginx/
     environment:
@@ -76,7 +81,7 @@ services:
 
   # Geoserver backend
   geoserver:
-    image: olivierdalang/spcgeonode:geoserver-latest
+    image: olivierdalang/spcgeonode2.8:geoserver-latest
     # RANCHER : remove this
     build: _service_geoserver/
     volumes:
@@ -90,7 +95,7 @@ services:
 
   # Gets and installs letsencrypt certificates
   letsencrypt:
-    image: olivierdalang/spcgeonode:letsencrypt-latest
+    image: olivierdalang/spcgeonode2.8:letsencrypt-latest
     # RANCHER : remove this
     build: _service_letsencrypt/
     environment:
@@ -105,7 +110,7 @@ services:
       io.rancher.container.pull_image: always
    
   pgdumper:
-    image: olivierdalang/spcgeonode:pgdumper-latest
+    image: olivierdalang/spcgeonode2.8:pgdumper-latest
     # RANCHER : remove this
     build: _service_pgdumper/
     volumes:
@@ -115,7 +120,7 @@ services:
       io.rancher.container.pull_image: always
 
   rclone:
-    image: olivierdalang/spcgeonode:rclone-latest
+    image: olivierdalang/spcgeonode2.8:rclone-latest
     # RANCHER : remove this
     build: _service_rclone/
     secrets:
