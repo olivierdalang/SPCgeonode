@@ -26,14 +26,18 @@ OGC_SERVER['default']['GEOFENCE_SECURITY_ENABLED'] = True
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 # We define SITE_URL to HTTPS_HOST if it is set, or else to HTTP_HOST
-if os.getenv('SITEURL'):
-    SITEURL = os.getenv('SITEURL')
-elif os.getenv('HTTPS_HOST'):
+if os.getenv('HTTPS_HOST'):
     SITEURL = 'https://'+os.getenv('HTTPS_HOST')
 elif os.getenv('HTTP_HOST'):
     SITEURL = 'http://'+os.getenv('HTTP_HOST')
 else:
-    raise Exception("Misconfiguration error. You need to set at least one of SITEURL, HTTPS_HOST or HTTP_HOST")
+    raise Exception("Misconfiguration error. You need to set at least one of HTTPS_HOST or HTTP_HOST")
+
+# Manually replace SITEURL whereever it is used in geonode's settings.py
+# OGC_SERVER['default']['LOCATION'] = 'http://nginx/geoserver/' # this is already set as ENV var in the dockerfile
+OGC_SERVER['default']['PUBLIC_LOCATION'] = SITEURL + '/geoserver/'
+CATALOGUE['default']['URL'] = '%scatalogue/csw' % SITEURL
+PYCSW['CONFIGURATION']['metadata:main']['provider_url'] = SITEURL
 
 # We set our custom geoserver password hashers
 PASSWORD_HASHERS = (

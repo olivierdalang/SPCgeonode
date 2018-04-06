@@ -38,7 +38,6 @@ RUN chmod +x docker-entrypoint.sh
 EXPOSE 8000
 
 # Set environnment variables
-ENV GEOSERVER_PUBLIC_LOCATION=/geoserver/
 ENV DJANGO_SETTINGS_MODULE=spcgeonode.settings
 ENV DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
 ENV BROKER_URL=amqp://guest:guest@rabbitmq:5672/
@@ -47,6 +46,8 @@ ENV MEDIA_ROOT=/spcgeonode-media/
 ENV STATIC_URL=/static/
 ENV MEDIA_URL=/media/
 ENV GEOSERVER_LOCATION=http://nginx/geoserver/
+# this is set in settingy.py as we derive it from HTTPS_HOST/HTTP_HOST, since relative urls arent supported anymore in 2.8
+# ENV GEOSERVER_PUBLIC_LOCATION=/geoserver/ # TODO : fix relative url support upstream
 # TODO : we should probably remove this and set Celery to use JSON serialization instead of pickle
 ENV C_FORCE_ROOT=True
 
