@@ -16,7 +16,7 @@ x-common-django:
 services:
   django:
     << : *default-common-django
-    command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--env=DJANGO_SETTINGS_MODULE=spcgeonode.settings", "--socket=:8000", "--py-autoreload=2"]
+    command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--socket=:8000", "--py-autoreload=2"]
   celery:
     << : *default-common-django
   celerycam:
