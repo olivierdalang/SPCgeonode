@@ -63,6 +63,10 @@
 
 - use custom build of geonode (with some fixes not upstreamed yet)
 
+## 0.0.24
+
+- ship geoserver community extensions in the repo (as they are not properly versionned)
+
 ## TODO : Roadmap
 
 - CRITICAL : randomize django secret

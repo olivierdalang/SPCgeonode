@@ -17,19 +17,17 @@ RUN echo "Download geoserver" && \
     wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.2/geoserver-2.12.2-bin.zip && \
     unzip geoserver-2.12.2-bin.zip && \
     rm geoserver-2.12.2-bin.zip
-RUN echo "Download printing module" && \
+
+RUN echo "Download extensions" && \
     wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.2/extensions/geoserver-2.12.2-printing-plugin.zip && \
     unzip -o geoserver-2.12.2-printing-plugin.zip -d /geoserver-2.12.2/webapps/geoserver/WEB-INF/lib/ && \
     rm geoserver-2.12.2-printing-plugin.zip
-RUN echo "Download geofence module" && \
-    wget https://build.geoserver.org/geoserver/2.12.x/community-latest/geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip && \
-    unzip -o geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip -d /geoserver-2.12.2/webapps/geoserver/WEB-INF/lib/ && \
-    rm geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
-RUN echo "Download authkey module" && \
-    wget https://build.geoserver.org/geoserver/2.12.x/community-latest/geoserver-2.12-SNAPSHOT-authkey-plugin.zip && \
-    unzip -o geoserver-2.12-SNAPSHOT-authkey-plugin.zip -d /geoserver-2.12.2/webapps/geoserver/WEB-INF/lib/ && \
-    rm geoserver-2.12-SNAPSHOT-authkey-plugin.zip
 
+RUN echo "Download community extensions"
+ADD ./extensions /extensions
+RUN unzip -o /extensions/geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip -d /geoserver-2.12.2/webapps/geoserver/WEB-INF/lib/ && \
+    unzip -o /extensions/geoserver-2.12-SNAPSHOT-authkey-plugin.zip -d /geoserver-2.12.2/webapps/geoserver/WEB-INF/lib/ && \
+    rm /extensions -rf
 
 WORKDIR /geoserver-2.12.2/
 
