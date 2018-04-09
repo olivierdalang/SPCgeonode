@@ -63,25 +63,39 @@
 
 - use custom build of geonode (with some fixes not upstreamed yet)
 
+## 0.0.22
+
+- siteurl set using HTTPS_HOST or HTTP_HOST (instead of "/" which isn't supported)
+
+## 0.0.23
+
+- various fixes (broken pip dependencies, wrong fix for geoserver proxy, ssl certificate refreshing)
+
 ## 0.0.24
 
 - ship geoserver community extensions in the repo (as they are not properly versionned)
 
 ## TODO : Roadmap
 
+### For 0.1
+
 - CRITICAL : randomize django secret
 - CRITICAL : change rest.properties config
-- choose between syncthings and rclone
+- settle for a more flexible backup container (that supports more provider) instead of geonode
+- contribute back to geonode-project
+- push to Geonode 2.8 instead of 2.6
+- CRITICAL : see if Geoserver authkey tokens expire (even when the key is deleted from the database, it's still possible to use it until manually clicking "sync user/group service". It looks like it's some cache, but I don't know if it expires. Maybe we need to use webservice instead of user property...)
+- make "set thumbnail" work again. this involves installing geoserver-geonode-ext. see https://github.com/GeoNode/geoserver-geonode-ext/issues/60 and https://lists.osgeo.org/pipermail/geonode-users/2018-March/004190.html before working on this
+
+### Eventually
+
 - check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
 - tweak nginx settings (gzip output, cache, etc...)
 - use alpine for django as well
-- contribute back to geonode-project
 - add HEALTHCHECKS to Dockerfiles where applicable
-- migrate to spc repositories
-- push to Geonode 2.8 instead of 2.6
+- migrate to spc repositories instead of olivierdalang
 - fix Geoserver exceptions on first launch because of missing datadir configurations
 - see if we use all needed geoserver extensions (marlin-renderer, geonode's module)
 - see if we can have geoserver exit on error, in not at least implement proper healtcheck
-- CRITICAL : see if Geoserver authkey tokens expire (even when the key is deleted from the database, it's still possible to use it until manually clicking "sync user/group service". It looks like it's some cache, but I don't know if it expires. Maybe we need to use webservice instead of user property...)
-- make "set thumbnail" work again. this involves installing geoserver-geonode-ext. see https://github.com/GeoNode/geoserver-geonode-ext/issues/60 and https://lists.osgeo.org/pipermail/geonode-users/2018-March/004190.html before working on this
 - keep a version marker in the geodatadir directory in case of updates to the datadir
+- set more reasonable logging for geoserver
