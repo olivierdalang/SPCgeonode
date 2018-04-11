@@ -73,7 +73,8 @@
 
 ## 0.0.24
 
-- ship geoserver community extensions in the repo (as they are not properly versionned)
+- use Geonode's Geoserver .war build instead of starting from vanilla
+- fix thumbnail generation (uses a custom release of Geonode)
 
 ## TODO : Roadmap
 
@@ -86,6 +87,7 @@
 - push to Geonode 2.8 instead of 2.6
 - CRITICAL : see if Geoserver authkey tokens expire (even when the key is deleted from the database, it's still possible to use it until manually clicking "sync user/group service". It looks like it's some cache, but I don't know if it expires. Maybe we need to use webservice instead of user property...)
 - make "set thumbnail" work again. this involves installing geoserver-geonode-ext. see https://github.com/GeoNode/geoserver-geonode-ext/issues/60 and https://lists.osgeo.org/pipermail/geonode-users/2018-March/004190.html before working on this
+- backport patches to 2.6 release
 
 ### Eventually
 
