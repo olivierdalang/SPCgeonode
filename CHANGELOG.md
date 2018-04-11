@@ -75,6 +75,7 @@
 
 - use Geonode's Geoserver .war build instead of starting from vanilla
 - fix thumbnail generation (uses a custom release of Geonode)
+- django admin users are again disabled on restart (so we can keep only 1 superuser)
 
 ## TODO : Roadmap
 
