@@ -5,10 +5,6 @@ language: generic
 services:
   - docker
 
-stages:
-  - name: deploy
-    if: branch = master
-
 before_install:
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > docker-compose
@@ -24,10 +20,13 @@ script:
   # docker inspect --format="{{json .State.Health}}" spcgeonode_geoserver_1
   # TODO : add a basic integration test scenario
 
-deploy:
-  - docker login -e=$DOCKER_EMAIL -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-  - docker-compose -f docker-compose.yml build
-  - docker-compose -f docker-compose.yml push
+provider: script
+  script: 
+    - docker login -e=$DOCKER_EMAIL -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+    - docker-compose -f docker-compose.yml build
+    - docker-compose -f docker-compose.yml push
+  on:
+    branch: master
 
 notifications:
   email:
