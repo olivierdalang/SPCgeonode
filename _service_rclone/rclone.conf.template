@@ -1,9 +1,0 @@
-[$AWS_BUCKET_NAME]
-type = s3
-env_auth = true
-region = $AWS_BUCKET_REGION
-endpoint =
-location_constraint = $AWS_BUCKET_REGION
-acl = private
-server_side_encryption =
-storage_class =

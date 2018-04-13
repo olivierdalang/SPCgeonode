@@ -77,6 +77,7 @@
 - fix thumbnail generation (uses a custom release of Geonode)
 - django admin users are again disabled on restart (so we can keep only 1 superuser)
 - added travis integration test (try to deploy django then tries to create an user, upload a layer, get the thumbnail and get a tile of the layer)
+- changed rclone configuration (you must now provide rclone conf file)
 
 ## TODO : Roadmap
 
@@ -84,7 +85,6 @@
 
 - CRITICAL : randomize django secret
 - CRITICAL : change rest.properties config
-- settle for a more flexible backup container (that supports more provider) instead of geonode
 - contribute back to geonode-project
 - push to Geonode 2.8 instead of 2.6
 - CRITICAL : see if Geoserver authkey tokens expire (even when the key is deleted from the database, it's still possible to use it until manually clicking "sync user/group service". It looks like it's some cache, but I don't know if it expires. Maybe we need to use webservice instead of user property...)
@@ -102,3 +102,4 @@
 - see if we can have geoserver exit on error, in not at least implement proper healtcheck
 - keep a version marker in the geodatadir directory in case of updates to the datadir
 - set more reasonable logging for geoserver
+- see if we can setup something for backups on local filesystem
