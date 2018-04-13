@@ -76,6 +76,7 @@
 - use Geonode's Geoserver .war build instead of starting from vanilla
 - fix thumbnail generation (uses a custom release of Geonode)
 - django admin users are again disabled on restart (so we can keep only 1 superuser)
+- added travis integration test (try to deploy django then tries to create an user, upload a layer, get the thumbnail and get a tile of the layer)
 
 ## TODO : Roadmap
 
