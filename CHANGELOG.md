@@ -103,4 +103,5 @@
 - see if we can have geoserver exit on error, in not at least implement proper healtcheck
 - keep a version marker in the geodatadir directory in case of updates to the datadir
 - set more reasonable logging for geoserver
+- add at least some basic integration test to travis
 - see if we can setup something for backups on local filesystem
