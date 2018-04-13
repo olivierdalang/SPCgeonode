@@ -112,26 +112,6 @@ services:
     labels:
       io.rancher.container.pull_image: always
 
-  syncthing:
-    image: olivierdalang/spcgeonode:syncthing-latest
-    # RANCHER : remove this
-    build: _service_syncthing/
-    environment:
-      - REMOTE_SYNCTHING_MACHINE_ID=${REMOTE_SYNCTHING_MACHINE_ID}
-    secrets:
-      - admin_username
-      - admin_password
-    ports:
-      - "8384:8384" # TODO : put this behind nginx too ?
-      - "22000:22000"
-    volumes:
-      - pgdumps:/spcgeonode-pgdumps/
-      - media:/spcgeonode-media/
-      - geodatadir:/spcgeonode-geodatadir/
-    restart: on-failure
-    labels:
-      io.rancher.container.pull_image: always
-
   rclone:
     image: olivierdalang/spcgeonode:rclone-latest
     # RANCHER : remove this

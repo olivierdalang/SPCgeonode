@@ -44,13 +44,6 @@ services:
     volumes:
       - ./_volume_pgdumps:/spcgeonode-pgdumps/
 
-  syncthing:
-    image: olivierdalang/spcgeonode:syncthing-dev
-    volumes:
-      - ./_volume_pgdumps:/spcgeonode-pgdumps/
-      - ./_volume_media:/spcgeonode-media/
-      - ./_volume_geodatadir:/spcgeonode-geodatadir/
-
   rclone:
     image: olivierdalang/spcgeonode:rclone-dev
     volumes:
