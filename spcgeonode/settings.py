@@ -41,7 +41,7 @@ else:
 
 # Manually replace SITEURL whereever it is used in geonode's settings.py
 # OGC_SERVER['default']['LOCATION'] = 'http://nginx/geoserver/' # this is already set as ENV var in the dockerfile
-OGC_SERVER['default']['PUBLIC_LOCATION'] = SITEURL + '/geoserver/'
+OGC_SERVER['default']['PUBLIC_LOCATION'] = SITEURL + 'geoserver/'
 CATALOGUE['default']['URL'] = '%scatalogue/csw' % SITEURL
 PYCSW['CONFIGURATION']['metadata:main']['provider_url'] = SITEURL
 
