@@ -8,6 +8,7 @@
 - push to Geonode 2.8 instead of 2.6
 - CRITICAL : see if Geoserver authkey tokens expire (even when the key is deleted from the database, it's still possible to use it until manually clicking "sync user/group service". It looks like it's some cache, but I don't know if it expires. Maybe we need to use webservice instead of user property...)
 - use Geonode's regular auth mecanism (Oauth) and use proxy to do simple auth from QGIS instead of postgres hack
+- fix updatelayerip on startup (currently creates a mess in links when host/port changes and deletes custom thumbnails)
 
 ## Eventually
 
