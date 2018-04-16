@@ -6,30 +6,19 @@ RUN update-ca-certificates
 
 WORKDIR /
 
-# Download Geoserver and related modules
-# TODO : vendor a copy of SNAPSHOT releases as they will change over time
-# TODO : [merge this into 1 layer
-# VERIFY IF LAYER DOWNLOAD FROM GEONODE STILL WORKS AFTER MERGING, FOR SOME
-# OBSCURE REASON IT DOES NOT HERE  (which is why I didn't merge in the first place),
-# LOOKS LIKE FILE MODIFICATION DATE MAY PLAY SOME ROLE
-# see http://osgeo-org.1560.x6.nabble.com/Exception-with-WFS-requests-tp5355049p5355173.html]
-RUN echo "Download geoserver" && \
+# Download Geoserver
+# we first download vanilla geoserver, as it comes with preset jetty and launch scripts
+# then we replace it with the geonode build
+# TODO : this is a bit dirty..... can't we stat from vanilla Geoserver ?
+# TODO : merge into on step
+RUN echo "Download geoserver for geonode" && \
     wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.2/geoserver-2.12.2-bin.zip && \
+    wget http://build.geonode.org/geoserver/latest/geoserver-2.12.x.war && \
     unzip geoserver-2.12.2-bin.zip && \
-    rm geoserver-2.12.2-bin.zip
-RUN echo "Download printing module" && \
-    wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.2/extensions/geoserver-2.12.2-printing-plugin.zip && \
-    unzip -o geoserver-2.12.2-printing-plugin.zip -d /geoserver-2.12.2/webapps/geoserver/WEB-INF/lib/ && \
-    rm geoserver-2.12.2-printing-plugin.zip
-RUN echo "Download geofence module" && \
-    wget https://build.geoserver.org/geoserver/2.12.x/community-latest/geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip && \
-    unzip -o geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip -d /geoserver-2.12.2/webapps/geoserver/WEB-INF/lib/ && \
-    rm geoserver-2.12-SNAPSHOT-geofence-server-plugin.zip
-RUN echo "Download authkey module" && \
-    wget https://build.geoserver.org/geoserver/2.12.x/community-latest/geoserver-2.12-SNAPSHOT-authkey-plugin.zip && \
-    unzip -o geoserver-2.12-SNAPSHOT-authkey-plugin.zip -d /geoserver-2.12.2/webapps/geoserver/WEB-INF/lib/ && \
-    rm geoserver-2.12-SNAPSHOT-authkey-plugin.zip
-
+    rm /geoserver-2.12.2-bin.zip && \
+    rm /geoserver-2.12.2/webapps/geoserver/* -rf && \
+    unzip -o geoserver-2.12.x.war -d /geoserver-2.12.2/webapps/geoserver/ && \
+    rm /geoserver-2.12.x.war
 
 WORKDIR /geoserver-2.12.2/
 

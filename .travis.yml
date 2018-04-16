@@ -1,0 +1,33 @@
+sudo: required
+
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+script:
+  - ls -lah
+  - docker-compose -f docker-compose.yml up -d --build
+  - sleep 120
+  - docker-compose -f docker-compose.yml ps
+  # TODO : test healthchecks like this :
+  # docker inspect --format="{{json .State.Health}}" spcgeonode_geoserver_1
+  # TODO : add a basic integration test scenario
+
+deploy: script
+  script: 
+    - docker login -e=$DOCKER_EMAIL -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+    - docker-compose -f docker-compose.yml build
+    - docker-compose -f docker-compose.yml push
+  on:
+    branch: master
+
+notifications:
+  email:
+    - olivier.dalang@gmail.com

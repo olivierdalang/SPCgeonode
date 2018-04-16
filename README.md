@@ -69,17 +69,22 @@ sudo apt-get install nano
 # 1. Edit configuration
 nano .env
 
-# 2. Edit the secrets (do NOT add an empty new line after content)
+# 2. Edit the admin password (do NOT add an empty new line after content)
 nano _secrets/admin_username
 nano _secrets/admin_password
-nano _secrets/aws_access_key
-nano _secrets/aws_secret_key
 
-# 3. Run the stack
+# 3. Setup the backup configuration (read below for details)
+nano _secrets/rclone.backup.conf
+
+# 4. Run the stack
 docker-compose -f docker-compose.yml up -d --build
 ```
 
-Note : to avoid hitting LetsEncrypt limits if anything fails, you should add `LETSENCRYPT_MODE=production` only when you see tests certificates are properly loading. Hitting the limits is annoying as you can be blocked for a few days...
+*Backups* are made using [RClone](https://rclone.org/docs/). RClone is a flexible file syncing tool that supports all commons cloud provider, regular file transfer protocols as well as local filesystem. It should be able to accomodate almost any setup.
+
+The default configuration provided with the setup assumes Amazon S3 is being used, in which case you need to replace the following parts of the `rclone.backup.config` file : `YOUR_S3_ACCESS_KEY_HERE` and `YOUR_S3_SECRET_KEY_HERE` (watch [this](https://www.youtube.com/watch?v=BLTy2tQXQLY) to learn how to get these keys).
+
+If you want to stup backups using another provider, check the [RClone documentation](https://rclone.org/docs/).
 
 ### Production (using Rancher)
 

@@ -1,55 +1,53 @@
+# Roadmap
+
+## For 0.1
+
+- CRITICAL : randomize django secret
+- CRITICAL : change rest.properties config
+- contribute back to geonode-project
+- push to Geonode 2.8 instead of 2.6
+- CRITICAL : see if Geoserver authkey tokens expire (even when the key is deleted from the database, it's still possible to use it until manually clicking "sync user/group service". It looks like it's some cache, but I don't know if it expires. Maybe we need to use webservice instead of user property...)
+- use Geonode's regular auth mecanism (Oauth) and use proxy to do simple auth from QGIS instead of postgres hack
+- fix updatelayerip on startup (currently creates a mess in links when host/port changes and deletes custom thumbnails)
+
+## Eventually
+
+- check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
+- tweak nginx settings (gzip output, cache, etc...)
+- use alpine for django as well
+- add HEALTHCHECKS to Dockerfiles where applicable
+- migrate to spc repositories instead of olivierdalang
+- fix Geoserver exceptions on first launch because of missing datadir configurations
+- see if we use all needed geoserver extensions (marlin-renderer, geonode's module)
+- see if we can have geoserver exit on error, in not at least implement proper healtcheck
+- keep a version marker in the geodatadir directory in case of updates to the datadir
+- set more reasonable logging for geoserver
+- add at least some basic integration test to travis
+- see if we can setup something for backups on local filesystem
+
 # Changelog
 
+## 0.0.24
 
-## 0.0.7
+- use Geonode's Geoserver .war build instead of starting from vanilla
+- fix thumbnail generation (uses a custom release of Geonode)
+- django admin users are again disabled on restart (so we can keep only 1 superuser)
+- added travis integration test (try to deploy django then tries to create an user, upload a layer, get the thumbnail and get a tile of the layer)
+- changed rclone configuration (you must now provide rclone conf file)
+- removed syncthings
+- make http(s) ports parametrable in case a port is already busy
 
-- have ssl working online
-- use env variables / secrets where applicable
-- publish on git and autobuild images
-- make docker deploy work again
+## 0.0.23
 
-## 0.0.8
+- various fixes (broken pip dependencies, wrong fix for geoserver proxy, ssl certificate refreshing)
 
-- allow to disable/test let's encrypt using env variables
-- we use geonode users/groups table directly for geoserver's authentication
+## 0.0.22
 
-## 0.0.9
+- siteurl set using HTTPS_HOST or HTTP_HOST (instead of "/" which isn't supported)
 
-- fix bug with rancher resolver on rancher
+## 0.0.21
 
-## 0.0.10
-
-- we don't rely on an initial geodatadir anymore, instead we start from scratch, launch geoserver once, then do our modifications
-- added a backup service using Syncthings
-
-## 0.0.11
-
-- added a second backup service using RClone (the idea is to test both syncthings and rclone then choose one)
-
-## 0.0.12
-
-- ...
-
-## 0.0.13
-
-- ...
-
-## 0.0.14
-
-- ...
-
-## 0.0.15
-
-- removed rancher template from repo
-- removed entryponts and command from django image to prevent what looks like a bug in rancher where empty entrypoint in docker-compose isn't taken into account
-
-## 0.0.16
-
-- put django in main directory (so it's more clear for deploy builds)
-
-## 0.0.17
-
-- improve nginx<->letsencrypt (nginx can work without letsencrypt service)
+- use custom build of geonode (with some fixes not upstreamed yet)
 
 ## 0.0.18
 
@@ -59,25 +57,40 @@
 - cleaned up env vars
 - upgrade should work
 
-## 0.0.21
+## 0.0.17
 
-- use custom build of geonode (with some fixes not upstreamed yet)
+- improve nginx<->letsencrypt (nginx can work without letsencrypt service)
 
-## TODO : Roadmap
+## 0.0.16
 
-- CRITICAL : randomize django secret
-- CRITICAL : change rest.properties config
-- choose between syncthings and rclone
-- check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
-- tweak nginx settings (gzip output, cache, etc...)
-- use alpine for django as well
-- contribute back to geonode-project
-- add HEALTHCHECKS to Dockerfiles where applicable
-- migrate to spc repositories
-- push to Geonode 2.8 instead of 2.6
-- fix Geoserver exceptions on first launch because of missing datadir configurations
-- see if we use all needed geoserver extensions (marlin-renderer, geonode's module)
-- see if we can have geoserver exit on error, in not at least implement proper healtcheck
-- CRITICAL : see if Geoserver authkey tokens expire (even when the key is deleted from the database, it's still possible to use it until manually clicking "sync user/group service". It looks like it's some cache, but I don't know if it expires. Maybe we need to use webservice instead of user property...)
-- make "set thumbnail" work again. this involves installing geoserver-geonode-ext. see https://github.com/GeoNode/geoserver-geonode-ext/issues/60 and https://lists.osgeo.org/pipermail/geonode-users/2018-March/004190.html before working on this
-- keep a version marker in the geodatadir directory in case of updates to the datadir
+- put django in main directory (so it's more clear for deploy builds)
+
+## 0.0.15
+
+- removed rancher template from repo
+- removed entryponts and command from django image to prevent what looks like a bug in rancher where empty entrypoint in docker-compose isn't taken into account
+
+## 0.0.11
+
+- added a second backup service using RClone (the idea is to test both syncthings and rclone then choose one)
+
+## 0.0.10
+
+- we don't rely on an initial geodatadir anymore, instead we start from scratch, launch geoserver once, then do our modifications
+- added a backup service using Syncthings
+
+## 0.0.9
+
+- fix bug with rancher resolver on rancher
+
+## 0.0.8
+
+- allow to disable/test let's encrypt using env variables
+- we use geonode users/groups table directly for geoserver's authentication
+
+## 0.0.7
+
+- have ssl working online
+- use env variables / secrets where applicable
+- publish on git and autobuild images
+- make docker deploy work again
