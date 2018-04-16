@@ -27,9 +27,15 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 # We define SITE_URL to HTTPS_HOST if it is set, or else to HTTP_HOST
 if os.getenv('HTTPS_HOST'):
-    SITEURL = 'https://'+os.getenv('HTTPS_HOST')
+    SITEURL = 'https://{url}{port}/'.format(
+        url=os.getenv('HTTPS_HOST'),
+        port=':'+os.getenv('HTTPS_PORT') if os.getenv('HTTPS_PORT') != '443' else '',
+    )
 elif os.getenv('HTTP_HOST'):
-    SITEURL = 'http://'+os.getenv('HTTP_HOST')
+    SITEURL = 'http://{url}{port}/'.format(
+        url=os.getenv('HTTP_HOST'),
+        port=':'+os.getenv('HTTP_PORT') if os.getenv('HTTP_PORT') != '80' else '',
+    )
 else:
     raise Exception("Misconfiguration error. You need to set at least one of HTTPS_HOST or HTTP_HOST")
 

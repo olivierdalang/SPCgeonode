@@ -14,7 +14,9 @@ x-common-django:
   environment:
     - ALLOWED_HOSTS=${HTTPS_HOST},${HTTP_HOST}
     - HTTPS_HOST=${HTTPS_HOST}
+    - HTTPS_PORT=${HTTPS_PORT}
     - HTTP_HOST=${HTTP_HOST}
+    - HTTP_PORT=${HTTP_PORT}
     - ADMIN_EMAIL=${ADMIN_EMAIL}
     - DEBUG=False
     - REGISTRATION_OPEN=${REGISTRATION_OPEN}
