@@ -118,12 +118,8 @@ services:
     image: olivierdalang/spcgeonode:rclone-latest
     # RANCHER : remove this
     build: _service_rclone/
-    environment:
-      - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
-      - AWS_BUCKET_REGION=${AWS_BUCKET_REGION}
     secrets:
-      - aws_access_key
-      - aws_secret_key
+      - rclone_backup_conf
     volumes:
       - pgdumps:/spcgeonode-pgdumps/
       - media:/spcgeonode-media/
@@ -164,18 +160,13 @@ secrets:
   admin_password:
     file: _secrets/admin_password
     external: false
-  aws_access_key:
-    file: _secrets/aws_access_key
-    external: false
-  aws_secret_key:
-    file: _secrets/aws_secret_key
+  rclone_backup_conf:
+    file: _secrets/rclone.backup.conf
     external: false
   # # RANCHER : use this instead
   # admin_username:
   #   external: true
   # admin_password:
   #   external: true
-  # aws_access_key:
-  #   external: true
-  # aws_secret_key:
+  # rclone_backup_conf:
   #   external: true
