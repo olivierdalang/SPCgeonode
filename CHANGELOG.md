@@ -34,6 +34,7 @@
 - added travis integration test (try to deploy django then tries to create an user, upload a layer, get the thumbnail and get a tile of the layer)
 - changed rclone configuration (you must now provide rclone conf file)
 - removed syncthings
+- make http(s) ports parametrable in case a port is already busy
 
 ## 0.0.23
 
