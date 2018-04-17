@@ -51,10 +51,10 @@ try:
 except django.db.IntegrityError as e:
     superuser = Profile.objects.get(username=open('/run/secrets/admin_username','r').read())
     superuser.set_password(open('/run/secrets/admin_password','r').read())
+    superuser.is_active = True
+    superuser.email = os.getenv('ADMIN_EMAIL')
     superuser.save()
     print('superuser successfully updated')
-print('disabling old superusers if any')
-Profile.objects.filter(is_superuser=True).exclude(pk=superuser.pk).update(is_active=False)
 
 
 #########################################################

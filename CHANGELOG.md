@@ -27,6 +27,10 @@
 
 # Changelog
 
+## 0.0.25
+
+- undo admin users disabled again
+
 ## 0.0.24
 
 - use Geonode's Geoserver .war build instead of starting from vanilla
