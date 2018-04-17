@@ -30,6 +30,7 @@
 ## 0.0.25
 
 - undo admin users disabled again
+- revert using 2.6.x branch (because of side effect - login taking ages)
 
 ## 0.0.24
 
