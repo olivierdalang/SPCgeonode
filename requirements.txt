@@ -1,4 +1,6 @@
-https://github.com/PacificCommunity/geonode/archive/2.6.3_thumbnail_fix_backported.zip # backport of thumbnail fix (retrigger)
+# geonode==2.6.3
+# TODO : upstream our fixes and get a new release
+https://github.com/PacificCommunity/geonode/archive/2.6.3.spcgeonode-0.0.25.zip
 
 # Overrides because of loose Geonode dependencies
 GDAL~=2.0.1 # Simply missing from Geonode
