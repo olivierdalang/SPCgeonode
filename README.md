@@ -94,12 +94,10 @@ This uses almost exactly the same docker-compose file. The adaptations are marke
 
 ### Upgrade
 
-If at some point you want to update the SPCgeonode setup :
+If at some point you want to update the SPCgeonode setup (this will work only if you didn't do modifications, if you did, you need to merge them) :
 ```
 # Get the update setup
-git stash
 git pull
-git stash apply
 
 # Upgrade the stack
 docker-compose -f docker-compose.yml up -d --build
