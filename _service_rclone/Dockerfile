@@ -1,13 +1,14 @@
 FROM alpine:3.6
 
-# 1 Install Rclone
-RUN apk add --no-cache openssl
+# Install deps
+RUN apk add --no-cache openssl ca-certificates
 
-# 3. Install Rclone
-RUN wget https://downloads.rclone.org/v1.39/rclone-v1.39-linux-amd64.zip
-RUN unzip /rclone-v1.39-linux-amd64.zip
-RUN rm /rclone-v1.39-linux-amd64.zip
-RUN mv /rclone-v1.39-linux-amd64/rclone /usr/bin
+# Install rclone
+RUN wget https://downloads.rclone.org/v1.40/rclone-v1.40-linux-amd64.zip
+RUN unzip /rclone-v1.40-linux-amd64.zip
+RUN mv /rclone-v1.40-linux-amd64/rclone /usr/bin
+RUN rm /rclone-v1.40-linux-amd64.zip
+RUN rm -rf /rclone-v1.40-linux-amd64
 
 
 # Add scripts
@@ -21,9 +22,6 @@ ADD crontab crontab
 RUN /usr/bin/crontab crontab
 RUN rm crontab
 
-# Squashing using multistage
-FROM alpine:3.6
-COPY --from=0 / /
 
 # We run cron in foreground to update the certificates
 ENTRYPOINT ["/docker-entrypoint.sh"]
