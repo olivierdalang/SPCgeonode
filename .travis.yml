@@ -20,7 +20,7 @@ script:
   # docker inspect --format="{{json .State.Health}}" spcgeonode_geoserver_1
   # TODO : add a basic integration test scenario
 
-deploy: script
+deploy:
   script: 
     - docker login -e=$DOCKER_EMAIL -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
     - docker-compose -f docker-compose.yml build
