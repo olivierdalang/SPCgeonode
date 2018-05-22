@@ -21,12 +21,20 @@ script:
   # TODO : add a basic integration test scenario
 
 deploy:
-  script: 
-    - docker login -e=$DOCKER_EMAIL -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-    - docker-compose -f docker-compose.yml build
-    - docker-compose -f docker-compose.yml push
-  on:
-    branch: master
+  - provider: script
+    script:
+      - docker login -e=$DOCKER_EMAIL -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+      - docker-compose -f docker-compose.yml build
+      - docker-compose -f docker-compose.yml push
+    on:
+      branch: master
+  - provider: script
+    script:
+      - docker login -e=$DOCKER_EMAIL -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+      - docker-compose -f docker-compose.yml build
+      - docker-compose -f docker-compose.yml push
+    on:
+      tag: true
 
 notifications:
   email:
