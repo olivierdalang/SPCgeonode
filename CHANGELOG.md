@@ -34,6 +34,7 @@ YOU NEED TO DO A FRESH INSTALL AND MANUALLY TRANSFER THE DATA
 ## 0.1.0
 
 - based on geonode 2.8
+- removed elastic search container (it was unused anyways)
 
 ## Version 0.0.x (Geonode 2.6)
 
