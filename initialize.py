@@ -87,5 +87,5 @@ call_command('loaddata', 'initial_data')
 #########################################################
 
 print("-"*80 + "\n6. Running updatemaplayerip")
-call_command('updatelayers') # TODO CRITICAL : this overrides the layer thumbnail of existing layers even if unchanged !!!
+# call_command('updatelayers') # TODO CRITICAL : this overrides the layer thumbnail of existing layers even if unchanged !!!
 call_command('updatemaplayerip')
