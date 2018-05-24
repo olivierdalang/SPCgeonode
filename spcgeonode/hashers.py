@@ -11,6 +11,9 @@ class GeoserverDigestPasswordHasher(BasePasswordHasher):
 
     Iterations is hardcoded to 100000 (as this is what geoserver uses) and salt is prepended to the hash
     So Django's iteration and salt features don't make much sense
+
+    TODO : remove this after some time (when all currently used passwords probably have been rehashed)
+
     """
     algorithm = "geoserver_digest"
     iterations = 100000

@@ -84,6 +84,11 @@ services:
     image: olivierdalang/spcgeonode2.8:geoserver-latest
     # RANCHER : remove this
     build: _service_geoserver/
+    environment:
+      - HTTPS_HOST=${HTTPS_HOST}
+      - HTTPS_PORT=${HTTPS_PORT}
+      - HTTP_HOST=${HTTP_HOST}
+      - HTTP_PORT=${HTTP_PORT}
     volumes:
       - geodatadir:/spcgeonode-geodatadir/
     secrets:

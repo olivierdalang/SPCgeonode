@@ -13,17 +13,19 @@ WORKDIR /
 # TODO : merge into on step
 RUN echo "Download geoserver for geonode" && \
     wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.2/geoserver-2.12.2-bin.zip && \
-    wget http://build.geonode.org/geoserver/latest/geoserver-2.12.x.war && \
+    wget http://build.geonode.org/geoserver/latest/geoserver-2.12.2.war && \
     unzip geoserver-2.12.2-bin.zip && \
     rm /geoserver-2.12.2-bin.zip && \
     rm /geoserver-2.12.2/webapps/geoserver/* -rf && \
-    unzip -o geoserver-2.12.x.war -d /geoserver-2.12.2/webapps/geoserver/ && \
-    rm /geoserver-2.12.x.war
+    unzip -o geoserver-2.12.2.war -d /geoserver-2.12.2/webapps/geoserver/ && \
+    rm /geoserver-2.12.2.war
+
+# Download initial data dir
+RUN wget http://build.geonode.org/geoserver/latest/data-2.12.x.zip
+RUN unzip /data-2.12.x.zip
+RUN ls /data
 
 WORKDIR /geoserver-2.12.2/
-
-# Add geodatadir override data (this will be copied over to the actual datadir in entrypoint)
-ADD geodatadir-overrides /geodatadir-overrides
 
 # Add the entrypoint
 ADD docker-entrypoint.sh /docker-entrypoint.sh 

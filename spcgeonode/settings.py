@@ -27,7 +27,7 @@ CELERY_RESULT_BACKEND = 'django-db'
 
 
 # We define SITE_URL and ALLOWED_HOSTS to HTTPS_HOST if it is set, or else to HTTP_HOST
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['nginx'] # We need this for internal api calls from geoserver
 if os.getenv('HTTPS_HOST'):
     SITEURL = 'https://{url}{port}/'.format(
         url=os.getenv('HTTPS_HOST'),
@@ -50,8 +50,8 @@ CATALOGUE['default']['URL'] = '%scatalogue/csw' % SITEURL
 PYCSW['CONFIGURATION']['metadata:main']['provider_url'] = SITEURL
 
 # We set our custom geoserver password hashers
+# TODO : remove this (we'll leave it for some time so that hashes using GeoserverDigestPasswordHasher are rehashed)
 PASSWORD_HASHERS = (
-    'spcgeonode.hashers.GeoserverDigestPasswordHasher',
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
@@ -59,5 +59,6 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.SHA1PasswordHasher',
     'django.contrib.auth.hashers.MD5PasswordHasher',
     'django.contrib.auth.hashers.CryptPasswordHasher',
+    'spcgeonode.hashers.GeoserverDigestPasswordHasher',
     'spcgeonode.hashers.GeoserverPlainPasswordHasher',
 )

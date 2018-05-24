@@ -1,12 +1,11 @@
 # Roadmap
 
-## For 0.1
+## For 1.0
 
 - CRITICAL : randomize django secret
 - CRITICAL : change rest.properties config
 - contribute back to geonode-project
 - CRITICAL : see if Geoserver authkey tokens expire (even when the key is deleted from the database, it's still possible to use it until manually clicking "sync user/group service". It looks like it's some cache, but I don't know if it expires. Maybe we need to use webservice instead of user property...)
-- use Geonode's regular auth mecanism (Oauth) and use proxy to do simple auth from QGIS instead of postgres hack
 - fix updatelayerip on startup (currently creates a mess in links when host/port changes and deletes custom thumbnails)
 
 ## Eventually
@@ -35,6 +34,8 @@ YOU NEED TO DO A FRESH INSTALL AND MANUALLY TRANSFER THE DATA
 
 - based on geonode 2.8
 - removed elastic search container (it was unused anyways)
+- removed postgres login hack and using instead Geonode-Geoserver OAuth mecanism
+- prebuilt geodatadir used again and master password procedure simplified
 
 ## Version 0.0.x (Geonode 2.6)
 

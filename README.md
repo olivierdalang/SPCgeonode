@@ -149,3 +149,11 @@ Key differences :
 - https encryption
 - use secrets for sensitive data instead of env variables
 - the geodatadir for Geoserver is included in the git repository rather than being pulled
+
+## FAQ
+
+### During startup, a lot of container crash and restart
+
+This is the normal startup process. Due to the nature of the setup, the containers are very interdependant. Startup from scratch can take approx. 5-10 minutes, during which all containers may restart a lot of times.
+
+In short, Django will restart until Postgres is up so it can migrate the database. Geoserver will restart until Django has configured OAuth so it can get OAuth2 configuration. Django will restart until Geoserver is running so it can reinitialize the master password.
