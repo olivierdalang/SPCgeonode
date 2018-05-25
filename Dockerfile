@@ -30,7 +30,7 @@ RUN echo "Updating apt-get" && \
 RUN echo "Geonode python dependencies"
 RUN pip install pygdal==$(gdal-config --version).*
 RUN pip install celery==4.1.0 # see https://github.com/GeoNode/geonode/pull/3714
-RUN pip install https://github.com/GeoNode/geonode/archive/4c41e0ddb80e2abc05ec61715b3a6373694c3523.zip # branch 2.7.x (future 2.8.1) 2018-05-21
+RUN pip install https://github.com/GeoNode/geonode/archive/972ed7e301a72c2c3fcb5457db27fdebac1e1859.zip # branch 2.7.x (future 2.8.1) 2018-05-21
 
 # 5. Add the application
 RUN mkdir /spcgeonode
@@ -56,5 +56,8 @@ ENV GEOSERVER_LOCATION=http://nginx/geoserver/
 # ENV GEOSERVER_PUBLIC_LOCATION=/geoserver/ # TODO : fix relative url support upstream
 # TODO : we should probably remove this and set Celery to use JSON serialization instead of pickle
 ENV C_FORCE_ROOT=True
+
+# We get an exception after migrations on startup (it seems the monitoring app tries to resolve the geoserver domain name after it's migration, which can happen before oauth migrations on which geoserver startup depends...)
+ENV MONITORING_ENABLED=False
 
 # We provide no command or entrypoint as this image can be used to serve the django project or run celery tasks
