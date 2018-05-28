@@ -23,14 +23,14 @@ script:
 deploy:
   - provider: script
     script:
-      - docker login -e=$DOCKER_EMAIL -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+      - echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
       - docker-compose -f docker-compose.yml build
       - docker-compose -f docker-compose.yml push
     on:
-      branch: master
+      branch: true
   - provider: script
     script:
-      - docker login -e=$DOCKER_EMAIL -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+      - echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
       - docker-compose -f docker-compose.yml build
       - docker-compose -f docker-compose.yml push
     on:
