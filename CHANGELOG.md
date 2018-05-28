@@ -2,7 +2,6 @@
 
 ## For 1.0
 
-- CRITICAL : randomize django secret
 - CRITICAL : change rest.properties config
 - contribute back to geonode-project
 - CRITICAL : see if Geoserver authkey tokens expire (even when the key is deleted from the database, it's still possible to use it until manually clicking "sync user/group service". It looks like it's some cache, but I don't know if it expires. Maybe we need to use webservice instead of user property...)
@@ -38,6 +37,7 @@ YOU NEED TO DO A FRESH INSTALL AND MANUALLY TRANSFER THE DATA
 - removed postgres login hack and using instead Geonode-Geoserver OAuth mecanism
 - prebuilt geodatadir used again and master password procedure simplified
 - added django healthcheck
+- django secret generated automatically
 
 ## Version 0.0.x (Geonode 2.6)
 

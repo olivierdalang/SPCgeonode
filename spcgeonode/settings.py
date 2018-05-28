@@ -1,4 +1,4 @@
-import os, uuid
+import os, hashlib
 from geonode.settings import *
 
 
@@ -25,12 +25,8 @@ CELERY_TASK_IGNORE_RESULT = False
 CELERY_BROKER_URL = 'amqp://rabbitmq:5672'
 CELERY_RESULT_BACKEND = 'django-db'
 
-# We randomize the secret key
-if not os.path.exists('django_secret_key'):
-    f = open('django_secret_key','w')
-    f.write(uuid.uuid4().hex)
-    f.close()
-SECRET_KEY = open('django_secret_key').read().strip()
+# We randomize the secret key (based on admin login)
+SECRET_KEY = hashlib.sha512(open('/run/secrets/admin_username','r').read().strip() + open('/run/secrets/admin_password','r').read().strip()).hexdigest()
 
 # We define ALLOWED_HOSTS
 ALLOWED_HOSTS = ['nginx','127.0.0.1'] # We need this for internal api calls from geoserver and for healthchecks
