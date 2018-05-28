@@ -7,4 +7,5 @@ rclone sync -v --config /run/secrets/rclone_backup_conf /spcgeonode-geodatadir/ 
 rclone sync -v --config /run/secrets/rclone_backup_conf /spcgeonode-media/ spcgeonode:media/
 rclone sync -v --config /run/secrets/rclone_backup_conf /spcgeonode-pgdumps/ spcgeonode:pgdumps/
 
-printf "\nSync finished...\n"
+echo "-----------------------------------------------------"
+echo "Sync successful !!"

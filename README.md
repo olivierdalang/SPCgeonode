@@ -166,4 +166,6 @@ In short, Django will restart until Postgres is up so it can migrate the databas
 
 The default configuration provided with the setup assumes Amazon S3 is being used, in which case you need to replace the following parts of the `rclone.backup.config` file : `YOUR_S3_ACCESS_KEY_HERE`,`YOUR_S3_SECRET_KEY_HERE`,`YOUR_S3_REGION_HERE` and `THE_NAME_OF_YOUR_BUCKET_HERE` (watch [this](https://www.youtube.com/watch?v=BLTy2tQXQLY) to learn how to get these keys).
 
+Also consider enabling *versionning* on the Bucket, so that if data won't get lost if deleted accidentally in GeoNode.
+
 If you want to stup backups using another provider, check the [RClone documentation](https://rclone.org/docs/).
