@@ -36,6 +36,7 @@ YOU NEED TO DO A FRESH INSTALL AND MANUALLY TRANSFER THE DATA
 - removed elastic search container (it was unused anyways)
 - removed postgres login hack and using instead Geonode-Geoserver OAuth mecanism
 - prebuilt geodatadir used again and master password procedure simplified
+- added django healthcheck
 
 ## Version 0.0.x (Geonode 2.6)
 

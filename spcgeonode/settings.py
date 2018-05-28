@@ -26,20 +26,24 @@ CELERY_BROKER_URL = 'amqp://rabbitmq:5672'
 CELERY_RESULT_BACKEND = 'django-db'
 
 
-# We define SITE_URL and ALLOWED_HOSTS to HTTPS_HOST if it is set, or else to HTTP_HOST
-ALLOWED_HOSTS = ['nginx'] # We need this for internal api calls from geoserver
+# We define ALLOWED_HOSTS
+ALLOWED_HOSTS = ['nginx','127.0.0.1'] # We need this for internal api calls from geoserver and for healthchecks
+if os.getenv('HTTPS_HOST'):
+    ALLOWED_HOSTS.append( os.getenv('HTTPS_HOST') )
+if os.getenv('HTTP_HOST'):
+    ALLOWED_HOSTS.append( os.getenv('HTTP_HOST') )
+
+# We define SITE_URL
 if os.getenv('HTTPS_HOST'):
     SITEURL = 'https://{url}{port}/'.format(
         url=os.getenv('HTTPS_HOST'),
         port=':'+os.getenv('HTTPS_PORT') if os.getenv('HTTPS_PORT') != '443' else '',
     )
-    ALLOWED_HOSTS.append( os.getenv('HTTPS_HOST') )
 elif os.getenv('HTTP_HOST'):
     SITEURL = 'http://{url}{port}/'.format(
         url=os.getenv('HTTP_HOST'),
         port=':'+os.getenv('HTTP_PORT') if os.getenv('HTTP_PORT') != '80' else '',
     )
-    ALLOWED_HOSTS.append( os.getenv('HTTP_HOST') )
 else:
     raise Exception("Misconfiguration error. You need to set at least one of HTTPS_HOST or HTTP_HOST")
 

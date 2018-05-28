@@ -35,8 +35,14 @@ services:
   # Our custom django application. It includes Geonode.
   django:
     << : *default-common-django
+    healthcheck:
+      test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null http://127.0.0.1:8001/"
+      interval: 60s
+      timeout: 10s
+      retries: 1
+      start_period: 60s
     entrypoint: ["/spcgeonode/docker-entrypoint.sh"]
-    command: "uwsgi --chdir=/spcgeonode --module=spcgeonode.wsgi --socket=:8000 --processes=5"
+    command: "uwsgi --chdir=/spcgeonode --module=spcgeonode.wsgi --socket=:8000 --http=127.0.0.1:8001 --processes=5"
     
   # Celery worker that executes celery tasks created by Django.
   celery:
@@ -84,6 +90,12 @@ services:
     image: olivierdalang/spcgeonode2.8:geoserver-latest
     # RANCHER : remove this
     build: _service_geoserver/
+    healthcheck:
+      test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null http://127.0.0.1:8080/geoserver/rest/workspaces/geonode.html"
+      interval: 60s
+      timeout: 10s
+      retries: 1
+      start_period: 60s
     environment:
       - HTTPS_HOST=${HTTPS_HOST}
       - HTTPS_PORT=${HTTPS_PORT}

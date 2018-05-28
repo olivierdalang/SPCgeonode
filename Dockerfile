@@ -19,6 +19,8 @@ RUN echo "Updating apt-get" && \
     apt-get install -y libxml2-dev libxslt-dev && \
     echo "Installing GeoIP dependencies" && \
     apt-get install -y geoip-bin geoip-database && \
+    echo "Installing healthceck dependencies" && \
+    apt-get install -y curl && \
     echo "Python server" && \
     pip install uwsgi && \
     echo "Removing build dependencies and cleaning up" && \
