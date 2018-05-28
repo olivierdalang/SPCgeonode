@@ -5,7 +5,7 @@ version: '3.4'
 # RANCHER : manually copy this to each service below
 x-common-django:
   &default-common-django
-  image: olivierdalang/spcgeonode2.8:django-dev
+  image: olivierdalang/spcgeonode:django-dev
   environment:
     - "DEBUG=True"
   volumes:
@@ -28,29 +28,29 @@ services:
     command: 'celery events --app=geonode.celery_app:app --pidfile="/celeryev.pid" --camera=django_celery_monitor.camera.Camera --frequency=2.0 -l debug'
 
   nginx:
-    image: olivierdalang/spcgeonode2.8:nginx-dev
+    image: olivierdalang/spcgeonode:nginx-dev
     volumes:
       - ./_volume_static:/spcgeonode-static/
       - ./_volume_media:/spcgeonode-media/
       - ./_volume_certificates:/spcgeonode-certificates/
 
   geoserver:
-    image: olivierdalang/spcgeonode2.8:geoserver-dev
+    image: olivierdalang/spcgeonode:geoserver-dev
     volumes:
       - ./_volume_geodatadir:/spcgeonode-geodatadir/
 
   letsencrypt:
-    image: olivierdalang/spcgeonode2.8:letsencrypt-dev
+    image: olivierdalang/spcgeonode:letsencrypt-dev
     volumes:
       - ./_volume_certificates:/spcgeonode-certificates/
 
   pgdumper:
-    image: olivierdalang/spcgeonode2.8:pgdumper-dev
+    image: olivierdalang/spcgeonode:pgdumper-dev
     volumes:
       - ./_volume_pgdumps:/spcgeonode-pgdumps/
 
   rclone:
-    image: olivierdalang/spcgeonode2.8:rclone-dev
+    image: olivierdalang/spcgeonode:rclone-dev
     volumes:
       - ./_volume_pgdumps:/spcgeonode-pgdumps/
       - ./_volume_media:/spcgeonode-media/
