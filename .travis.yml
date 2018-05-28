@@ -20,21 +20,12 @@ script:
   # docker inspect --format="{{json .State.Health}}" spcgeonode_geoserver_1
   # TODO : add a basic integration test scenario
 
-deploy:
-  - provider: script
-    script:
-      - echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
-      - docker-compose -f docker-compose.yml build
-      - docker-compose -f docker-compose.yml push
-    on:
-      branch: true
-  - provider: script
-    script:
-      - echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
-      - docker-compose -f docker-compose.yml build
-      - docker-compose -f docker-compose.yml push
-    on:
-      tag: true
+after_success:
+  - if [[ "$TRAVIS_BRANCH" == "master" ]] || [[ "$TRAVIS_BRANCH" == "master-2.6" ]] || [[ ! -z "$TRAVIS_TAG" ]]; then
+      docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
+      docker-compose -f docker-compose.yml build;
+      docker-compose -f docker-compose.yml push;
+    fi
 
 notifications:
   email:
