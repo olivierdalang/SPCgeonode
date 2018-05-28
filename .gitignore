@@ -2,5 +2,7 @@
 Thumbs.db
 _volume_*
 *~
+celery.log
 celerybeat-schedule
 celeryev.pid
+django_secret_key
