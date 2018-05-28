@@ -53,13 +53,16 @@ elif os.getenv('HTTP_HOST'):
 else:
     raise Exception("Misconfiguration error. You need to set at least one of HTTPS_HOST or HTTP_HOST")
 
-
-# Manually replace SITEURL whereever it is used in geonode's settings.py
+# Manually replace SITEURL whereever it is used in geonode's settings.py (those settings are a mess...)
+GEOSERVER_LOCATION = 'http://nginx/geoserver/'
 GEOSERVER_PUBLIC_LOCATION = SITEURL + 'geoserver/'
-# OGC_SERVER['default']['LOCATION'] = 'http://nginx/geoserver/' # this is already set as ENV var in the dockerfile
+GEOSERVER_URL = GEOSERVER_PUBLIC_LOCATION
+OGC_SERVER['default']['LOCATION'] = GEOSERVER_LOCATION
 OGC_SERVER['default']['PUBLIC_LOCATION'] = GEOSERVER_PUBLIC_LOCATION
 CATALOGUE['default']['URL'] = '%scatalogue/csw' % SITEURL
 PYCSW['CONFIGURATION']['metadata:main']['provider_url'] = SITEURL
+PUBLIC_GEOSERVER["source"]["url"] = GEOSERVER_PUBLIC_LOCATION + "ows"
+
 
 # We set our custom geoserver password hashers
 # TODO : remove this (we'll leave it for some time so that hashes using GeoserverDigestPasswordHasher are rehashed)

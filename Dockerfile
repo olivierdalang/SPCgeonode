@@ -53,9 +53,6 @@ ENV STATIC_ROOT=/spcgeonode-static/
 ENV MEDIA_ROOT=/spcgeonode-media/
 ENV STATIC_URL=/static/
 ENV MEDIA_URL=/media/
-ENV GEOSERVER_LOCATION=http://nginx/geoserver/
-# this is set in settingy.py as we derive it from HTTPS_HOST/HTTP_HOST, since relative urls arent supported anymore in 2.8
-# ENV GEOSERVER_PUBLIC_LOCATION=/geoserver/ # TODO : fix relative url support upstream
 # TODO : we should probably remove this and set Celery to use JSON serialization instead of pickle
 ENV C_FORCE_ROOT=True
 
