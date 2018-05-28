@@ -147,12 +147,12 @@ Key differences :
 
 ### Docker-primer - How to see what's happening ?
 
-If not familiar with Docker, here are the main commands you will be needing :
+If not familiar with Docker, here are some useful commands :
 
-`docker ps` : list all containers nd their status
-`docker-compose logs -f` : show live stdout from all containers
-`docker-compose logs -f django` : show live stdout from a specific container (replace `django` by `geoserver`, `postgres`, ...)
-`docker-compose down -v` : brings the stack down including volumes, allowing you to restart from scratch **THIS WILL ERASE ALL DATA !!**
+- `docker ps` : list all containers and their status
+- `docker-compose logs -f` : show live stdout from all containers
+- `docker-compose logs -f django` : show live stdout from a specific container (replace `django` by `geoserver`, `postgres`, etc.)
+- `docker-compose down -v` : brings the stack down including volumes, allowing you to restart from scratch **THIS WILL ERASE ALL DATA !!**
 
 ### During startup, a lot of container crash and restart, is it normal ?
 
