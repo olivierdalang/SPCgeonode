@@ -8,6 +8,28 @@ echo "-----------------------------------------------------"
 echo "STARTING GEOSERVER ENTRYPOINT -----------------------"
 date
 
+
+############################
+# 0. Defining BASEURL
+############################
+
+echo "-----------------------------------------------------"
+echo "0. Defining BASEURL"
+
+if [ ! -z "$HTTPS_HOST" ]; then
+    BASEURL="https://$HTTPS_HOST"
+    if [ "$HTTPS_PORT" != "443" ]; then
+        BASEURL="$BASEURL:$HTTPS_PORT"
+    fi
+else
+    BASEURL="http://$HTTP_HOST"
+    if [ "$HTTP_PORT" != "80" ]; then
+        BASEURL="$BASEURL:$HTTP_PORT"
+    fi
+fi
+
+echo "BASEURL is $BASEURL"
+
 ############################
 # 1. Initializing Geodatadir
 ############################
@@ -50,19 +72,6 @@ echo "3. (Re)setting OAuth2 Configuration"
 
 # Edit /spcgeonode-geodatadir/security/filter/geonode-oauth2/config.xml
 
-# Getting baseurl
-if [ ! -z "$HTTPS_HOST" ]; then
-    BASEURL="https://$HTTPS_HOST"
-    if [ "$HTTPS_PORT" != "443" ]; then
-        BASEURL="$BASEURL:$HTTPS_PORT"
-    fi
-else
-    BASEURL="http://$HTTP_HOST"
-    if [ "$HTTP_PORT" != "80" ]; then
-        BASEURL="$BASEURL:$HTTP_PORT"
-    fi
-fi
-
 # Getting oauth keys and secrets from the database
 CLIENT_ID=$(psql -h postgres -U postgres -c "SELECT client_id FROM oauth2_provider_application WHERE name='GeoServer'" -t | tr -d '[:space:]')
 CLIENT_SECRET=$(psql -h postgres -U postgres -c "SELECT client_secret FROM oauth2_provider_application WHERE name='GeoServer'" -t | tr -d '[:space:]')
@@ -86,7 +95,19 @@ sed -i -r "s|<baseUrl>.*</baseUrl>|<baseUrl>http://nginx</baseUrl>|" "/spcgeonod
 
 CLIENT_ID=""
 CLIENT_SECRET=""
- 
+
+
+############################
+# 3. RE(SETTING) BASE URL
+############################
+
+echo "-----------------------------------------------------"
+echo "4. (Re)setting Baseurl"
+
+sed -i -r "s|<proxyBaseUrl>.*</proxyBaseUrl>|<proxyBaseUrl>$BASEURL</proxyBaseUrl>|" "/spcgeonode-geodatadir/global.xml" 
+
+
+
 echo "-----------------------------------------------------"
 echo "FINISHED GEOSERVER ENTRYPOINT -----------------------"
 echo "-----------------------------------------------------"
