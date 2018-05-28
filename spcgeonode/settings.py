@@ -19,6 +19,7 @@ OGC_SERVER['default']['PASSWORD'] = open('/run/secrets/admin_password','r').read
 # Misc / debug / hack
 ##################################
 
+# Celery
 INSTALLED_APPS += ('django_celery_monitor','django_celery_results',) # TODO : add django-celery-monitor to core geonode
 CELERY_TASK_ALWAYS_EAGER = False
 CELERY_TASK_IGNORE_RESULT = False

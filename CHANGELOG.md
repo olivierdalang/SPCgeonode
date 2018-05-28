@@ -13,10 +13,7 @@
 - check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
 - tweak nginx settings (gzip output, cache, etc...)
 - use alpine for django as well
-- add HEALTHCHECKS to Dockerfiles where applicable
 - migrate to spc repositories instead of olivierdalang
-- fix Geoserver exceptions on first launch because of missing datadir configurations
-- see if we use all needed geoserver extensions (marlin-renderer, geonode's module)
 - see if we can have geoserver exit on error, in not at least implement proper healtcheck
 - keep a version marker in the geodatadir directory in case of updates to the datadir
 - set more reasonable logging for geoserver
@@ -37,6 +34,7 @@ YOU NEED TO DO A FRESH INSTALL AND MANUALLY TRANSFER THE DATA
 - removed postgres login hack and using instead Geonode-Geoserver OAuth mecanism
 - prebuilt geodatadir used again and master password procedure simplified
 - added django healthcheck
+- if https is enabled, force redirection to https host (as geonode doesn't support multiple domain names/relative installs)
 - django secret generated automatically
 
 ## Version 0.0.x (Geonode 2.6)
