@@ -7,7 +7,7 @@ x-common-django:
   &default-common-django
   image: olivierdalang/spcgeonode:django-dev
   environment:
-    - "DEBUG=True"
+    - DEBUG=True
   volumes:
     - .:/spcgeonode/
     - ./_volume_static:/spcgeonode-static/

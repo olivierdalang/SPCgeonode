@@ -3,6 +3,11 @@
 # Exit script in case of error
 set -e
 
+echo $"\n\n\n"
+echo "-----------------------------------------------------"
+echo "STARTING LETSENCRYPT ENTRYPOINT ---------------------"
+date
+
 # We make the config dir
 mkdir -p "/spcgeonode-certificates/$LETSENCRYPT_MODE"
 
@@ -35,6 +40,10 @@ if [ ! $? -eq 0 ]; then
 fi
 
 printf "\nCertificate have been created/renewed successfully\n"
+
+echo "-----------------------------------------------------"
+echo "FINISHED LETSENCRYPT ENTRYPOINT ---------------------"
+echo "-----------------------------------------------------"
 
 # Run the CMD 
 exec "$@"

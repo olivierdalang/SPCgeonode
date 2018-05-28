@@ -3,7 +3,10 @@
 # Exit script in case of error
 set -e
 
-echo '--- START Geoserver Docker Entrypoint ---'
+echo $"\n\n\n"
+echo "-----------------------------------------------------"
+echo "STARTING GEOSERVER ENTRYPOINT -----------------------"
+date
 
 ############################
 # 1. Initializing Geodatadir
@@ -84,7 +87,9 @@ sed -i -r "s|<baseUrl>.*</baseUrl>|<baseUrl>http://nginx</baseUrl>|" "/spcgeonod
 CLIENT_ID=""
 CLIENT_SECRET=""
  
-echo '--- END Geoserver Docker Entrypoint ---'
+echo "-----------------------------------------------------"
+echo "FINISHED GEOSERVER ENTRYPOINT -----------------------"
+echo "-----------------------------------------------------"
 
 # Run the CMD 
 exec "$@"

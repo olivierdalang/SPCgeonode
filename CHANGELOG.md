@@ -7,6 +7,7 @@
 - contribute back to geonode-project
 - CRITICAL : see if Geoserver authkey tokens expire (even when the key is deleted from the database, it's still possible to use it until manually clicking "sync user/group service". It looks like it's some cache, but I don't know if it expires. Maybe we need to use webservice instead of user property...)
 - fix updatelayerip on startup (currently creates a mess in links when host/port changes and deletes custom thumbnails)
+- make monitoring module work (currently it's disabled because of some exception during startup)
 
 ## Eventually
 

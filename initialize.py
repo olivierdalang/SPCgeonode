@@ -29,7 +29,8 @@ admin_password = open('/run/secrets/admin_password','r').read().strip()
 # 1. Running the migrations
 #########################################################
 
-print("-"*80 + "\n1. Running the migrations")
+print("-----------------------------------------------------")
+print("1. Running the migrations")
 call_command('migrate', '--noinput')
 
 
@@ -37,7 +38,8 @@ call_command('migrate', '--noinput')
 # 2. Creating superuser if it doesn't exist
 #########################################################
 
-print("-"*80 + "\n2. Creating/updating superuser")
+print("-----------------------------------------------------")
+print("2. Creating/updating superuser")
 try:
     superuser = Profile.objects.create_superuser(
         admin_username,
@@ -58,7 +60,8 @@ except django.db.IntegrityError as e:
 # 3. Create an OAuth2 provider to use authorisations keys
 #########################################################
 
-print("-"*80 + "\n3. Create/update an OAuth2 provider to use authorisations keys")
+print("-----------------------------------------------------")
+print("3. Create/update an OAuth2 provider to use authorisations keys")
 app, created = Application.objects.get_or_create(
     pk=1,
     name='GeoServer',
@@ -81,7 +84,8 @@ else:
 # 4. Loading fixtures
 #########################################################
 
-print("-"*80 + "\n4. Loading fixtures")
+print("-----------------------------------------------------")
+print("4. Loading fixtures")
 call_command('loaddata', 'initial_data')
 
 
@@ -89,7 +93,8 @@ call_command('loaddata', 'initial_data')
 # 5. Running updatemaplayerip
 #########################################################
 
-print("-"*80 + "\n5. Running updatemaplayerip")
+print("-----------------------------------------------------")
+print("5. Running updatemaplayerip")
 # call_command('updatelayers') # TODO CRITICAL : this overrides the layer thumbnail of existing layers even if unchanged !!!
 call_command('updatemaplayerip')
 
@@ -98,7 +103,8 @@ call_command('updatemaplayerip')
 # 6. Collecting static files
 #########################################################
 
-print("-"*80 + "\n6. Collecting static files")
+print("-----------------------------------------------------")
+print("6. Collecting static files")
 call_command('collectstatic', '--noinput')
 
 
@@ -106,10 +112,15 @@ call_command('collectstatic', '--noinput')
 # 7. Securing GeoServer
 #########################################################
 
-print("-"*80 + "\n7. Securing GeoServer")
+print("-----------------------------------------------------")
+print("7. Securing GeoServer")
 
 # Getting the old password
-r1 = requests.get('http://geoserver:8080/geoserver/rest/security/masterpw.json', auth=(admin_username, admin_password))
+try:
+    r1 = requests.get('http://geoserver:8080/geoserver/rest/security/masterpw.json', auth=(admin_username, admin_password))
+except requests.exceptions.ConnectionError as e:
+    print("Unable to connect to GeoServer. Make sure GeoServer is started and accessible.")
+    exit(1)
 r1.raise_for_status()
 old_password = json.loads(r1.text)["oldMasterPassword"]
 
