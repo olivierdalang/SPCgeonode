@@ -21,8 +21,8 @@ from oauth2_provider.models import Application
 from django.conf import settings
 
 # Getting the secrets
-admin_username = open('/run/secrets/admin_username','r').read()
-admin_password = open('/run/secrets/admin_password','r').read()
+admin_username = open('/run/secrets/admin_username','r').read().strip()
+admin_password = open('/run/secrets/admin_password','r').read().strip()
 
 
 #########################################################
