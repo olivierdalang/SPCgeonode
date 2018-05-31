@@ -12,13 +12,31 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 script:
-  - ls -lah
+  - export HTTP_HOST=nginx
   - docker-compose -f docker-compose.yml up -d --build
   - sleep 120
   - docker-compose -f docker-compose.yml ps
-  # TODO : test healthchecks like this :
-  # docker inspect --format="{{json .State.Health}}" spcgeonode_geoserver_1
-  # TODO : add a basic integration test scenario
+
+  # Assert geoserver is healthy
+  - RETRIES=0
+  - while [[ $RETRIES -lt 2 ]] && [[ ! "S(docker inspect --format='{{json .State.Health.Status}}' spcgeonode_geoserver_1)" == '"Healthy"' ]] do
+      echo "Geoserver container not healthy yet. Retrying in 10s..."
+      RETRIES=$[$RETRIES+1]
+      sleep 10
+    done
+
+  # Assert django is healthy
+  - RETRIES=0
+  - while [[ $RETRIES -lt 2 ]] && [[ ! "S(docker inspect --format='{{json .State.Health.Status}}' spcgeonode_django_1)" == '"Healthy"' ]] do
+      echo "Django container not healthy yet. Retrying in 10s..."
+      RETRIES=$[$RETRIES+1]
+      sleep 10
+    done
+
+  # Run the Geonode integration test suite
+  - docker-compose -f docker-compose.yml exec postgres psql -U postgres -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity;"
+  - docker-compose -f docker-compose.yml exec postgres psql -U postgres -c "CREATE DATABASE test_postgres WITH TEMPLATE postgres;"
+  - docker-compose -f docker-compose.yml exec django python manage.py test geonode.tests.integration --keepdb
 
 after_success:
   - if [[ "$TRAVIS_BRANCH" == "master" ]] || [[ "$TRAVIS_BRANCH" == "master-2.6" ]] || [[ ! -z "$TRAVIS_TAG" ]]; then
