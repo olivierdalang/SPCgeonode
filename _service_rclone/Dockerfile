@@ -1,7 +1,7 @@
 FROM alpine:3.6
 
 # Install deps
-RUN apk add --no-cache openssl ca-certificates
+RUN apk add --no-cache libressl ca-certificates
 
 # Install rclone
 RUN wget https://downloads.rclone.org/v1.40/rclone-v1.40-linux-amd64.zip
