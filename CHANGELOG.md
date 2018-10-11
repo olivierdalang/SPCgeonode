@@ -22,12 +22,12 @@
 
 # Changelog
 
-## Version 0.1.x (Geonode 2.8)
+## Version 0.1.x (Geonode 2.10)
 
 **WARNING** YOU CANNOT UPGRADE FROM 0.0.x to 0.1.x  
 YOU NEED TO DO A FRESH INSTALL AND MANUALLY TRANSFER THE DATA
 
-## 0.1.0
+### 0.1.0
 
 - targetting future 2.10
 - removed elastic search container (it was unused anyways)
