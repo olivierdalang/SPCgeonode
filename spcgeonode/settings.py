@@ -59,18 +59,3 @@ OGC_SERVER['default']['PUBLIC_LOCATION'] = GEOSERVER_PUBLIC_LOCATION
 CATALOGUE['default']['URL'] = '%scatalogue/csw' % SITEURL
 PYCSW['CONFIGURATION']['metadata:main']['provider_url'] = SITEURL
 PUBLIC_GEOSERVER["source"]["url"] = GEOSERVER_PUBLIC_LOCATION + "ows"
-
-
-# We set our custom geoserver password hashers
-# TODO : remove this (we'll leave it for some time so that hashes using GeoserverDigestPasswordHasher are rehashed)
-PASSWORD_HASHERS = (
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-    'django.contrib.auth.hashers.BCryptPasswordHasher',
-    'django.contrib.auth.hashers.SHA1PasswordHasher',
-    'django.contrib.auth.hashers.MD5PasswordHasher',
-    'django.contrib.auth.hashers.CryptPasswordHasher',
-    'spcgeonode.hashers.GeoserverDigestPasswordHasher',
-    'spcgeonode.hashers.GeoserverPlainPasswordHasher',
-)
