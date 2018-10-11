@@ -1,24 +1,19 @@
 # Roadmap
 
-## For 0.1
+## For 1.0
 
-- CRITICAL : randomize django secret
 - CRITICAL : change rest.properties config
 - contribute back to geonode-project
-- push to Geonode 2.8 instead of 2.6
 - CRITICAL : see if Geoserver authkey tokens expire (even when the key is deleted from the database, it's still possible to use it until manually clicking "sync user/group service". It looks like it's some cache, but I don't know if it expires. Maybe we need to use webservice instead of user property...)
-- use Geonode's regular auth mecanism (Oauth) and use proxy to do simple auth from QGIS instead of postgres hack
 - fix updatelayerip on startup (currently creates a mess in links when host/port changes and deletes custom thumbnails)
+- make monitoring module work (currently it's disabled because of some exception during startup)
 
 ## Eventually
 
 - check if everything is ok with auth_keys (it seems Geonode uses expired keys...)
 - tweak nginx settings (gzip output, cache, etc...)
 - use alpine for django as well
-- add HEALTHCHECKS to Dockerfiles where applicable
 - migrate to spc repositories instead of olivierdalang
-- fix Geoserver exceptions on first launch because of missing datadir configurations
-- see if we use all needed geoserver extensions (marlin-renderer, geonode's module)
 - see if we can have geoserver exit on error, in not at least implement proper healtcheck
 - keep a version marker in the geodatadir directory in case of updates to the datadir
 - set more reasonable logging for geoserver
@@ -27,12 +22,29 @@
 
 # Changelog
 
-## 0.0.25
+## Version 0.1.x (Geonode 2.8)
+
+**WARNING** YOU CANNOT UPGRADE FROM 0.0.x to 0.1.x  
+YOU NEED TO DO A FRESH INSTALL AND MANUALLY TRANSFER THE DATA
+
+## 0.1.0
+
+- targetting future 2.10
+- removed elastic search container (it was unused anyways)
+- removed postgres login hack and using instead Geonode-Geoserver OAuth mecanism
+- prebuilt geodatadir used again and master password procedure simplified
+- added django healthcheck
+- if https is enabled, force redirection to https host (as geonode doesn't support multiple domain names/relative installs)
+- django secret generated automatically
+
+## Version 0.0.x (Geonode 2.6)
+
+### 0.0.25
 
 - undo admin users disabled again
 - revert using 2.6.x branch (because of side effect - login taking ages)
 
-## 0.0.24
+### 0.0.24
 
 - use Geonode's Geoserver .war build instead of starting from vanilla
 - fix thumbnail generation (uses a custom release of Geonode)
@@ -42,19 +54,19 @@
 - removed syncthings
 - make http(s) ports parametrable in case a port is already busy
 
-## 0.0.23
+### 0.0.23
 
 - various fixes (broken pip dependencies, wrong fix for geoserver proxy, ssl certificate refreshing)
 
-## 0.0.22
+### 0.0.22
 
 - siteurl set using HTTPS_HOST or HTTP_HOST (instead of "/" which isn't supported)
 
-## 0.0.21
+### 0.0.21
 
 - use custom build of geonode (with some fixes not upstreamed yet)
 
-## 0.0.18
+### 0.0.18
 
 - geoserver master password reset is cleaner (programmatically reset the password from initial datadir before first launch)
 - support empty HTTP_HOST or HTTPS_HOST
@@ -62,38 +74,38 @@
 - cleaned up env vars
 - upgrade should work
 
-## 0.0.17
+### 0.0.17
 
 - improve nginx<->letsencrypt (nginx can work without letsencrypt service)
 
-## 0.0.16
+### 0.0.16
 
 - put django in main directory (so it's more clear for deploy builds)
 
-## 0.0.15
+### 0.0.15
 
 - removed rancher template from repo
 - removed entryponts and command from django image to prevent what looks like a bug in rancher where empty entrypoint in docker-compose isn't taken into account
 
-## 0.0.11
+### 0.0.11
 
 - added a second backup service using RClone (the idea is to test both syncthings and rclone then choose one)
 
-## 0.0.10
+### 0.0.10
 
 - we don't rely on an initial geodatadir anymore, instead we start from scratch, launch geoserver once, then do our modifications
 - added a backup service using Syncthings
 
-## 0.0.9
+### 0.0.9
 
 - fix bug with rancher resolver on rancher
 
-## 0.0.8
+### 0.0.8
 
 - allow to disable/test let's encrypt using env variables
 - we use geonode users/groups table directly for geoserver's authentication
 
-## 0.0.7
+### 0.0.7
 
 - have ssl working online
 - use env variables / secrets where applicable

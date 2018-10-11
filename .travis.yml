@@ -12,21 +12,29 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 script:
-  - ls -lah
+  - set -e
+  - export HTTP_HOST=nginx
   - docker-compose -f docker-compose.yml up -d --build
-  - sleep 120
+  - sleep 240
   - docker-compose -f docker-compose.yml ps
-  # TODO : test healthchecks like this :
-  # docker inspect --format="{{json .State.Health}}" spcgeonode_geoserver_1
-  # TODO : add a basic integration test scenario
-
-deploy: script
-  script: 
-    - docker login -e=$DOCKER_EMAIL -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
-    - docker-compose -f docker-compose.yml build
-    - docker-compose -f docker-compose.yml push
-  on:
-    branch: master
+  - GEOSERVER_HEALTH=$(docker inspect --format="{{json .State.Health.Status}}" spcgeonode_geoserver_1)
+  - DJANGO_HEALTH=$(docker inspect --format="{{json .State.Health.Status}}" spcgeonode_django_1)
+  - |
+    if [[ "$GEOSERVER_HEALTH" != '"healthy"' ]]; then
+      echo "GeoServer is $GEOSERVER_HEALTH"
+      exit 1
+    fi
+  - |
+    if [[ "$DJANGO_HEALTH" != '"healthy"' ]]; then
+      echo "Django is $DJANGO_HEALTH"
+      exit 1
+    fi
+  # Run the Geonode integration test suite # TODO : reenable this if we manage to have them pass
+  # - docker-compose -f docker-compose.yml exec postgres psql -U postgres -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity;"
+  # - docker-compose -f docker-compose.yml exec postgres psql -U postgres -c "CREATE DATABASE test_postgres WITH TEMPLATE postgres;"
+  # - docker-compose -f docker-compose.yml exec django python manage.py test geonode.tests.integration
+  - set +e
+  - echo "Success !"
 
 notifications:
   email:

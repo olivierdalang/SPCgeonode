@@ -1,4 +1,4 @@
-import os
+import os, hashlib
 from geonode.settings import *
 
 
@@ -12,20 +12,31 @@ ROOT_URLCONF = os.getenv('ROOT_URLCONF', 'spcgeonode.urls')
 # Geoserver fix admin password
 ##################################
 
-OGC_SERVER['default']['USER'] = open('/run/secrets/admin_username','r').read()
-OGC_SERVER['default']['PASSWORD'] = open('/run/secrets/admin_password','r').read()
-
-# TODO : this is needed in 2.6.3 as it's not set by default, but is set by default in 2.6.x (?!!!)
-OGC_SERVER['default']['GEOFENCE_SECURITY_ENABLED'] = True
+OGC_SERVER['default']['USER'] = open('/run/secrets/admin_username','r').read().strip()
+OGC_SERVER['default']['PASSWORD'] = open('/run/secrets/admin_password','r').read().strip()
 
 ##################################
 # Misc / debug / hack
 ##################################
 
-# Can be removed after geonode>=2.7.x as it will be like this in main settings
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
+# Celery
+INSTALLED_APPS += ('django_celery_monitor','django_celery_results',) # TODO : add django-celery-monitor to core geonode
+CELERY_TASK_ALWAYS_EAGER = False
+CELERY_TASK_IGNORE_RESULT = False
+CELERY_BROKER_URL = 'amqp://rabbitmq:5672'
+CELERY_RESULT_BACKEND = 'django-db'
 
-# We define SITE_URL to HTTPS_HOST if it is set, or else to HTTP_HOST
+# We randomize the secret key (based on admin login)
+SECRET_KEY = hashlib.sha512(open('/run/secrets/admin_username','r').read().strip() + open('/run/secrets/admin_password','r').read().strip()).hexdigest()
+
+# We define ALLOWED_HOSTS
+ALLOWED_HOSTS = ['nginx','127.0.0.1'] # We need this for internal api calls from geoserver and for healthchecks
+if os.getenv('HTTPS_HOST'):
+    ALLOWED_HOSTS.append( os.getenv('HTTPS_HOST') )
+if os.getenv('HTTP_HOST'):
+    ALLOWED_HOSTS.append( os.getenv('HTTP_HOST') )
+
+# We define SITE_URL
 if os.getenv('HTTPS_HOST'):
     SITEURL = 'https://{url}{port}/'.format(
         url=os.getenv('HTTPS_HOST'),
@@ -39,21 +50,12 @@ elif os.getenv('HTTP_HOST'):
 else:
     raise Exception("Misconfiguration error. You need to set at least one of HTTPS_HOST or HTTP_HOST")
 
-# Manually replace SITEURL whereever it is used in geonode's settings.py
-# OGC_SERVER['default']['LOCATION'] = 'http://nginx/geoserver/' # this is already set as ENV var in the dockerfile
-OGC_SERVER['default']['PUBLIC_LOCATION'] = SITEURL + 'geoserver/'
+# Manually replace SITEURL whereever it is used in geonode's settings.py (those settings are a mess...)
+GEOSERVER_LOCATION = 'http://nginx/geoserver/'
+GEOSERVER_PUBLIC_LOCATION = SITEURL + 'geoserver/'
+GEOSERVER_URL = GEOSERVER_PUBLIC_LOCATION
+OGC_SERVER['default']['LOCATION'] = GEOSERVER_LOCATION
+OGC_SERVER['default']['PUBLIC_LOCATION'] = GEOSERVER_PUBLIC_LOCATION
 CATALOGUE['default']['URL'] = '%scatalogue/csw' % SITEURL
 PYCSW['CONFIGURATION']['metadata:main']['provider_url'] = SITEURL
-
-# We set our custom geoserver password hashers
-PASSWORD_HASHERS = (
-    'spcgeonode.hashers.GeoserverDigestPasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-    'django.contrib.auth.hashers.BCryptPasswordHasher',
-    'django.contrib.auth.hashers.SHA1PasswordHasher',
-    'django.contrib.auth.hashers.MD5PasswordHasher',
-    'django.contrib.auth.hashers.CryptPasswordHasher',
-    'spcgeonode.hashers.GeoserverPlainPasswordHasher',
-)
+PUBLIC_GEOSERVER["source"]["url"] = GEOSERVER_PUBLIC_LOCATION + "ows"

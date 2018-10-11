@@ -1,4 +1,4 @@
-# SPCgeonode
+# SPCgeonode [![Build Status](https://travis-ci.org/olivierdalang/SPCgeonode.svg?branch=master)](https://travis-ci.org/olivierdalang/SPCgeonode)
 
 SPCgeonode is a skeletton for Geonode deployement at SPC. It makes it easy to deploy a customized version of Geonode.
 
@@ -32,15 +32,17 @@ sudo chmod +x /usr/local/bin/docker-compose
 # Checkout the source
 git clone -b release https://github.com/olivierdalang/SPCgeonode.git
 cd SPCGeonode
+
+# logout and login again
 ```
 
-### Windows
+### Windows / Mac
 
-Install Docker by following instructions on: https://store.docker.com/editions/community/docker-ce-desktop-windows
+Install Docker by following instructions on: https://store.docker.com/editions/community/docker-ce-desktop-windows (Windows) or https://store.docker.com/editions/community/docker-ce-desktop-mac (Mac)
 
-Download the source from https://github.com/olivierdalang/SPCgeonode/archive/release.zip, unzip it.
+If familiar with Git, checkout the source, if not download it from https://github.com/olivierdalang/SPCgeonode/archive/release.zip and unzip it.
 
-Open command prompt and move into the folder using `cd C:\path\to\unzipped\folder`.
+Open command prompt and move into the folder using `cd C:\path\to\folder`.
 
 ## Usage
 
@@ -51,40 +53,31 @@ To start the whole stack
 docker-compose up --build -d
 ```
 
-Or if you want only the main services (enough to develop and a bit lighter):
-```
-docker-compose up --build -d django geoserver nginx postgres
-```
-
-Once everything started, you should be able to open http://127.0.0.1 in your browser. See how to edit the configuration below if you install on another computer.
+If not familiar with Docker, read below to know how to see what's happening. On first start, the containers will restart serveral times. Once everything started, you should be able to open http://127.0.0.1 in your browser. See how to edit the configuration below if you install on another computer.
 
 ### Production (using composer)
 
-Note : these instructions are for Linux and must be adapted if installing on Windows.
-
+Using a text editor, edit the follow files :
 ```
-# 0. Install an editor
-sudo apt-get install nano
+# General configuration
+.env
 
-# 1. Edit configuration
-nano .env
+# Admin username and password
+_secrets/admin_username
+_secrets/admin_password
 
-# 2. Edit the admin password (do NOT add an empty new line after content)
-nano _secrets/admin_username
-nano _secrets/admin_password
+# Backup (optional)
+_secrets/rclone.backup.conf
+```
 
-# 3. Setup the backup configuration (read below for details)
-nano _secrets/rclone.backup.conf
-
-# 4. Run the stack
+When ready, start the stack using this command :
+```
+# Run the stack
 docker-compose -f docker-compose.yml up -d --build
 ```
 
-*Backups* are made using [RClone](https://rclone.org/docs/). RClone is a flexible file syncing tool that supports all commons cloud provider, regular file transfer protocols as well as local filesystem. It should be able to accomodate almost any setup.
+If not familiar with Docker, read below to know how to see what's happening. On first start, the containers will restart serveral times. Once everything started, you should be able to open http://your_http_host or https://your_https_host in your browser.
 
-The default configuration provided with the setup assumes Amazon S3 is being used, in which case you need to replace the following parts of the `rclone.backup.config` file : `YOUR_S3_ACCESS_KEY_HERE` and `YOUR_S3_SECRET_KEY_HERE` (watch [this](https://www.youtube.com/watch?v=BLTy2tQXQLY) to learn how to get these keys).
-
-If you want to stup backups using another provider, check the [RClone documentation](https://rclone.org/docs/).
 
 ### Production (using Rancher)
 
@@ -149,3 +142,36 @@ Key differences :
 - https encryption
 - use secrets for sensitive data instead of env variables
 - the geodatadir for Geoserver is included in the git repository rather than being pulled
+
+## FAQ
+
+### Docker-primer - How to see what's happening ?
+
+If not familiar with Docker, here are some useful commands :
+
+- `docker ps` : list all containers and their status
+- `docker-compose logs -f` : show live stdout from all containers
+- `docker-compose logs -f django` : show live stdout from a specific container (replace `django` by `geoserver`, `postgres`, etc.)
+- `docker-compose down -v` : brings the stack down including volumes, allowing you to restart from scratch **THIS WILL ERASE ALL DATA !!**
+
+### During startup, a lot of container crash and restart, is it normal ?
+
+This is the normal startup process. Due to the nature of the setup, the containers are very interdependant. Startup from scratch can take approx. 5-10 minutes, during which all containers may restart a lot of times.
+
+In short, Django will restart until Postgres is up so it can migrate the database. Geoserver will restart until Django has configured OAuth so it can get OAuth2 configuration. Django will restart until Geoserver is running so it can reinitialize the master password.
+
+### Backups
+
+*Backups* are made using [RClone](https://rclone.org/docs/). RClone is a flexible file syncing tool that supports all commons cloud provider, regular file transfer protocols as well as local filesystem. It should be able to accomodate almost any setup.
+
+The default configuration provided with the setup assumes Amazon S3 is being used, in which case you need to replace the following parts of the `rclone.backup.config` file : `YOUR_S3_ACCESS_KEY_HERE`,`YOUR_S3_SECRET_KEY_HERE`,`YOUR_S3_REGION_HERE` and `THE_NAME_OF_YOUR_BUCKET_HERE` (watch [this](https://www.youtube.com/watch?v=BLTy2tQXQLY) to learn how to get these keys).
+
+Also consider enabling *versionning* on the Bucket, so that if data won't get lost if deleted accidentally in GeoNode.
+
+If you want to stup backups using another provider, check the [RClone documentation](https://rclone.org/docs/).
+
+### On windows, I have error like `standard_init_linux.go:190: exec user process caused "no such file or directory"`
+
+This may be due to line endings. When checking out files, git optionnaly converts line endings to match the platform, which doesn't work well it `.sh` files.
+
+To fix, use `git config --global core.autocrlf false` and checkout again.

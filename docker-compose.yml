@@ -12,7 +12,6 @@ x-common-django:
   # RANCHER : remove this
   build: .
   environment:
-    - ALLOWED_HOSTS=${HTTPS_HOST},${HTTP_HOST}
     - HTTPS_HOST=${HTTPS_HOST}
     - HTTPS_PORT=${HTTPS_PORT}
     - HTTP_HOST=${HTTP_HOST}
@@ -36,20 +35,32 @@ services:
   # Our custom django application. It includes Geonode.
   django:
     << : *default-common-django
+    healthcheck:
+      test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null http://127.0.0.1:8001/"
+      interval: 60s
+      timeout: 10s
+      retries: 1
+      start_period: 60s
     entrypoint: ["/spcgeonode/docker-entrypoint.sh"]
-    command: "uwsgi --chdir=/spcgeonode --module=spcgeonode.wsgi --socket=:8000 --processes=5"
+    command: "uwsgi --chdir=/spcgeonode --module=spcgeonode.wsgi --socket=:8000 --http=127.0.0.1:8001 --processes=5"
     
   # Celery worker that executes celery tasks created by Django.
   celery:
     << : *default-common-django
     entrypoint: []
-    command: 'python manage.py celery worker --app=geonode.celery_app:app -B -E -l INFO'
+    command: 'celery worker --app=geonode.celery_app:app -l info'
+
+  # Celery beat that triggers scheduled tasks
+  celerybeat:
+    << : *default-common-django
+    entrypoint: []
+    command: 'celery beat --app=geonode.celery_app:app --pidfile="/celerybeat.pid" -l info'
 
   # Celery camera that monitors celery tasks and populate the djcelery django admin interface
   celerycam:
     << : *default-common-django
     entrypoint: []
-    command: 'python manage.py celerycam'
+    command: 'celery events --app=geonode.celery_app:app --pidfile="/celeryev.pid" --camera=django_celery_monitor.camera.Camera --frequency=2.0 -l info'
   
   # Nginx is serving django static and media files and proxies to django and geonode
   nginx:
@@ -79,6 +90,17 @@ services:
     image: olivierdalang/spcgeonode:geoserver-0.0.25
     # RANCHER : remove this
     build: _service_geoserver/
+    healthcheck:
+      test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null http://127.0.0.1:8080/geoserver/rest/workspaces/geonode.html"
+      interval: 60s
+      timeout: 10s
+      retries: 1
+      start_period: 60s
+    environment:
+      - HTTPS_HOST=${HTTPS_HOST}
+      - HTTPS_PORT=${HTTPS_PORT}
+      - HTTP_HOST=${HTTP_HOST}
+      - HTTP_PORT=${HTTP_PORT}
     volumes:
       - geodatadir:/spcgeonode-geodatadir/
     secrets:
@@ -133,11 +155,6 @@ services:
     image: mdillon/postgis:9.6-alpine
     volumes:
       - database:/var/lib/postgresql/data/ 
-    restart: on-failure
-
-  # Elasticsearch
-  elasticsearch:
-    image: elasticsearch:5.6-alpine
     restart: on-failure
 
   # Vanilla RabbitMQ service. This is needed by celery

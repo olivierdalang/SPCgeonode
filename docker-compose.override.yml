@@ -7,7 +7,7 @@ x-common-django:
   &default-common-django
   image: olivierdalang/spcgeonode:django-dev
   environment:
-    - "DEBUG=True"
+    - DEBUG=True
   volumes:
     - .:/spcgeonode/
     - ./_volume_static:/spcgeonode-static/
@@ -16,11 +16,16 @@ x-common-django:
 services:
   django:
     << : *default-common-django
-    command: ["uwsgi", "--chdir=/spcgeonode", "--module=spcgeonode.wsgi", "--socket=:8000", "--py-autoreload=2"]
+    command: "uwsgi --chdir=/spcgeonode --module=spcgeonode.wsgi --socket=:8000 --http=127.0.0.1:8001 --processes=5 --py-autoreload=2"
   celery:
     << : *default-common-django
+    command: 'celery worker --app=geonode.celery_app:app -l debug'
+  celerybeat:
+    << : *default-common-django
+    command: 'celery beat --app=geonode.celery_app:app --pidfile="/celerybeat.pid" -l debug'
   celerycam:
     << : *default-common-django
+    command: 'celery events --app=geonode.celery_app:app --pidfile="/celeryev.pid" --camera=django_celery_monitor.camera.Camera --frequency=2.0 -l debug'
 
   nginx:
     image: olivierdalang/spcgeonode:nginx-dev

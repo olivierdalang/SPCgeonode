@@ -4,8 +4,7 @@
 
 FROM python:2.7.14-slim-stretch
 
-# 2-3. Install dependencies
-ADD ./requirements.txt /requirements.txt
+# Install system dependencies
 RUN echo "Updating apt-get" && \
     apt-get update && \
     echo "Installing build dependencies" && \
@@ -18,19 +17,28 @@ RUN echo "Updating apt-get" && \
     # RUN apt-get install -y NOTHING ?? It was probably added in other packages... ALPINE needed postgresql-dev && \
     echo "Installing other dependencies" && \
     apt-get install -y libxml2-dev libxslt-dev && \
+    echo "Installing GeoIP dependencies" && \
+    apt-get install -y geoip-bin geoip-database && \
+    echo "Installing healthceck dependencies" && \
+    apt-get install -y curl && \
     echo "Python server" && \
-    pip install uwsgi --trusted-host pypi.python.org && \
-    echo "Geonode python dependencies" && \
-    LIBRARY_PATH=/lib:/usr/lib CPLUS_INCLUDE_PATH=/usr/include/gdal C_INCLUDE_PATH=/usr/include/gdal pip install --trusted-host pypi.python.org -r /requirements.txt && \
+    pip install uwsgi && \
     echo "Removing build dependencies and cleaning up" && \
     # TODO : cleanup apt-get with something like apt-get -y --purge autoremove gcc make libc-dev musl-dev libpcre3 libpcre3-dev g++ && \
     rm -rf /var/lib/apt/lists/* && \
-    rm -rf ~/.cache/pip && \
-    rm /requirements.txt
+    rm -rf ~/.cache/pip
+
+# Install python dependencies
+RUN echo "Geonode python dependencies"
+RUN pip install pygdal==$(gdal-config --version).*
+RUN pip install celery==4.1.0 # see https://github.com/GeoNode/geonode/pull/3714
+RUN pip install https://github.com/GeoNode/geonode/archive/488ba77d2fd1e0241dfb69dc31064dd6bb1d1b7d.zip # master (future 2.10) 2018-10-11
 
 # 5. Add the application
 RUN mkdir /spcgeonode
 WORKDIR /spcgeonode/
+ADD requirements.txt /spcgeonode/requirements.txt
+RUN pip install -r requirements.txt
 ADD . /spcgeonode/
 RUN chmod +x docker-entrypoint.sh
 
@@ -45,10 +53,10 @@ ENV STATIC_ROOT=/spcgeonode-static/
 ENV MEDIA_ROOT=/spcgeonode-media/
 ENV STATIC_URL=/static/
 ENV MEDIA_URL=/media/
-ENV GEOSERVER_LOCATION=http://nginx/geoserver/
-# this is set in settingy.py as we derive it from HTTPS_HOST/HTTP_HOST, since relative urls arent supported anymore in 2.8
-# ENV GEOSERVER_PUBLIC_LOCATION=/geoserver/ # TODO : fix relative url support upstream
 # TODO : we should probably remove this and set Celery to use JSON serialization instead of pickle
 ENV C_FORCE_ROOT=True
+
+# We get an exception after migrations on startup (it seems the monitoring app tries to resolve the geoserver domain name after it's migration, which can happen before oauth migrations on which geoserver startup depends...)
+ENV MONITORING_ENABLED=False
 
 # We provide no command or entrypoint as this image can be used to serve the django project or run celery tasks

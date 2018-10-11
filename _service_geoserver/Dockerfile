@@ -12,32 +12,31 @@ WORKDIR /
 # TODO : this is a bit dirty..... can't we stat from vanilla Geoserver ?
 # TODO : merge into on step
 RUN echo "Download geoserver for geonode" && \
-    wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.12.2/geoserver-2.12.2-bin.zip && \
-    wget http://build.geonode.org/geoserver/latest/geoserver-2.12.x.war && \
-    unzip geoserver-2.12.2-bin.zip && \
-    rm /geoserver-2.12.2-bin.zip && \
-    rm /geoserver-2.12.2/webapps/geoserver/* -rf && \
-    unzip -o geoserver-2.12.x.war -d /geoserver-2.12.2/webapps/geoserver/ && \
-    rm /geoserver-2.12.x.war
+    wget https://downloads.sourceforge.net/project/geoserver/GeoServer/2.14.0/geoserver-2.14.0-bin.zip && \
+    wget https://build.geo-solutions.it/geonode/geoserver/latest/geoserver-2.14.x.war --no-check-certificate && \
+    unzip geoserver-2.14.0-bin.zip && \
+    rm /geoserver-2.14.0-bin.zip && \
+    rm /geoserver-2.14.0/webapps/geoserver/* -rf && \
+    unzip -o geoserver-2.14.x.war -d /geoserver-2.14.0/webapps/geoserver/ && \
+    rm /geoserver-2.14.x.war
 
-WORKDIR /geoserver-2.12.2/
+# Download initial data dir
+RUN wget https://build.geo-solutions.it/geonode/geoserver/latest/data-2.14.x.zip --no-check-certificate
+RUN unzip /data-2.14.x.zip
+RUN ls /data
 
-# Add geodatadir override data (this will be copied over to the actual datadir in entrypoint)
-ADD geodatadir-overrides /geodatadir-overrides
+WORKDIR /geoserver-2.14.0/
 
 # Add the entrypoint
 ADD docker-entrypoint.sh /docker-entrypoint.sh 
 RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-# Add the healthcheck
-HEALTHCHECK --interval=60s --timeout=10s --start-period=60s --retries=3 CMD ["curl", "--silent", "--write-out", "'HTTP CODE : %{http_code}\n'", "--output", "/dev/null", "http://127.0.0.1:8080/geoserver/web/"]
-
 # Export ports
 EXPOSE 8080
 
 # Set environnment variables
-ENV GEOSERVER_HOME=/geoserver-2.12.2
+ENV GEOSERVER_HOME=/geoserver-2.14.0
 ENV GEOSERVER_DATA_DIR=/spcgeonode-geodatadir
 
 # Run geoserver

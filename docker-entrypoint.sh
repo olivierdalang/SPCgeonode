@@ -3,13 +3,18 @@
 # Exit script in case of error
 set -e
 
-echo '--- START Django Docker Entrypoint ---'
+echo $"\n\n\n"
+echo "-----------------------------------------------------"
+echo "STARTING DJANGO ENTRYPOINT --------------------------"
+date
 
 # Run migrations
 echo 'Running initialize.py...'
 python -u initialize.py
 
-echo '--- END Django Docker Entrypoint ---'
+echo "-----------------------------------------------------"
+echo "FINISHED DJANGO ENTRYPOINT --------------------------"
+echo "-----------------------------------------------------"
 
 # Run the CMD 
 exec "$@"

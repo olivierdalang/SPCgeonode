@@ -3,6 +3,11 @@
 # Exit script in case of error
 set -e
 
+echo $"\n\n\n"
+echo "-----------------------------------------------------"
+echo "STARTING NGINX ENTRYPOINT ---------------------------"
+date
+
 # We make the config dir
 mkdir -p "/spcgeonode-certificates/$LETSENCRYPT_MODE"
 
@@ -40,6 +45,10 @@ fi
 
 echo "Loading nginx autoreloader"
 sh /docker-autoreload.sh &
+
+echo "-----------------------------------------------------"
+echo "FINISHED NGINX ENTRYPOINT ---------------------------"
+echo "-----------------------------------------------------"
 
 # Run the CMD 
 exec "$@"
