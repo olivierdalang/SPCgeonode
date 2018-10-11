@@ -49,6 +49,8 @@ fi
 # 2. ADMIN ACCOUNT
 ############################
 
+# This section is not strictly required but allows to login geoserver with the admin account even if OAuth2 is unavailable (e.g. if Django can't start)
+
 echo "-----------------------------------------------------"
 echo "2. (Re)setting admin account"
 

@@ -169,3 +169,9 @@ The default configuration provided with the setup assumes Amazon S3 is being use
 Also consider enabling *versionning* on the Bucket, so that if data won't get lost if deleted accidentally in GeoNode.
 
 If you want to stup backups using another provider, check the [RClone documentation](https://rclone.org/docs/).
+
+### On windows, I have error like `standard_init_linux.go:190: exec user process caused "no such file or directory"`
+
+This may be due to line endings. When checking out files, git optionnaly converts line endings to match the platform, which doesn't work well it `.sh` files.
+
+To fix, use `git config --global core.autocrlf false` and checkout again.
