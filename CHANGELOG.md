@@ -29,7 +29,7 @@ YOU NEED TO DO A FRESH INSTALL AND MANUALLY TRANSFER THE DATA
 
 ## 0.1.0
 
-- based on geonode 2.8
+- targetting future 2.10
 - removed elastic search container (it was unused anyways)
 - removed postgres login hack and using instead Geonode-Geoserver OAuth mecanism
 - prebuilt geodatadir used again and master password procedure simplified
