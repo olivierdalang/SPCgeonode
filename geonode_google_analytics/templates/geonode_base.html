@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% load google_analytics %}
+
+{% block extra_head %}
+{{block.super}}
+{% google_analytics %}
+{% endblock %}

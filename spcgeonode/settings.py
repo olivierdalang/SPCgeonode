@@ -16,6 +16,13 @@ OGC_SERVER['default']['USER'] = open('/run/secrets/admin_username','r').read().s
 OGC_SERVER['default']['PASSWORD'] = open('/run/secrets/admin_password','r').read().strip()
 
 ##################################
+# Google Analytics
+##################################
+
+GOOGLE_ANALYTICS_ID = os.getenv('GOOGLE_ANALYTICS_ID')
+INSTALLED_APPS = ('geonode_google_analytics',) + INSTALLED_APPS
+
+##################################
 # Misc / debug / hack
 ##################################
 

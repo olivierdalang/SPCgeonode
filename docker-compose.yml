@@ -20,6 +20,7 @@ x-common-django:
     - DEBUG=False
     - REGISTRATION_OPEN=${REGISTRATION_OPEN}
     - TIME_ZONE=${TIME_ZONE}
+    - GOOGLE_ANALYTICS_ID=${GOOGLE_ANALYTICS_ID}
   volumes:
     - static:/spcgeonode-static/
     - media:/spcgeonode-media/
