@@ -30,7 +30,8 @@ script:
       exit 1
     fi
   # Run the Geonode integration test suite # TODO : reenable this if we manage to have them pass
-  - docker-compose -f docker-compose.yml exec django python manage.py test geonode.tests.integration
+  - docker-compose -f docker-compose.yml stop django
+  - docker-compose -f docker-compose.yml run django python manage.py test geonode.tests.integration
   - set +e
   - echo "Success !"
 
