@@ -105,7 +105,7 @@ call_command('updatemaplayerip')
 
 print("-----------------------------------------------------")
 print("6. Collecting static files")
-call_command('collectstatic', '--noinput')
+call_command('collectstatic', '--noinput', verbosity=0)
 
 
 #########################################################
