@@ -170,6 +170,87 @@ Also consider enabling *versionning* on the Bucket, so that if data won't get lo
 
 If you want to stup backups using another provider, check the [RClone documentation](https://rclone.org/docs/).
 
+### How to migrate from an existing standard Geonode install
+
+This section lists the steps done to migrate from an apt-get install of Geonode 2.4.1 (with Geoserver 2.7.4) to a fresh SPCGeonode 0.1 install. It is meant as a guide only as some steps may need some tweaking depending on your installation. Do not follow these steps if you don't understand what you're doing.
+
+#### Prerequisites
+
+- access to the original server
+- a new server for the install (can be the same than the first one if you don’t fear losing all data) - ideally linux but should be OK as long as it runs docker (64bits)
+- an external hard-drive to copy data over
+
+#### On the old server
+
+```
+# Move to the external hard drive
+cd /path/to/your/external/drive
+
+# Find the current database password (look for DATABASE_PASSWORD, in my case it was XbFAyE4w)
+more /etc/geonode/local_settings.py
+
+# Dump the database content (you will be prompted several time for the password above)
+pg_dumpall --host=127.0.0.1 --username=geonode --file=pg_dumpall.custom
+
+# Copy all uploaded files
+cp -r /var/www/geonode/uploaded uploaded
+
+# Copy geoserver data directory
+cp -r /usr/share/geoserver/data geodatadir
+```
+
+#### On the new server
+
+Setup SPCGeonode by following the prerequisite and production steps on https://github.com/olivierdalang/SPCgeonode/tree/release up to (but not including) run the stack.
+
+Then run these commands :
+
+```
+# Prepare the stack (without running)
+docker-compose -f docker-compose.yml pull --no-parallel
+docker-compose -f docker-compose.yml up --no-start
+
+# Start the database
+docker-compose -f docker-compose.yml up -d postgres
+
+# Initialize geoserver (to create the geodatadir - this will fail because Django/Postgres arent started yet - but this is expected)
+docker-compose -f docker-compose.yml run --rm geoserver exit 0
+
+# Go to the external drive
+cd /path/to/drive/
+
+# Restore the dump (this can take a while if you have data in postgres)
+cat pg_dumpall.custom | docker exec -i spcgeonode_postgres_1 psql -U postgres
+# Rename the database to postgres
+docker exec -i spcgeonode_postgres_1 dropdb -U postgres postgres
+docker exec -i spcgeonode_postgres_1 psql -d template1 -U postgres -c "ALTER DATABASE geonode RENAME TO postgres;"
+
+# Restore the django uploaded files
+docker cp uploaded/. spcgeonode_django_1:/spcgeonode-media/
+
+# Restore the workspaces and styles of the geoserver data directory
+docker cp geodatadir/styles/. spcgeonode_geoserver_1:/spcgeonode-geodatadir/styles
+docker cp geodatadir/workspaces/. spcgeonode_geoserver_1:/spcgeonode-geodatadir/workspaces
+docker cp geodatadir/data/. spcgeonode_geoserver_1:/spcgeonode-geodatadir/data
+
+# Back to SPCgeonode
+cd /path/to/SPCgeonode
+
+# Fix some problems
+# public.layers_layer shouldn’t have service_id column 
+docker exec -i spcgeonode_postgres_1 psql -U postgres -c "ALTER TABLE public.layers_layer DROP COLUMN service_id;"
+# public.people_profile(last_login) should be nullable
+docker exec -i spcgeonode_postgres_1 psql -U postgres -c "ALTER TABLE public.people_profile ALTER COLUMN last_login DROP NOT NULL;"
+
+# Migrate with fake initial
+docker-compose -f docker-compose.yml run --rm --entrypoint "" django python manage.py migrate --fake-initial
+
+# This time start the stack
+docker-compose -f docker-compose.yml up -d
+```
+
+One last step was to connect to the GeoServer administration and change the PostGIS store host to ‘postgres’ instead of localhost.
+
 ### On windows, I have error like `standard_init_linux.go:190: exec user process caused "no such file or directory"`
 
 This may be due to line endings. When checking out files, git optionnaly converts line endings to match the platform, which doesn't work well it `.sh` files.
