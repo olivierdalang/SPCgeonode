@@ -41,19 +41,19 @@ call_command('migrate', '--noinput')
 print("-----------------------------------------------------")
 print("2. Creating/updating superuser")
 try:
-    superuser = Profile.objects.create_superuser(
-        admin_username,
-        os.getenv('ADMIN_EMAIL'),
-        admin_password
-    )
-    print('superuser successfully created')    
-except django.db.IntegrityError as e:
     superuser = Profile.objects.get(username=admin_username)
     superuser.set_password(admin_password)
     superuser.is_active = True
     superuser.email = os.getenv('ADMIN_EMAIL')
     superuser.save()
     print('superuser successfully updated')
+except Profile.DoesNotExist:
+    superuser = Profile.objects.create_superuser(
+        admin_username,
+        os.getenv('ADMIN_EMAIL'),
+        admin_password
+    )
+    print('superuser successfully created')  
 
 
 #########################################################
