@@ -120,29 +120,6 @@ docker-compose -f docker-compose.yml push
 ```
 
 
-## Compared to similar tools
-
-This is very similar to https://github.com/GeoNode/geonode-project but aims to be suitable for deployement.
-
-Key differences :
-
-- dockerfiles for nginx and geoserver are in same repo, since they need to be customized for a deployement
-- other services (postgres, elasticsearch, rabbit) images use a specific tag, so we know which one will be pulled 
-- settings imports from geonode.settings so most defaults don't need to be modified
-- geoserver starts with empty geodatadir. Geonode's entrypoint script ensures there is a geonode workspace initialized using REST API. 
-- Geonode/Geoserver user database is shared at postgres level so users are always synced
-- the geodatadir for Geoserver is included in the git repository rather than being pulled
-
-This is very similar to https://github.com/kartoza/kartoza-rancher-catalogue
-
-Key differences :
-
-- we use geoserver instead of qgis server
-- working celery admin panels
-- https encryption
-- use secrets for sensitive data instead of env variables
-- the geodatadir for Geoserver is included in the git repository rather than being pulled
-
 ## FAQ
 
 ### Docker-primer - How to see what's happening ?
