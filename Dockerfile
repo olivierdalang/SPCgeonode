@@ -52,7 +52,7 @@ ENV BROKER_URL=amqp://guest:guest@rabbitmq:5672/
 ENV STATIC_ROOT=/spcgeonode-static/
 ENV MEDIA_ROOT=/spcgeonode-media/
 ENV STATIC_URL=/static/
-ENV MEDIA_URL=/media/
+ENV MEDIA_URL=/uploaded/
 # TODO : we should probably remove this and set Celery to use JSON serialization instead of pickle
 ENV C_FORCE_ROOT=True
 
