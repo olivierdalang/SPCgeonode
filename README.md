@@ -213,14 +213,20 @@ docker cp geodatadir/data/. spcgeonode_geoserver_1:/spcgeonode-geodatadir/data
 # Back to SPCgeonode
 cd /path/to/SPCgeonode
 
-# Fix some problems
-# public.layers_layer shouldn’t have service_id column 
+# Fix some inconsistency that prevents migrations (public.layers_layer shouldn’t have service_id column)
 docker exec -i spcgeonode_postgres_1 psql -U postgres -c "ALTER TABLE public.layers_layer DROP COLUMN service_id;"
-# public.people_profile(last_login) should be nullable
-docker exec -i spcgeonode_postgres_1 psql -U postgres -c "ALTER TABLE public.people_profile ALTER COLUMN last_login DROP NOT NULL;"
 
 # Migrate with fake initial
 docker-compose -f docker-compose.yml run --rm --entrypoint "" django python manage.py migrate --fake-initial
+
+# Create the SQL diff to fix the schema # TODO : upstream some changes to django-extensions for this to work directly
+docker-compose -f docker-compose.yml run --rm --entrypoint "" django /bin/sh -c "DJANGO_COLORS="nocolor" python manage.py sqldiff -ae" >> fix.sql
+
+# Manually fix the SQL command until it runs (you can also drop the tables that have no model)
+nano fix.sql
+
+# Apply the SQL diff (review the sql file first as this may delete some important tables)
+cat fix.sql | docker exec -i spcgeonode_postgres_1 psql -U postgres
 
 # This time start the stack
 docker-compose -f docker-compose.yml up -d
