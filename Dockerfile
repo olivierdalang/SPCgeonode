@@ -32,7 +32,7 @@ RUN echo "Updating apt-get" && \
 RUN echo "Geonode python dependencies"
 RUN pip install pygdal==$(gdal-config --version).*
 RUN pip install celery==4.1.0 # see https://github.com/GeoNode/geonode/pull/3714
-RUN pip install https://github.com/GeoNode/geonode/archive/488ba77d2fd1e0241dfb69dc31064dd6bb1d1b7d.zip # master (future 2.10) 2018-10-11
+RUN pip install https://github.com/GeoNode/geonode/archive/a1b125dbfddbbe7964f11d8f50ff2dd0101bb2bd.zip # master (future 2.10) 2018-10-18
 
 # 5. Add the application
 RUN mkdir /spcgeonode
