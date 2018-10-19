@@ -32,7 +32,7 @@ RUN echo "Updating apt-get" && \
 RUN echo "Geonode python dependencies"
 RUN pip install pygdal==$(gdal-config --version).*
 RUN pip install celery==4.1.0 # see https://github.com/GeoNode/geonode/pull/3714
-RUN pip install https://github.com/GeoNode/geonode/archive/488ba77d2fd1e0241dfb69dc31064dd6bb1d1b7d.zip # master (future 2.10) 2018-10-11
+RUN pip install https://github.com/GeoNode/geonode/archive/a1b125dbfddbbe7964f11d8f50ff2dd0101bb2bd.zip # master (future 2.10) 2018-10-18
 
 # 5. Add the application
 RUN mkdir /spcgeonode
@@ -52,7 +52,7 @@ ENV BROKER_URL=amqp://guest:guest@rabbitmq:5672/
 ENV STATIC_ROOT=/spcgeonode-static/
 ENV MEDIA_ROOT=/spcgeonode-media/
 ENV STATIC_URL=/static/
-ENV MEDIA_URL=/media/
+ENV MEDIA_URL=/uploaded/
 # TODO : we should probably remove this and set Celery to use JSON serialization instead of pickle
 ENV C_FORCE_ROOT=True
 

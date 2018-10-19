@@ -59,3 +59,11 @@ OGC_SERVER['default']['PUBLIC_LOCATION'] = GEOSERVER_PUBLIC_LOCATION
 CATALOGUE['default']['URL'] = '%scatalogue/csw' % SITEURL
 PYCSW['CONFIGURATION']['metadata:main']['provider_url'] = SITEURL
 PUBLIC_GEOSERVER["source"]["url"] = GEOSERVER_PUBLIC_LOCATION + "ows"
+
+# We use django's default cache (geonode settings use dummy cache, which doesn't cache at all)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
