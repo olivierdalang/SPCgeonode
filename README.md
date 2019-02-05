@@ -1,3 +1,9 @@
+# DEPRECATED !!!
+
+**THIS REPOSITORY IS OBSOLETE**
+
+SPCGEONODE HAS BEEN MERGED TO THE MAIN GEONODE REPOSITORY. PLEASE HEAD TO https://github.com/GeoNode/geonode/tree/master/scripts/spcgeonode TO CONTINUE USING SPCGEONODE, AND REPORT ANY ISSUE TO THE MAIN GEONODE REPOSITORY.
+
 # SPCgeonode [![Build Status](https://travis-ci.org/olivierdalang/SPCgeonode.svg?branch=master)](https://travis-ci.org/olivierdalang/SPCgeonode)
 
 SPCgeonode is a skeletton for Geonode deployement at SPC. It makes it easy to deploy a customized version of Geonode.
